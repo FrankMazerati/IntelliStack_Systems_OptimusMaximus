@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#061326">
+  <meta name="description" content="IntelliStack Systems — Maximus Optimus Command Center">
+  <title>Maximus Optimus | IntelliStack Systems</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #061326;
+      --panel: rgba(4, 17, 36, .94);
+      --panel-soft: rgba(5, 26, 52, .82);
+      --line: rgba(35, 166, 255, .55);
+      --cyan: #22d3ee;
+      --blue: #138dff;
+      --text: #f4f9ff;
+      --muted: #a8c7eb;
+      --radius: 22px;
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      margin: 0; min-height: 100vh; min-height: 100dvh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text); background: var(--bg);
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .page {
+      position: relative; isolation: isolate; min-height: 100vh; min-height: 100dvh;
+      display: grid; grid-template-rows: auto 1fr auto;
+      overflow: hidden; background:
+        linear-gradient(90deg, rgba(3,12,27,.20), rgba(3,12,27,.42)),
+        url("assets/command-center-hero.png") center center / cover no-repeat,
+        #061326;
+    }
+    .page::before {
+      content: ""; position: absolute; inset: 0; z-index: -1;
+      background: linear-gradient(90deg, rgba(2,10,24,.14) 0%, rgba(2,10,24,.18) 46%, rgba(2,10,24,.78) 100%);
+    }
+    header {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      padding: max(20px, var(--safe-top)) clamp(18px, 4vw, 58px) 12px;
+    }
+    .brand { font-weight: 800; letter-spacing: .22em; font-size: clamp(.78rem, 1.2vw, 1rem); }
+    .brand small { display:block; margin-top: .35rem; color: var(--cyan); font-size: .62rem; letter-spacing: .2em; }
+    .top-meta { color: var(--muted); font-size: .8rem; white-space: nowrap; }
+    main {
+      width: min(1440px, 100%); margin: 0 auto; padding: clamp(14px, 2vw, 28px) clamp(16px, 4vw, 58px) 30px;
+      display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(340px, .82fr);
+      align-items: center; gap: clamp(24px, 4vw, 64px);
+    }
+    .hero-copy { max-width: 690px; padding: 1rem 0; }
+    .eyebrow { color: var(--cyan); font-size: .76rem; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: .7rem 0 .3rem; font-size: clamp(2.3rem, 5vw, 5.2rem); line-height: .98; letter-spacing: -.055em; }
+    h1 span { color: #19aaff; }
+    .product-label { margin: .7rem 0 1.25rem; font-size: clamp(.85rem, 1.5vw, 1.18rem); letter-spacing: .34em; font-weight: 650; }
+    .primary-slogan { font-size: clamp(1.15rem, 2.2vw, 1.85rem); font-weight: 850; line-height: 1.25; max-width: 650px; }
+    .support-slogan { color: #c1ddff; font-size: clamp(.88rem, 1.3vw, 1.06rem); line-height: 1.6; margin-top: .9rem; max-width: 570px; }
+    .capabilities { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.6rem; }
+    .capabilities span { border: 1px solid var(--line); background: rgba(3,20,43,.6); padding: .55rem .8rem; border-radius: 999px; color: #d7edff; font-size: .82rem; }
+    .login-card {
+      width: 100%; max-width: 510px; justify-self: end; padding: clamp(18px, 2.3vw, 30px);
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel);
+      box-shadow: 0 24px 90px rgba(0,0,0,.45), inset 0 1px rgba(255,255,255,.04);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    }
+    .login-card h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.8rem); }
+    .subhead { color: var(--muted); font-size: .9rem; line-height: 1.45; margin: .55rem 0 1.2rem; }
+    .switch, .mode-switch, .providers { display: grid; gap: 5px; }
+    .switch { grid-template-columns: 1fr 1fr; padding: 4px; border: 1px solid var(--line); border-radius: 14px; background: #031025; margin-bottom: 1.2rem; }
+    .switch button, .mode-switch button { min-height: 46px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; font-weight: 750; }
+    .switch button[aria-pressed="true"], .mode-switch button[aria-pressed="true"] { color: white; background: linear-gradient(110deg, #13a8ff, #1259ed); box-shadow: 0 5px 18px rgba(0,133,255,.2); }
+    .mode-switch { grid-template-columns: 1fr 1fr; margin-bottom: 1rem; border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
+    .field { display: grid; gap: .4rem; margin: .8rem 0; }
+    .field label { font-size: .82rem; color: #c5ddf9; }
+    .field input { width: 100%; min-height: 48px; border: 1px solid #245580; border-radius: 10px; padding: .8rem .9rem; color: white; background: rgba(2,14,31,.9); outline: none; }
+    .field input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,.13); }
+    .helper-row { display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin: .85rem 0 1rem; color: var(--muted); font-size: .8rem; }
+    a { color: #25c9ff; text-decoration: none; } a:hover { text-decoration: underline; }
+    .primary-btn { width: 100%; min-height: 49px; border: 0; border-radius: 999px; background: linear-gradient(100deg,#0ca5ff,#0876f9); color: white; font-weight: 800; }
+    .divider { display:flex; align-items:center; gap:.8rem; margin: 1rem 0; color: #8fb2d8; font-size: .75rem; }
+    .divider::before, .divider::after { content:""; height:1px; flex:1; background: #245580; }
+    .providers { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .provider { min-height: 54px; padding: .5rem .25rem; border: 1px solid #245580; border-radius: 10px; color: #d9ebff; background: rgba(2,14,31,.65); font-size: .8rem; }
+    .provider[aria-pressed="true"] { border-color: var(--cyan); background: rgba(0,137,255,.17); box-shadow: inset 0 0 0 1px var(--cyan); }
+    .phone-login { margin-top: .65rem; width:100%; min-height:46px; border:1px solid #245580; border-radius:10px; color:#d9ebff; background:transparent; }
+    .notice { min-height: 1.2em; color: #9cc9f5; font-size: .78rem; margin-top: .75rem; line-height: 1.4; }
+    .signup { text-align:center; color:var(--muted); font-size:.82rem; margin-top:1rem; }
+    .site-footer { padding: 30px clamp(18px,4vw,58px) max(18px, var(--safe-bottom)); background: rgba(2,9,22,.97); border-top: 1px solid rgba(35,166,255,.35); }
+    .footer-grid { max-width: 1440px; margin: 0 auto; display:grid; grid-template-columns: 1.5fr repeat(4,minmax(0,1fr)); gap: 26px; }
+    .footer-brand { font-weight:850; letter-spacing:.14em; line-height:1.6; }
+    .footer-brand span { color:var(--cyan); }
+    .footer-brand p { max-width:300px; color:var(--muted); font-weight:400; letter-spacing:0; line-height:1.6; font-size:.82rem; }
+    .footer-col h3 { margin:0 0 .8rem; font-size:.82rem; color:#f0f8ff; letter-spacing:.08em; text-transform:uppercase; }
+    .footer-col a, .footer-col button { display:block; margin:.58rem 0; color:#a9c9ed; font-size:.8rem; text-decoration:none; background:none; border:0; padding:0; text-align:left; }
+    .footer-col a:hover, .footer-col button:hover { color:var(--cyan); text-decoration:underline; }
+    .footer-trust { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
+    .trust-pill { border:1px solid rgba(35,166,255,.35); border-radius:999px; padding:.35rem .6rem; color:#b9d9f8; font-size:.68rem; }
+    .footer-bottom { max-width:1440px; margin:25px auto 0; padding-top:17px; border-top:1px solid rgba(92,145,194,.25); display:flex; justify-content:space-between; align-items:center; gap:1rem; color:#a9c9ed; font-size:.75rem; }
+    .footer-legal-links { display:flex; flex-wrap:wrap; gap:.9rem; }
+    .footer-legal-links a, .footer-legal-links button { color:#a9c9ed; text-decoration:none; background:none; border:0; padding:0; font-size:.75rem; }
+    .footer-legal-links a:hover, .footer-legal-links button:hover { color:var(--cyan); }
+    .signature { color: var(--cyan); font-weight: 800; letter-spacing: .03em; }
+    .secure { white-space: nowrap; }
+    .policy-dialog { width:min(620px,calc(100% - 28px)); max-height:80vh; overflow:auto; border:1px solid var(--line); border-radius:18px; background:#06162c; color:var(--text); padding:24px; box-shadow:0 25px 100px #000b; }
+    .policy-dialog::backdrop { background:rgba(0,5,15,.78); backdrop-filter:blur(5px); }
+    .policy-dialog h2 { margin-top:0; }
+    .policy-dialog p { color:#b9d2ef; line-height:1.65; }
+    .policy-close { float:right; border:1px solid var(--line); border-radius:8px; padding:.45rem .7rem; background:#0a2747; color:white; }
+    .mobile-art { display:none; }
+    @media (max-width: 1000px) {
+      .page { background-position: 38% center; }
+      .page::before { background: linear-gradient(180deg, rgba(2,10,24,.48), rgba(2,10,24,.78)); }
+      main { grid-template-columns: 1fr; gap: 1rem; width: min(680px,100%); }
+      .hero-copy { text-align:center; margin:0 auto; padding:.2rem 0; }
+      .support-slogan { margin-left:auto; margin-right:auto; }
+      .capabilities { justify-content:center; margin-top:1rem; }
+      .login-card { justify-self:center; max-width:560px; }
+      .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .footer-brand { grid-column:1 / -1; }
+      .footer-bottom { flex-wrap:wrap; justify-content:center; text-align:center; }
+    }
+    @media (max-width: 600px) {
+      header { padding-left:16px; padding-right:16px; }
+      .top-meta { font-size:.68rem; }
+      main { padding: 12px 14px 20px; }
+      .hero-copy { padding:.25rem 0 .7rem; }
+      h1 { font-size: clamp(2rem, 10vw, 3.2rem); }
+      .product-label { letter-spacing:.2em; margin-bottom:.8rem; }
+      .primary-slogan { font-size:1.15rem; }
+      .support-slogan { font-size:.82rem; margin-top:.55rem; }
+      .capabilities span { font-size:.72rem; padding:.42rem .62rem; }
+      .login-card { padding:17px; border-radius:17px; }
+      .providers { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .provider { font-size:.73rem; }
+      .site-footer { padding-left:16px; padding-right:16px; }
+      .footer-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap:20px 14px; }
+      .footer-brand { grid-column:1 / -1; }
+      .footer-col h3 { font-size:.75rem; }
+      .footer-col a, .footer-col button { font-size:.76rem; }
+      .footer-bottom { align-items:flex-start; flex-direction:column; font-size:.72rem; }
+      .footer-legal-links { gap:.75rem; }
+    }
+    /* Short landscape phones: keep the form usable without forcing a tall hero. */
+    @media (max-height: 520px) and (orientation: landscape) {
+      header { padding-top: max(8px,var(--safe-top)); padding-bottom:4px; }
+      main { grid-template-columns: minmax(0,.8fr) minmax(330px,1fr); gap:18px; padding-top:4px; padding-bottom:8px; }
+      .hero-copy { text-align:left; padding:0; }
+      h1 { font-size: clamp(1.8rem, 4vw, 3rem); }
+      .product-label { margin:.35rem 0 .6rem; }
+      .primary-slogan { font-size:1rem; }
+      .support-slogan { font-size:.75rem; margin-top:.35rem; }
+      .capabilities { margin-top:.65rem; gap:.3rem; }
+      .capabilities span { font-size:.65rem; padding:.3rem .5rem; }
+      .login-card { padding:14px; }
+      .field { margin:.45rem 0; }
+      .field input, .switch button, .mode-switch button { min-height:38px; }
+      .helper-row { margin:.45rem 0; }
+      .provider { min-height:40px; }
+      footer { padding-top:5px; padding-bottom:max(8px,var(--safe-bottom)); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .switch button, .mode-switch button, .provider, .primary-btn { transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+      .primary-btn:hover { transform: translateY(-1px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">INTELLISTACK SYSTEMS<small>CONNECT · AUTOMATE · EMPOWER</small></div>
+      <div class="top-meta">◉ GLOBAL PLATFORM &nbsp; | &nbsp; SECURE ACCESS</div>
+    </header>
+    <main>
+      <section class="hero-copy" aria-label="Product introduction">
+        <div class="eyebrow">Global IT Operations Platform</div>
+        <h1>Maximus <span>Optimus</span></h1>
+        <div class="product-label">COMMAND CENTER</div>
+        <div class="primary-slogan">ONE WORLD. ONE INTELLIGENT NETWORK.</div>
+        <p class="support-slogan">THINK BEYOND. CONNECT EVERYTHING. CONTROL WITH INTELLIGENCE.</p>
+        <div class="capabilities" aria-label="Platform capabilities">
+          <span>Service Desk</span><span>Infrastructure</span><span>Automation</span><span>AI Assistants</span><span>War Room</span><span>Global Teams</span>
+        </div>
+      </section>
+
+      <section class="login-card" aria-labelledby="login-title">
+        <h2 id="login-title">Welcome to IntelliStack</h2>
+        <p class="subhead" id="account-description">Sign in to your individual workspace.</p>
+        <div class="switch" role="group" aria-label="Account type">
+          <button type="button" id="individual-btn" aria-pressed="true">Individual</button>
+          <button type="button" id="business-btn" aria-pressed="false">Business</button>
+        </div>
+        <div class="mode-switch" role="group" aria-label="Authentication mode">
+          <button type="button" id="signin-btn" aria-pressed="true">Sign In</button>
+          <button type="button" id="signup-btn" aria-pressed="false">Create Account</button>
+        </div>
+        <div class="field" id="company-field" hidden>
+          <label for="company">Company name</label>
+          <input id="company" name="company" autocomplete="organization" placeholder="Your company name">
+        </div>
+        <div class="field">
+          <label for="identity" id="identity-label">Email address</label>
+          <input id="identity" name="identity" autocomplete="username" placeholder="Email address or phone number">
+        </div>
+        <div class="field" id="password-field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Password">
+        </div>
+        <div class="helper-row">
+          <label><input type="checkbox" id="remember"> Remember me</label>
+          <a href="#" id="forgot-link">Forgot password?</a>
+        </div>
+        <button type="button" class="primary-btn" id="submit-btn">Sign In</button>
+        <div class="divider">OR USE A PROVIDER</div>
+        <div class="providers" role="group" aria-label="Identity provider">
+          <button class="provider" type="button" data-provider="Email" aria-pressed="true">✉ Email</button>
+          <button class="provider" type="button" data-provider="Microsoft" aria-pressed="false">▦ Microsoft</button>
+          <button class="provider" type="button" data-provider="Azure" aria-pressed="false">▲ Azure</button>
+          <button class="provider" type="button" data-provider="AWS" aria-pressed="false">aws</button>
+          <button class="provider" type="button" data-provider="Microsoft Intune" aria-pressed="false">▣ Intune</button>
+          <button class="provider" type="button" data-provider="Phone number" aria-pressed="false">☎ Phone</button>
+        </div>
+        <p class="notice" id="notice" role="status">UI concept only — authentication is not connected yet.</p>
+        <div class="signup">Protected workspaces · Organization-aware access</div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div>INTELLISTACK <span>SYSTEMS</span></div>
+          <div style="font-size:.7rem;color:#7fdfff;letter-spacing:.16em;">MAXIMUS OPTIMUS COMMAND CENTER</div>
+          <p>One platform to connect, automate, and empower global IT operations.</p>
+          <div class="footer-trust">
+            <span class="trust-pill">◇ Security-focused design</span>
+            <span class="trust-pill">◎ Multi-tenant architecture</span>
+            <span class="trust-pill">↗ Built for global teams</span>
+          </div>
+        </div>
+        <nav class="footer-col" aria-label="Explore">
+          <h3>Explore</h3>
+          <a href="#home" data-policy="Home">Home</a>
+          <a href="#about" data-policy="About Us">About Us</a>
+          <a href="#product" data-policy="Platform">Platform Overview</a>
+          <a href="#modules" data-policy="Modules">Modules & Features</a>
+          <a href="#pricing" data-policy="Pricing">Plans & Licensing</a>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <h3>Company</h3>
+          <a href="#contact" data-policy="Contact Us">Contact Us</a>
+          <a href="#sales" data-policy="Sales">Sales Inquiries</a>
+          <a href="#partners" data-policy="Partners">Partners</a>
+          <a href="#careers" data-policy="Careers">Careers</a>
+          <a href="#news" data-policy="News">News & Updates</a>
+        </nav>
+        <nav class="footer-col" aria-label="Resources">
+          <h3>Resources</h3>
+          <a href="#help" data-policy="Help Center">Help Center</a>
+          <a href="#docs" data-policy="Documentation">Documentation</a>
+          <a href="#status" data-policy="System Status">System Status</a>
+          <a href="#accessibility" data-policy="Accessibility">Accessibility</a>
+          <a href="#security" data-policy="Security">Security Overview</a>
+        </nav>
+        <nav class="footer-col" aria-label="Legal">
+          <h3>Legal & Policies</h3>
+          <a href="#privacy" data-policy="Privacy Policy">Privacy Policy</a>
+          <a href="#terms" data-policy="Terms of Service">Terms of Service</a>
+          <a href="#cookies" data-policy="Cookie Policy">Cookie Policy</a>
+          <a href="#acceptable-use" data-policy="Acceptable Use">Acceptable Use</a>
+          <a href="#license" data-policy="Software License">Software License</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 IntelliStack Systems. All rights reserved. <span style="color:#77dfff;">Maximus Optimus™</span></div>
+        <div class="footer-legal-links">
+          <a href="#privacy" data-policy="Privacy Policy">Privacy</a>
+          <a href="#terms" data-policy="Terms of Service">Terms</a>
+          <a href="#cookies" data-policy="Cookie Policy">Cookies</a>
+          <a href="#contact" data-policy="Contact Us">Contact</a>
+        </div>
+        <div class="secure">◈ Secure by design &nbsp; · &nbsp; ◉ Global platform</div>
+      </div>
+    </footer>
+  </div>
+  <dialog class="policy-dialog" id="policy-dialog" aria-labelledby="policy-title">
+    <button class="policy-close" type="button" id="policy-close" aria-label="Close dialog">Close ✕</button>
+    <h2 id="policy-title">IntelliStack Systems</h2>
+    <div id="policy-content"></div>
+  </dialog>
+  <script>
+    const policyCopy = {
+      "Home": "You are on the Maximus Optimus Command Center landing page.",
+      "About Us": "IntelliStack Systems is developing Maximus Optimus, a modular platform concept for IT operations, service management, automation, infrastructure visibility, and AI-assisted workflows. Company profile details should be confirmed before public launch.",
+      "Platform": "Maximus Optimus is planned as an all-in-one enterprise IT operations platform with configurable modules and organization-specific workspaces.",
+      "Modules": "Planned modules include Global Command, Optimus AI, Service Desk, War Room, Infrastructure Intelligence, Automation Foundry, Script Arsenal, Knowledge Vault, Assets & CMDB, Change Management, Reports & Analytics, and Connector Hub.",
+      "Pricing": "Commercial plans, trial terms, usage limits, and subscription prices are not finalized yet. Contact the sales team once official contact channels are configured.",
+      "Contact Us": "Demo contact: hello@intellistack.systems. This is sample contact information for the prototype and must be verified and replaced with a monitored company inbox before launch.",
+      "Sales": "For this prototype, sales contact is represented by sales@intellistack.systems. Verify domain ownership and configure a monitored mailbox before publishing.",
+      "Partners": "Partner programs and reseller terms are not yet published. This page is a placeholder for future official program details.",
+      "Careers": "Career opportunities will be listed here when IntelliStack Systems publishes official openings.",
+      "News": "Product announcements and release notes will be published here after the public launch process is established.",
+      "Help Center": "Help resources, onboarding guides, and support procedures are planned. Support coverage and response times have not been promised in this prototype.",
+      "Documentation": "Product documentation will describe supported features, setup instructions, integrations, and administrator workflows as they are implemented and tested.",
+      "System Status": "Prototype status: demonstration interface only. No live production uptime, monitoring, or service-level agreement is represented by this page.",
+      "Accessibility": "The interface is being designed for keyboard access, responsive layouts, readable contrast, and assistive technology. A formal accessibility review is still required before making a conformance claim.",
+      "Security": "The production platform is intended to use tenant isolation, server-side authorization, secure secret handling, audit logs, and controlled deployment. These are design goals, not a certification or claim that the prototype has completed a security audit.",
+      "Privacy Policy": "DRAFT — This prototype does not yet define a complete production privacy policy. Before launch, this page must accurately describe actual data collected, purposes, retention, subprocessors, international transfers, user rights, and a verified privacy contact. Do not rely on this placeholder as legal advice.",
+      "Terms of Service": "DRAFT — Subscription terms, acceptable-use rules, warranties, liability limits, account suspension, and governing law must be reviewed and finalized for the real business before customers are onboarded.",
+      "Cookie Policy": "DRAFT — Before launch, document the cookies and similar technologies actually used, their purposes, and any consent or preference controls required for the markets served.",
+      "Acceptable Use": "DRAFT — A production acceptable-use policy should define prohibited activity, security requirements, abuse reporting, and enforcement procedures.",
+      "Software License": "DRAFT — Commercial license terms and ownership statements must be reviewed against the final legal entity, code ownership, third-party licenses, and product distribution model."
+    };
+    document.querySelectorAll("[data-policy]").forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      const title = link.dataset.policy;
+      if (title === "Home") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+      $("policy-title").textContent = title;
+      const p = document.createElement("p");
+      p.textContent = policyCopy[title] || "This page is planned and will be completed before public launch.";
+      $("policy-content").replaceChildren(p);
+      $("policy-dialog").showModal();
+    }));
+    $("policy-close").addEventListener("click", () => $("policy-dialog").close());
+    $("policy-dialog").addEventListener("click", event => {
+      if (event.target === $("policy-dialog")) $("policy-dialog").close();
+    });
+    const state = { account: "individual", mode: "signin", provider: "Email" };
+    const $ = id => document.getElementById(id);
+    function render() {
+      $("individual-btn").setAttribute("aria-pressed", state.account === "individual");
+      $("business-btn").setAttribute("aria-pressed", state.account === "business");
+      $("signin-btn").setAttribute("aria-pressed", state.mode === "signin");
+      $("signup-btn").setAttribute("aria-pressed", state.mode === "signup");
+      $("company-field").hidden = !(state.account === "business" && state.mode === "signup");
+      $("password-field").hidden = state.provider === "Phone number";
+      $("identity-label").textContent = state.provider === "Phone number" ? "Phone number" : state.account === "business" ? "Business email address" : "Email address";
+      $("identity").placeholder = state.provider === "Phone number" ? "+1 555 000 0000" : state.account === "business" ? "you@company.com" : "you@example.com";
+      $("identity").type = state.provider === "Phone number" ? "tel" : "email";
+      $("password").autocomplete = state.mode === "signin" ? "current-password" : "new-password";
+      $("submit-btn").textContent = state.mode === "signin" ? "Sign In" : "Create Account";
+      $("login-title").textContent = state.mode === "signin" ? "Welcome to IntelliStack" : (state.account === "business" ? "Register your organization" : "Create your account");
+      $("account-description").textContent = state.account === "business" ? "Access your company workspace and authorized tools." : "Access your personal workspace and authorized tools.";
+      document.querySelectorAll(".provider").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.provider === state.provider)));
+      $("notice").textContent = state.provider === "Azure" || state.provider === "Microsoft Intune"
+        ? state.provider + " sign-in requires an organization-approved identity integration; Intune device management itself is not a standalone identity provider."
+        : state.provider === "AWS"
+          ? "AWS sign-in requires a configured identity federation or IAM Identity Center integration."
+          : state.provider === "Phone number"
+            ? "Phone sign-in requires a verified SMS/OTP provider."
+            : "UI concept only — " + state.provider + " authentication is not connected yet.";
+    }
+    $("individual-btn").addEventListener("click", () => { state.account = "individual"; render(); });
+    $("business-btn").addEventListener("click", () => { state.account = "business"; render(); });
+    $("signin-btn").addEventListener("click", () => { state.mode = "signin"; render(); });
+    $("signup-btn").addEventListener("click", () => { state.mode = "signup"; render(); });
+    document.querySelectorAll(".provider").forEach(b => b.addEventListener("click", () => { state.provider = b.dataset.provider; render(); }));
+    $("submit-btn").addEventListener("click", () => {
+      $("notice").textContent = "Demo only: no credentials were sent. Connect Supabase Auth and the selected identity provider before production use.";
+    });
+    $("forgot-link").addEventListener("click", e => {
+      e.preventDefault();
+      $("notice").textContent = "Password recovery needs to be wired to the configured authentication provider.";
+    });
+    render();
+  </script>
+</body>
+</html>
