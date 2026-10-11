@@ -3,20 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#061326">
+  <meta name="theme-color" content="#080C14">
   <meta name="description" content="IntelliStack Systems — Maximus Optimus Command Center">
-  <title>Maximus Optimus | IntelliStack Systems</title>
+  <title>Maximus Optimus Command Center | IntelliStack Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
-      --bg: #061326;
-      --panel: rgba(4, 17, 36, .94);
-      --panel-soft: rgba(5, 26, 52, .82);
-      --line: rgba(35, 166, 255, .55);
-      --cyan: #22d3ee;
-      --blue: #138dff;
-      --text: #f4f9ff;
-      --muted: #a8c7eb;
+      --bg: #080C14;
+      --panel: rgba(10, 15, 24, .94);
+      --panel-soft: rgba(17, 27, 42, .86);
+      --line: rgba(67, 139, 255, .48);
+      --cyan: #80B8FF;
+      --blue: #287BFA;
+      --text: #F7F9FC;
+      --muted: #A9B4C3;
+      --steel: #7F8B9B;
+      --blue-bright: #4A95FF;
       --radius: 22px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -25,7 +30,7 @@
     html { min-height: 100%; background: var(--bg); }
     body {
       margin: 0; min-height: 100vh; min-height: 100dvh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "DM Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text); background: var(--bg);
     }
     button, input { font: inherit; }
@@ -34,20 +39,20 @@
       position: relative; isolation: isolate; min-height: 100vh; min-height: 100dvh;
       display: grid; grid-template-rows: auto 1fr auto;
       overflow: hidden; background:
-        linear-gradient(90deg, rgba(3,12,27,.20), rgba(3,12,27,.42)),
-        url("assets/command-center-home.png") center center / cover no-repeat,
-        #061326;
+        linear-gradient(110deg, rgba(5,9,16,.60) 0%, rgba(5,9,16,.36) 43%, rgba(5,9,16,.72) 100%),
+        url("command-center-home.png") center center / cover no-repeat,
+        #080C14;
     }
     .page::before {
       content: ""; position: absolute; inset: 0; z-index: -1;
-      background: linear-gradient(90deg, rgba(2,10,24,.14) 0%, rgba(2,10,24,.18) 46%, rgba(2,10,24,.78) 100%);
+      background: linear-gradient(90deg, rgba(5,9,16,.20) 0%, rgba(5,9,16,.26) 43%, rgba(5,9,16,.88) 100%);
     }
     header {
       display: flex; justify-content: space-between; align-items: center; gap: 1rem;
       padding: max(20px, var(--safe-top)) clamp(18px, 4vw, 58px) 12px;
     }
-    .brand { font-weight: 800; letter-spacing: .22em; font-size: clamp(.78rem, 1.2vw, 1rem); }
-    .brand small { display:block; margin-top: .35rem; color: var(--cyan); font-size: .62rem; letter-spacing: .2em; }
+    .brand { font-family: "Space Grotesk", Inter, sans-serif; font-weight: 700; letter-spacing: .14em; font-size: clamp(.78rem, 1.2vw, 1rem); }
+    .brand small { display:block; margin-top: .35rem; color: #9DBDE9; font-size: .62rem; letter-spacing: .2em; }
     .top-meta { color: var(--muted); font-size: .8rem; white-space: nowrap; }
     main {
       width: min(1440px, 100%); margin: 0 auto; padding: clamp(14px, 2vw, 28px) clamp(16px, 4vw, 58px) 30px;
@@ -55,49 +60,59 @@
       align-items: center; gap: clamp(24px, 4vw, 64px);
     }
     .hero-copy { max-width: 690px; padding: 1rem 0; }
-    .eyebrow { color: var(--cyan); font-size: .76rem; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
-    h1 { margin: .7rem 0 .3rem; font-size: clamp(2.3rem, 5vw, 5.2rem); line-height: .98; letter-spacing: -.055em; }
-    h1 span { color: #19aaff; }
-    .product-label { margin: .7rem 0 1.25rem; font-size: clamp(.85rem, 1.5vw, 1.18rem); letter-spacing: .34em; font-weight: 650; }
-    .primary-slogan { font-size: clamp(1.15rem, 2.2vw, 1.85rem); font-weight: 850; line-height: 1.25; max-width: 650px; }
-    .support-slogan { color: #c1ddff; font-size: clamp(.88rem, 1.3vw, 1.06rem); line-height: 1.6; margin-top: .9rem; max-width: 570px; }
+    .eyebrow { color: #8DBBFF; font-family: "Space Grotesk", sans-serif; font-size: .76rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: .7rem 0 .3rem; font-family: "Space Grotesk", Inter, sans-serif; font-size: clamp(2.3rem, 5vw, 5.2rem); line-height: .98; letter-spacing: -.055em; font-weight: 700; }
+    h1 .initial { color: #FFFFFF; }
+    h1 .blue-rest { color: #4A95FF; }
+    .product-label { margin: .7rem 0 1.25rem; font-family: "Inter", sans-serif; font-size: clamp(.85rem, 1.5vw, 1.18rem); letter-spacing: .34em; font-weight: 650; color: #D7DFEA; }
+    .primary-slogan { font-family: "Space Grotesk", sans-serif; font-size: clamp(1.15rem, 2.2vw, 1.85rem); font-weight: 700; line-height: 1.25; max-width: 650px; }
+    .think-beyond { margin-top: 1.05rem; font-family: "Playfair Display", Georgia, serif; font-style: italic; font-size: clamp(1.1rem, 2vw, 1.55rem); color: #F4F7FB; letter-spacing: .01em; }
+    .think-beyond span { color: #79AEFF; }
+    .tagline-stack { display: grid; gap: .12rem; margin-top: .45rem; }
+    .tagline-script { color: #C9D5E5; font-family: "Caveat", "Brush Script MT", cursive; font-size: clamp(1.35rem, 2.3vw, 1.9rem); font-weight: 600; line-height: 1.14; }
+    .tagline-final { margin-top: .42rem; color: #FFFFFF; font-family: "Space Grotesk", sans-serif; font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 700; letter-spacing: .01em; }
+    .tagline-final span { color: #4A95FF; }
+    .support-slogan { color: #C1CBD8; font-size: clamp(.88rem, 1.3vw, 1.06rem); line-height: 1.6; margin-top: .9rem; max-width: 570px; }
     .capabilities { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.6rem; }
-    .capabilities span { border: 1px solid var(--line); background: rgba(3,20,43,.6); padding: .55rem .8rem; border-radius: 999px; color: #d7edff; font-size: .82rem; }
+    .capabilities span { border: 1px solid rgba(104,157,231,.36); background: rgba(10,17,28,.76); padding: .55rem .8rem; border-radius: 999px; color: #E1EAF6; font-size: .82rem; backdrop-filter: blur(8px); }
+    .capabilities span:nth-child(3n+1) { border-color: rgba(74,149,255,.72); }
+    .capabilities span:hover { background: rgba(40,123,250,.22); border-color: #4A95FF; }
     .login-card {
       width: 100%; max-width: 510px; justify-self: end; padding: clamp(18px, 2.3vw, 30px);
-      border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel);
+      border: 1px solid rgba(91,145,220,.55); border-radius: var(--radius); background: linear-gradient(145deg, rgba(12,18,29,.97), rgba(7,12,20,.94));
       box-shadow: 0 24px 90px rgba(0,0,0,.45), inset 0 1px rgba(255,255,255,.04);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
     }
     .login-card h2 { margin: 0; font-size: clamp(1.35rem, 2vw, 1.8rem); }
     .subhead { color: var(--muted); font-size: .9rem; line-height: 1.45; margin: .55rem 0 1.2rem; }
     .switch, .mode-switch, .providers { display: grid; gap: 5px; }
-    .switch { grid-template-columns: 1fr 1fr; padding: 4px; border: 1px solid var(--line); border-radius: 14px; background: #031025; margin-bottom: 1.2rem; }
+    .switch { grid-template-columns: 1fr 1fr; padding: 4px; border: 1px solid rgba(104,157,231,.38); border-radius: 14px; background: #0B111B; margin-bottom: 1.2rem; }
     .switch button, .mode-switch button { min-height: 46px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; font-weight: 750; }
-    .switch button[aria-pressed="true"], .mode-switch button[aria-pressed="true"] { color: white; background: linear-gradient(110deg, #13a8ff, #1259ed); box-shadow: 0 5px 18px rgba(0,133,255,.2); }
+    .switch button[aria-pressed="true"], .mode-switch button[aria-pressed="true"] { color: white; background: linear-gradient(110deg, #398BFF, #1764E8); box-shadow: 0 5px 20px rgba(40,123,250,.25); }
     .mode-switch { grid-template-columns: 1fr 1fr; margin-bottom: 1rem; border: 1px solid var(--line); border-radius: 12px; padding: 3px; }
     .field { display: grid; gap: .4rem; margin: .8rem 0; }
     .field label { font-size: .82rem; color: #c5ddf9; }
-    .field input { width: 100%; min-height: 48px; border: 1px solid #245580; border-radius: 10px; padding: .8rem .9rem; color: white; background: rgba(2,14,31,.9); outline: none; }
-    .field input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,.13); }
+    .field input { width: 100%; min-height: 48px; border: 1px solid #35465D; border-radius: 10px; padding: .8rem .9rem; color: white; background: rgba(5,9,16,.92); outline: none; }
+    .field input:focus { border-color: #4A95FF; box-shadow: 0 0 0 3px rgba(74,149,255,.18); }
     .helper-row { display:flex; justify-content:space-between; align-items:center; gap:.8rem; margin: .85rem 0 1rem; color: var(--muted); font-size: .8rem; }
-    a { color: #25c9ff; text-decoration: none; } a:hover { text-decoration: underline; }
-    .primary-btn { width: 100%; min-height: 49px; border: 0; border-radius: 999px; background: linear-gradient(100deg,#0ca5ff,#0876f9); color: white; font-weight: 800; }
+    a { color: #7EB5FF; text-decoration: none; } a:hover { color: #FFFFFF; text-decoration: underline; }
+    .primary-btn { width: 100%; min-height: 49px; border: 0; border-radius: 999px; background: linear-gradient(100deg,#398BFF,#1764E8); color: white; font-weight: 800; box-shadow: 0 8px 22px rgba(23,100,232,.22); }
+    .primary-btn:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 3px; }
     .divider { display:flex; align-items:center; gap:.8rem; margin: 1rem 0; color: #8fb2d8; font-size: .75rem; }
     .divider::before, .divider::after { content:""; height:1px; flex:1; background: #245580; }
     .providers { grid-template-columns: repeat(3, minmax(0,1fr)); }
-    .provider { min-height: 54px; padding: .5rem .25rem; border: 1px solid #245580; border-radius: 10px; color: #d9ebff; background: rgba(2,14,31,.65); font-size: .8rem; }
-    .provider[aria-pressed="true"] { border-color: var(--cyan); background: rgba(0,137,255,.17); box-shadow: inset 0 0 0 1px var(--cyan); }
+    .provider { min-height: 54px; padding: .5rem .25rem; border: 1px solid #35465D; border-radius: 10px; color: #E0E7F0; background: rgba(6,11,19,.72); font-size: .8rem; }
+    .provider[aria-pressed="true"] { border-color: #4A95FF; background: rgba(40,123,250,.18); box-shadow: inset 0 0 0 1px #4A95FF; }
     .phone-login { margin-top: .65rem; width:100%; min-height:46px; border:1px solid #245580; border-radius:10px; color:#d9ebff; background:transparent; }
     .notice { min-height: 1.2em; color: #9cc9f5; font-size: .78rem; margin-top: .75rem; line-height: 1.4; }
     .signup { text-align:center; color:var(--muted); font-size:.82rem; margin-top:1rem; }
-    .site-footer { padding: 30px clamp(18px,4vw,58px) max(18px, var(--safe-bottom)); background: rgba(2,9,22,.97); border-top: 1px solid rgba(35,166,255,.35); }
+    .site-footer { padding: 30px clamp(18px,4vw,58px) max(18px, var(--safe-bottom)); background: rgba(6,9,15,.98); border-top: 1px solid rgba(74,149,255,.34); }
     .footer-grid { max-width: 1440px; margin: 0 auto; display:grid; grid-template-columns: 1.5fr repeat(4,minmax(0,1fr)); gap: 26px; }
-    .footer-brand { font-weight:850; letter-spacing:.14em; line-height:1.6; }
-    .footer-brand span { color:var(--cyan); }
+    .footer-brand { font-family: "Space Grotesk", sans-serif; font-weight:700; letter-spacing:.14em; line-height:1.6; }
+    .footer-brand span { color:#4A95FF; }
     .footer-brand p { max-width:300px; color:var(--muted); font-weight:400; letter-spacing:0; line-height:1.6; font-size:.82rem; }
     .footer-col h3 { margin:0 0 .8rem; font-size:.82rem; color:#f0f8ff; letter-spacing:.08em; text-transform:uppercase; }
-    .footer-col a, .footer-col button { display:block; margin:.58rem 0; color:#a9c9ed; font-size:.8rem; text-decoration:none; background:none; border:0; padding:0; text-align:left; }
+    .footer-col a, .footer-col button { display:block; margin:.58rem 0; color:#B4C0D0; font-size:.8rem; text-decoration:none; background:none; border:0; padding:0; text-align:left; }
     .footer-col a:hover, .footer-col button:hover { color:var(--cyan); text-decoration:underline; }
     .footer-trust { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1rem; }
     .trust-pill { border:1px solid rgba(35,166,255,.35); border-radius:999px; padding:.35rem .6rem; color:#b9d9f8; font-size:.68rem; }
@@ -107,7 +122,7 @@
     .footer-legal-links a:hover, .footer-legal-links button:hover { color:var(--cyan); }
     .signature { color: var(--cyan); font-weight: 800; letter-spacing: .03em; }
     .secure { white-space: nowrap; }
-    .policy-dialog { width:min(620px,calc(100% - 28px)); max-height:80vh; overflow:auto; border:1px solid var(--line); border-radius:18px; background:#06162c; color:var(--text); padding:24px; box-shadow:0 25px 100px #000b; }
+    .policy-dialog { width:min(620px,calc(100% - 28px)); max-height:80vh; overflow:auto; border:1px solid var(--line); border-radius:18px; background:#0B111B; color:var(--text); padding:24px; box-shadow:0 25px 100px #000b; }
     .policy-dialog::backdrop { background:rgba(0,5,15,.78); backdrop-filter:blur(5px); }
     .policy-dialog h2 { margin-top:0; }
     .policy-dialog p { color:#b9d2ef; line-height:1.65; }
@@ -173,16 +188,21 @@
 <body>
   <div class="page">
     <header>
-      <div class="brand">INTELLISTACK SYSTEMS<small>CONNECT · AUTOMATE · EMPOWER</small></div>
-      <div class="top-meta">◉ GLOBAL PLATFORM &nbsp; | &nbsp; SECURE ACCESS</div>
+      <div class="brand">INTELLISTACK <span style="color:#4A95FF">SYSTEMS</span><small>THINK BEYOND SYSTEMS</small></div>
+      <div class="top-meta">● GLOBAL PLATFORM &nbsp; | &nbsp; SECURE ACCESS</div>
     </header>
     <main>
       <section class="hero-copy" aria-label="Product introduction">
         <div class="eyebrow">Global IT Operations Platform</div>
-        <h1>Maximus <span>Optimus</span></h1>
+        <h1><span class="initial">M</span><span class="blue-rest">AXIMUS</span><br><span class="initial">O</span><span class="blue-rest">PTIMUS</span></h1>
         <div class="product-label">COMMAND CENTER</div>
         <div class="primary-slogan">ONE WORLD. ONE INTELLIGENT NETWORK.</div>
-        <p class="support-slogan">THINK BEYOND. CONNECT EVERYTHING. CONTROL WITH INTELLIGENCE.</p>
+        <div class="think-beyond">Think Beyond <span>Systems</span></div>
+        <div class="tagline-stack">
+          <div class="tagline-script">Control Everything Centrally.</div>
+          <div class="tagline-script">Connect Everything Globally.</div>
+        </div>
+        <div class="tagline-final">Powered by <span>Intelligence.</span></div>
         <div class="capabilities" aria-label="Platform capabilities">
           <span>Service Desk</span><span>Infrastructure</span><span>Automation</span><span>AI Assistants</span><span>War Room</span><span>Global Teams</span>
         </div>
@@ -202,6 +222,12 @@
         <div class="field" id="company-field" hidden>
           <label for="company">Company name</label>
           <input id="company" name="company" autocomplete="organization" placeholder="Your company name">
+        </div>
+        <div class="field" id="role-field">
+          <label for="role">Workspace role <span style="color:#8C9AAF;font-weight:400">(access is verified by your organization)</span></label>
+          <select id="role" name="role" style="width:100%;min-height:48px;border:1px solid #35465D;border-radius:10px;padding:.75rem .9rem;color:#F7F9FC;background:#080C14;">
+            <option>Help Desk</option><option>IT Administrator</option><option>Systems Administrator</option><option>Network Engineer</option><option>Infrastructure Engineer</option><option>Field Engineer</option><option>Automation Engineer</option><option>AI / Intelligence Operations</option><option>Security Administrator</option><option>War Room Operator</option><option>Global Change Manager</option><option>Executive / Command Staff</option><option>Guest</option>
+          </select>
         </div>
         <div class="field">
           <label for="identity" id="identity-label">Email address</label>
@@ -233,8 +259,8 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div>INTELLISTACK <span>SYSTEMS</span></div>
-          <div style="font-size:.7rem;color:#7fdfff;letter-spacing:.16em;">MAXIMUS OPTIMUS COMMAND CENTER</div>
-          <p>One platform to connect, automate, and empower global IT operations.</p>
+          <div style="font-size:.7rem;color:#9DBDE9;letter-spacing:.16em;">MAXIMUS OPTIMUS COMMAND CENTER</div>
+          <p>Think Beyond Systems. Control Everything Centrally. Connect Everything Globally. Powered by Intelligence.</p>
           <div class="footer-trust">
             <span class="trust-pill">◇ Security-focused design</span>
             <span class="trust-pill">◎ Multi-tenant architecture</span>
@@ -275,7 +301,7 @@
         </nav>
       </div>
       <div class="footer-bottom">
-        <div>© 2026 IntelliStack Systems. All rights reserved. <span style="color:#77dfff;">Maximus Optimus™</span></div>
+        <div>© 2026 IntelliStack Systems. All rights reserved. <span style="color:#8FB9F5;">Maximus Optimus™</span></div>
         <div class="footer-legal-links">
           <a href="#privacy" data-policy="Privacy Policy">Privacy</a>
           <a href="#terms" data-policy="Terms of Service">Terms</a>
@@ -336,6 +362,7 @@
       $("signin-btn").setAttribute("aria-pressed", state.mode === "signin");
       $("signup-btn").setAttribute("aria-pressed", state.mode === "signup");
       $("company-field").hidden = !(state.account === "business" && state.mode === "signup");
+      $("role-field").hidden = state.account === "individual";
       $("password-field").hidden = state.provider === "Phone number";
       $("identity-label").textContent = state.provider === "Phone number" ? "Phone number" : state.account === "business" ? "Business email address" : "Email address";
       $("identity").placeholder = state.provider === "Phone number" ? "+1 555 000 0000" : state.account === "business" ? "you@company.com" : "you@example.com";
