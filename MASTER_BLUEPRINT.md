@@ -2,7 +2,7 @@
 ## Maximus Optimus Command Center
 **Status:** Living product and implementation blueprint  
 **Repository:** FrankMazerati/IntelliStack_Systems_OptimusMaximus  
-**Working branch:** feature/super-admin-platform-builder  
+**Working branch:** feature/network-operations-secure-shell  
 **Current delivery principle:** Improve the existing application and its open pull request; do not create a separate replacement website.
 
 ## 1. Product vision
@@ -547,4 +547,261 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Verify a batch of up to five items has separate traceability, isolated code changes, independent inspection, and a clear human approval gate.
 - Verify failed tests or inspection findings stop the pipeline and that approved rollback/retry procedures work.
 - Verify claims about performance, security, and cost savings are supported by test results or measured production evidence.
+
+
+
+## 37. Multi-organization connectivity, resource sharing, and M&A integration
+
+### Product goal
+Support parent companies, subsidiaries, business units, and approved external partners under a governed organizational umbrella. Organizations may remain operationally separate while connecting systems, sharing approved resources, or gradually consolidating data during mergers and acquisitions.
+
+### Required operations must remain distinct
+- **Connect Organization:** establish or disable an approved technical trust or network connection. Connections may include private/VPN connectivity, identity federation, or service/API links; each must have its own scope, lifecycle, and audit history.
+- **Share / Stop Sharing:** grant or revoke access to selected files, datasets, services, infrastructure resources, or workflows without transferring ownership. Revocation should be enforced across active sessions and supported integrations as quickly as technically possible. Report residual access and copies that cannot be remotely recalled.
+- **Merge / Reverse Integration:** migrate or consolidate selected records and organizational structures. A merge is a data-changing operation, not merely a connection toggle. Support a reviewed reversal/recovery workflow for operations that can be safely undone; never promise universal one-click reversal after records have been edited, combined, or independently copied.
+
+### Merger/acquisition workflow
+1. Establish an authorized integration project and verify authority to access each organization.
+2. Inventory users, assets, systems, data sources, applications, contracts/licenses where applicable, policies, and security posture.
+3. Compare schemas and identify duplicate identities/records, conflicts, unsupported fields, and access-policy differences.
+4. Define source-to-destination mappings, resource-sharing scope, cutover plan, retention obligations, and owners.
+5. Back up relevant data and verify that restoration is possible; run a dry-run against a bounded scope.
+6. Show a preflight report with record counts, conflict handling, permission changes, risks, and expected effects.
+7. Require approvals appropriate to each organization's authority and the sensitivity of the data.
+8. Execute in controlled batches with idempotency, retries, progress tracking, and detailed per-record outcomes.
+9. Reconcile source and destination, validate relationships and effective permissions, and record exceptions.
+10. Retain mappings, transaction history, snapshots, and recovery instructions for supported reversal. Keep each step auditable.
+
+### Multi-tenant security requirements
+- Model a durable organization/tenant ID and explicit relationships between parent, subsidiary, and partner organizations.
+- Enforce tenant and resource authorization server-side for every API, search, export, file, audit event, integration, and background job.
+- Parent-level administration does not automatically grant unrestricted access to subsidiary content. Use explicit delegated scopes, purpose, approval, and time limits for privileged access.
+- Keep credentials and connector secrets in a secure backend/secrets manager; use least privilege, MFA where supported, rotation, and revocation.
+- Record who connected organizations, granted/revoked sharing, approved/transferred/changed records, and initiated or completed reversal.
+- Test cross-tenant isolation, direct-object access, search leakage, stale sessions, partial failures, duplicate imports, retry behavior, and rollback recovery.
+- Preserve legal holds, retention policies, data residency obligations, and contractual restrictions. Obtain appropriate authorization before moving or combining another organization's data.
+
+### Acceptance checks
+- Company A cannot access Company B's resources until an explicit share/connection and permission allow it.
+- Stop Sharing revokes supported access and reports any external copies or permissions that remain.
+- Disconnect Organization stops configured trust/sync paths without deleting either organization's own records.
+- Dry-run reports deterministic counts and conflicts without mutating production data.
+- Merge operations preserve source references, mappings, audit history, and verifiable reconciliation results.
+- A supported reversal restores only the scoped changes it can safely reverse and identifies conflicts requiring human resolution.
+- A parent administrator cannot bypass tenant permissions simply because the organizations share a hierarchy.
+
+### Status
+These are roadmap requirements. They do not indicate that production multi-tenancy, VPN connectivity, cross-organization sharing, OneDrive integration, backups, or merger/migration execution is already implemented.
+
+## 38. Global executive command view, cross-tenant administration, and scale target
+
+### Product goal
+Allow an authorized platform owner / Super Admin to oversee multiple legally and operationally distinct organizations from one authenticated command-center experience. The first demonstration case is IntelliStack Systems alongside a separately branded acquired or partner company. The second company's final brand/name remains **TBD**; do not present it as a real customer or completed acquisition.
+
+### Tenant structure and organizational hierarchy
+- Create a separate top-level tenant for the second company, independent from the IntelliStack tenant.
+- Support a multi-tier organization tree within each tenant: parent organization, subsidiaries or legal entities, business units, departments, regions/countries, sites/locations, teams, and users, where applicable.
+- Each tenant maintains its own user directory/memberships, roles, identity configuration, connected systems, assets, tickets, incidents, policies, retention settings, and audit scope unless a specific, approved sharing relationship is configured.
+- Support organization-specific branding and configuration without confusing company identity or implying that the organizations have merged legally.
+- A target of **up to 1,000,000 registered users globally across the platform** is a scale objective for architecture and validation, not a claim that one million users have been provisioned, licensed, or tested. Tenant-level user counts and enabled/active accounts must be separately reported.
+
+### Unified Super Admin experience
+- Provide a tenant/org switcher after a single authenticated login for platform administrators who are explicitly authorized for multiple tenants.
+- Show the current tenant prominently at all times; use clear tenant-specific visual identity and context in headers, records, search, exports, audit events, and confirmation dialogs.
+- Offer a global executive overview of authorized tenants, regions, departments, sites, connected systems, connector freshness/health, incidents, risk, compliance evidence, and service availability.
+- Global rollups must state coverage, last update, source, and known blind spots. Do not imply visibility into systems or data that are not connected and authorized.
+- Opening a tenant workspace must apply that tenant's effective authorization on the server. Switching context is not an authorization bypass and must not silently elevate the administrator's privileges.
+- Keep global platform operations (service health, tenant provisioning, platform configuration) separate from access to customer/tenant content.
+
+### Cross-tenant privilege and audit controls
+- Use least privilege, MFA, and step-up authentication for sensitive cross-tenant actions where supported.
+- For support access to tenant content, require a specific purpose, approved scope, limited duration, and auditable start/end events; support customer-approved access workflows where appropriate.
+- Log administrator identity, active tenant, target tenant/resource, purpose or ticket, approvals, action, timestamp, outcome, and relevant request/session correlation IDs.
+- Provide tenant-specific roles and delegated administrators; parent-company hierarchy alone does not grant unrestricted access to subsidiary or partner data.
+- Prevent cross-tenant leakage through APIs, database queries/RLS, global search, AI context, reports, exports, attachments, notifications, caches, background jobs, and direct-object URLs.
+- Provide emergency/break-glass access only through a separate, narrowly scoped, time-limited, justified and audited workflow with post-event review; it must not be a hidden permanent bypass.
+- When a user switches tenant, invalidate or re-evaluate tenant-scoped caches, selections, queries, and sessions. Never show stale data from the previous tenant.
+
+### Million-user global-scale engineering target
+- Design for horizontal scaling, indexed and tenant-aware data access, background job queues, rate limits, connection pooling, resilient notification delivery, observability, and graceful degradation.
+- Define explicit service objectives for authentication, tenant switching, dashboard freshness, search, incident creation, audit-event durability, and recovery.
+- Plan for regional latency, data residency, tenant-configurable retention, disaster recovery, and regional failure scenarios. Do not replicate restricted data across regions without approved policy.
+- Support bulk provisioning/deprovisioning and identity lifecycle integration (for example, supported SSO/SCIM where implemented), pagination, asynchronous imports/exports, and rate-limited APIs.
+- Validate capacity with a documented test plan covering realistic tenant distribution, concurrent active users, read/write patterns, burst traffic, incidents, audit volume, and regional latency. Record the tested scale and bottlenecks; never label a million-user target as proven until measured.
+- Start with architecture and load-test planning; do not create one million fake accounts as a substitute for performance testing or seed synthetic users into production.
+
+### Acceptance checks
+- An authorized Super Admin can sign in once and switch between the IntelliStack tenant and a separately named Company B tenant without re-authenticating at every navigation step, subject to session and policy requirements.
+- The active tenant is always visible, and switching tenants changes the data and permissions available to the UI and server APIs.
+- A user who belongs to only one tenant cannot access another tenant by changing an ID, URL, request payload, search query, export, or AI prompt.
+- Cross-tenant support access is blocked until required authorization, purpose, scope, and duration are satisfied, and every action is audited.
+- Global dashboards aggregate only explicitly authorized, available sources and display data freshness and coverage gaps.
+- Automated tests cover tenant isolation, role matrices, stale sessions/caches, exports, background jobs, attachments, audit access, and break-glass expiration.
+- Load tests and architecture evidence substantiate any published concurrency/user capacity claims.
+
+### Status
+This is a roadmap and scale target only. It does not mean that a second company tenant, global tenant switcher, cross-tenant executive dashboard, production authorization controls, or million-user capacity is implemented or load-tested.
+
+## 39. Controlled cross-tenant access architecture and implementation plan
+
+### Confirmed authority model
+**Global Oversight with Controlled Access** is the approved product decision.
+- A Super Admin may see an aggregated global overview only for tenants explicitly within their authorized oversight scope.
+- Global summaries should contain operational metadata and risk/health aggregates by default, not unrestricted raw tickets, messages, documents, user details, or evidence.
+- Opening sensitive tenant content requires a separate authorization check for the specific tenant, resource/action, purpose, and policy. Global visibility does not imply tenant-content access.
+- The selected model does not grant blanket content access, permanent impersonation, or a hidden authorization bypass.
+- One authenticated session can support smooth tenant switching when policy permits; every request is still authorized against the selected tenant and requested resource on the server.
+- The second company's legal name, brand, and actual onboarding are TBD. Do not invent a customer or claim an acquisition has occurred.
+
+### Logical architecture
+1. **Identity/session layer:** use the configured identity provider; require MFA for privileged roles where supported; bind the authenticated subject to explicit platform grants and tenant memberships. Do not rely on a client-side role selector.
+2. **Tenant context resolver:** derive the active tenant from a validated request/context and verify that the authenticated user has a valid membership or specific platform-level grant for the requested operation. Never trust a client-supplied tenant ID on its own.
+3. **Authorization policy layer:** centralize policy checks for global summary, tenant workspace access, resource read/write, administration, exports, connector secrets, support access, and emergency access. Default to deny.
+4. **Data layer:** persist tenant-owned business records with tenant identity and enforce isolation in server-side queries and database policies. If Supabase/Postgres is used, use RLS policies tied to authenticated identities and membership/grant tables; privileged service credentials must remain server-side and must not bypass authorization accidentally.
+5. **Global oversight API:** return only explicitly approved aggregates from authorized tenants, with tenant coverage, source, freshness timestamp, and unavailable/stale indicators. Do not implement the overview as a client-side union of unrestricted tenant queries.
+6. **Privileged access workflow:** require purpose/reason, requested scope, target tenant/resource, expiry, and appropriate approval for sensitive support access. Enforce expiration server-side and log both grant and revocation/use. Avoid persistent impersonation.
+7. **Audit and monitoring:** record authentication and tenant switching, denied cross-tenant attempts, grant creation/approval/use/revocation, exports, policy changes, and sensitive reads/writes. Audit records should include actor, active tenant, target tenant, action, purpose/ticket, timestamp, outcome, correlation ID, and grant/approval reference where applicable.
+8. **UI layer:** always show the active tenant name/brand and environment; use tenant context in navigation, breadcrumbs, search, forms, dialogs, and exports. Clear tenant-specific local state and refetch data on switching. UI indicators are helpful but never substitute for server authorization.
+
+### Initial data model proposal
+Confirm the existing database schema and migration history before implementing migrations. Proposed logical entities:
+- organizations / tenants: tenant ID, canonical name, brand/configuration, lifecycle status, region and policy references.
+- organization_units: tenant ID, parent unit ID, type (legal entity, business unit, department, region, site, team), name and status.
+- tenant_memberships: tenant ID, user/identity subject, role, status, provisioning source and timestamps.
+- platform_admin_grants: identity subject, permitted global operations, allowed tenant scope, status, approver, expiry and reason. Keep platform operations distinct from tenant-content access.
+- tenant_relationships: source and target tenant IDs, relationship type (parent/subsidiary/partner/acquisition project), status, effective dates and approvals. A relationship alone must not confer data access.
+- cross_tenant_access_grants: actor, target tenant, resource/action scope, purpose or ticket, approver(s), valid-from/expiry, status and revocation metadata.
+- audit_events: actor, active/target tenant, action/resource, purpose, decision/outcome, timestamp, correlation ID, and associated grant/approval references.
+- Tenant-owned records (tickets, incidents, assets, connector metadata, evidence, communications, etc.) must carry or resolve to a tenant ID and have an explicit ownership/sharing rule.
+- Optional global aggregate views/RPCs must be narrowly scoped, reviewed, and incapable of returning unrestricted raw tenant content.
+
+### Implementation sequence and gates
+**Phase 0 — Verify current foundations**
+- Inspect current branch/PR, package stack, Supabase schema/migrations, authentication setup, RLS policies, and existing data before coding.
+- The repository currently contains a React + Vite prototype. Do not assume it has Next.js server routes or a production backend. Confirm available server-side execution before selecting API placement.
+- Write a tenant/resource/action authorization matrix and a short threat model covering tenant ID tampering, direct-object access, search/export leakage, stale sessions/caches, background jobs, AI context, and privileged support access.
+- Gate: architecture and existing schema reviewed; no production data changes.
+
+**Phase 1 — Tenant data and authorization foundation**
+- Create reviewed, version-controlled database migrations for tenant/organization units, memberships, platform grants, relationship metadata, cross-tenant access grants, and audit events as needed after schema inspection.
+- Implement server-side authorization helpers and database RLS policies; avoid broad service-role access from client code.
+- Add tests proving default-deny behavior and that changing a tenant ID cannot cross boundaries.
+- Gate: isolation tests pass before global overview or tenant-switch UI can read tenant-owned records.
+
+**Phase 2 — Tenant switcher and context safety**
+- Add a tenant switcher that lists only authorized tenant contexts and clearly identifies the active tenant.
+- Re-resolve permissions for every API/resource request; reset/refetch client data, clear tenant-specific selections, and handle revoked access or expired sessions.
+- Add visible context in page headers and confirmations for destructive or sensitive operations.
+- Gate: tenant switching and direct URL/request tampering tests pass.
+
+**Phase 3 — Global executive overview**
+- Add a server-side aggregation endpoint/view for approved metrics: tenant and site inventory, incident counts/severity, connector status/freshness, service health, risk trends, and coverage gaps.
+- Return only fields approved for global oversight. Link into tenant workspaces without silently expanding privileges.
+- Mark every value as live, stale, simulated, unavailable, or unmonitored as applicable.
+- Gate: aggregate responses are tested for both authorized scope and prohibited sensitive fields.
+
+**Phase 4 — Controlled content access and review**
+- Add request/approval/expiry/revocation workflows for specific sensitive records where business requirements justify access.
+- Require purpose, scope, expiry, approval, and audit trail; support a review report for privileged access.
+- Gate: expired/revoked grants stop access server-side and produce auditable outcomes.
+
+**Phase 5 — Scale and reliability**
+- Establish SLOs, observability, rate limiting, queueing, backup/recovery, regional/data-residency requirements, and load-test scenarios.
+- Test representative tenant distribution and concurrency before claiming any capacity. One million registered users remains an aspirational target until measured evidence supports a precise claim.
+- Gate: publish only the scale and performance actually validated.
+
+### Security acceptance tests
+- A user with membership in Tenant A only cannot read, mutate, search, export, or infer Tenant B records, even by changing URL parameters, request bodies, record IDs, filters, attachment URLs, or AI prompts.
+- A platform administrator with global summary permission sees only approved aggregates, not arbitrary raw records.
+- A cross-tenant grant is constrained by tenant, resource/action, purpose, approval, and expiry; revocation and expiration take effect server-side.
+- Tenant switching never reuses cached records from the previous tenant; permission revocation and session expiry are handled safely.
+- Background jobs, notifications, exports, search, AI tools, connector callbacks, and audit readers enforce the same tenant policy as interactive APIs.
+- Denied attempts are logged without leaking the existence or contents of protected resources to unauthorized callers.
+- No privileged database secret is shipped to the browser; production changes require migration review, backup/recovery planning, and explicit release approval.
+
+### Delivery status and release guardrails
+This section is an approved architecture/implementation plan, not evidence of implemented controls. Do not represent tenant isolation, a global dashboard, tenant switching, or cross-tenant grants as operational until code, database policies, and automated tests verify them. Work stays on the agreed feature branch. Do not merge the PR or deploy production without the user's explicit approval.
+
+## 40. Mock tenant portfolio and platform-owner demo authority
+
+### Approved mock-company example
+- Use **Northstar Harvest Foods** as a fictional food manufacturing and distribution company for demonstrations. Clearly label it as a mock organization and do not imply that it is an actual customer or acquired company.
+- Seed example organizational dimensions such as corporate headquarters, regions, manufacturing plants, warehouses, distribution centers, departments, and teams. All headcounts, incident totals, locations, and connected-system counts shown in the UI are illustrative demo values.
+- The mock tenant registry may be used to create additional fictional companies for demonstrations. Do not create real users, external connections, or production records when adding a mock tenant.
+
+### Platform-owner authority in the demonstration environment
+- A designated platform-owner identity can have full administrative authority over explicitly designated mock tenants in the isolated demo environment, including the mock organization tree and mock tenant configuration.
+- The global command view can show the portfolio and allow switching between those mock tenant contexts.
+- This demo authority must be an explicit environment-scoped capability, not inferred solely from a UI role dropdown, a company relationship, or a user-controlled tenant ID.
+- The demonstration interface must clearly label its authority as simulated until server-side identity, grants, database policy, and tenant-isolation tests enforce it.
+
+### Boundary for actual connected systems and devices
+- Access to real company systems, devices, endpoints, SaaS applications, network equipment, telemetry, and sensitive records is limited to the specific integration scopes and permissions approved by that company.
+- A platform owner may manage tenant registration and view approved global aggregates without automatically receiving raw tenant-content or device-level access.
+- A company-approved connection or grant must specify scope, permitted actions, owner/approver, expiry/revocation, and audit requirements. Connection health does not mean permission to read or control every resource in that system.
+- Mock-tenant full access must never be reused as a default grant for a real tenant or live connector.
+
+### Current prototype UI behavior
+- Add a Super Admin navigation page called **Global Tenant Command**.
+- Show an active-tenant selector, organization portfolio cards, illustrative global metrics, a sample multi-tier hierarchy, and a create-mock-tenant workflow.
+- Persist mock tenant definitions in browser localStorage for the local demonstration only; this is not shared or authoritative server-side tenant storage.
+- Display an explicit notice that existing prototype tickets, devices, users, and integrations are not yet tenant-isolated. The mock selector is a demonstration context and must not imply that existing records or connected systems have been safely partitioned.
+- Label seeded counts and system states as illustrative/simulated; one million users remains a target, not a tested capacity claim.
+
+### Production gates
+- Before treating the feature as production-capable, implement authenticated server-side tenant context, explicit platform-owner grants, per-tenant membership and role checks, database RLS, tenant-scoped records, secure global aggregate APIs, scoped system/device authorization, and tamper-resistant audit events.
+- Add automated negative tests for tenant ID tampering, direct-object access, search/export leakage, background tasks, stale client state, and attempted use of demo grants against real tenants.
+- Do not merge or deploy production without explicit user approval.
+
+## 41. BitLocker and endpoint encryption compliance
+
+### Objective
+Treat BitLocker as a first-class Windows endpoint security and compliance control across IntelliStack Systems / Maximus Optimus. The Global Tenant Command should summarize encryption posture only for tenants within the platform owner's authorized oversight scope. This feature begins as a labeled prototype until a real endpoint-management integration is configured and verified.
+
+### Required device-level signals
+For each supported Windows endpoint, track the best available authoritative state:
+- Device identity, tenant, owning organization unit/site, operating system and last check-in.
+- BitLocker capability/eligibility and OS volume protection state.
+- Encryption method and encryption progress/status where the management provider exposes them.
+- Protection status (for example, protection on/off/suspended), not merely whether encryption once completed.
+- TPM / Secure Boot readiness signals where available and relevant to policy.
+- Recovery-key escrow status and last verified escrow/check-in state. Do not show the recovery key itself in general compliance views.
+- Policy assignment, compliance result, exception/waiver, last evaluated timestamp, and data freshness/source.
+- Remediation state, failure reason, and the authorized management action history.
+
+### Tenant and role boundaries
+- Global oversight may display approved aggregate metrics by tenant: eligible endpoints, encrypted/protected endpoints, noncompliant endpoints, unknown/stale state, and policy coverage.
+- Opening a tenant's endpoint record requires that tenant's specific device/resource authorization.
+- Recovery keys are highly sensitive secrets. Never expose them in the global dashboard, general device cards, logs, analytics, notifications, or AI context. If recovery-key retrieval is ever added, use a dedicated high-privilege workflow with step-up authentication, explicit purpose/ticket, narrow device scope, time limits, audit logging, and provider-side authorization.
+- A platform-owner demo grant must not automatically authorize BitLocker key retrieval or real device changes.
+- Do not infer encryption status from a browser-only toggle or a seeded status label. Mark mock telemetry as simulated and live status with provider/source and freshness.
+
+### Integration and implementation approach
+1. Inspect the existing endpoint/device schema, identity model, RLS policies, and any installed device-management connector before creating migrations or UI bindings.
+2. Choose the authoritative management source based on the user's actual environment (for example, Microsoft Intune / Microsoft Graph or an approved endpoint-management provider). Do not assume an integration is connected merely because a card or settings page exists.
+3. Define a provider-neutral normalized device-encryption status model and map provider fields into it; retain raw provider payloads only when justified, access-controlled, and redacted.
+4. Implement server-side connector credentials and least-privilege permissions. Never place client secrets, recovery keys, or privileged provider tokens in browser code or localStorage.
+5. Add tenant-scoped APIs and database policies so device status is visible only to authorized tenant roles, while the global view consumes a narrowly scoped aggregate endpoint.
+6. Add policy configuration for required encryption, protection enabled, recovery-key escrow, allowed algorithms where organizational policy requires them, stale-check-in limits, and exception expiry. Avoid enforcing one universal policy without confirming fleet and regulatory requirements.
+7. Add remediation actions only after the management provider, action permissions, confirmation UX, rollback/recovery considerations, and audit behavior are implemented and tested. Do not imply that this prototype can turn BitLocker on/off or escrow keys.
+8. Provide clear state labels: Compliant, Noncompliant, Unknown, Stale, Exception, and Simulated. A missing report is Unknown, not Compliant.
+
+### Recommended delivery phases
+- **Phase A — Read-only mock posture:** add the BitLocker compliance panel using clearly simulated seed data; show per-tenant aggregate counts and a device-state breakdown without keys.
+- **Phase B — Provider and schema design:** verify the management provider and required read-only permissions; design normalized device-encryption records and safe secret handling.
+- **Phase C — Live read-only integration:** retrieve device encryption posture through the approved provider, validate tenant scoping, source timestamps, and error/unknown states.
+- **Phase D — Policy and exception workflow:** evaluate policy, track waivers and expirations, and expose evidence/audit summaries.
+- **Phase E — Controlled remediation:** implement supported encryption/remediation commands only after explicit design approval and provider-specific testing, including recovery and failure paths.
+
+### Security acceptance tests
+- A tenant administrator cannot view another tenant's endpoint posture, device identifiers, exceptions, or remediation history.
+- The global dashboard returns only approved aggregate fields and never returns recovery-key material.
+- Direct API calls, modified tenant/device IDs, search, exports, background jobs, and AI queries cannot bypass device authorization.
+- A stale, missing, or failed check-in cannot be rendered as compliant.
+- Recovery-key access, if separately implemented, is excluded from standard global oversight and is explicitly approved, scoped, time-limited, and audited.
+- No management credentials or recovery keys are shipped to the browser or stored in localStorage.
+- Demo seed data is visibly labeled simulated; no real endpoint is changed by prototype interactions.
+
+### Status and release gates
+BitLocker is now a documented architecture requirement. It is not yet a live BitLocker integration, verified device inventory, or functioning encryption enforcement. First add a mock compliance panel, then inspect and approve the actual device-management integration and tenant-safe backend before claiming live posture or remediation. Keep work on the agreed feature branch; no merge or production deployment without explicit user approval.
 
