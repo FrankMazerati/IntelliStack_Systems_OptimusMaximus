@@ -543,3 +543,32 @@
 @media(max-width:900px){.tenant-hero{align-items:flex-start;flex-direction:column}.tenant-owner-badge{width:100%}.tenant-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tenant-org-grid{grid-template-columns:1fr}.tenant-create-form{grid-template-columns:1fr 1fr}.tenant-form-actions{grid-column:1/-1;justify-content:flex-end}}
 @media(max-width:560px){.tenant-hero{padding:16px}.tenant-toolbar{align-items:stretch;flex-direction:column}.tenant-toolbar>.primary-btn{width:100%;justify-content:center}.tenant-select-wrap select{max-width:calc(100vw - 100px);font-size:13px}.tenant-create-form{grid-template-columns:1fr}.tenant-form-actions{grid-column:auto}.tenant-metric-grid{gap:8px}.tenant-metric{padding:12px}.tenant-org-card{padding:13px}.tenant-org-foot{align-items:flex-start;flex-direction:column}.tenant-tree-branches{grid-template-columns:1fr}.tenant-section-heading{align-items:flex-start;flex-direction:column}}
 
+/* BitLocker Compliance Posture — simulated status panel */
+.bitlocker-panel{margin-top:1px}
+.bitlocker-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:3px 0 14px}
+.bitlocker-summary>div{display:flex;flex-direction:column;gap:6px;min-width:0;padding:12px;border:1px solid rgba(113,155,207,.14);border-radius:9px;background:rgba(255,255,255,.018)}
+.bitlocker-summary span{color:#8fa8c6;font-size:9px;line-height:1.4}
+.bitlocker-summary b{color:#eaf5ff;font-size:clamp(16px,2vw,23px)}
+.bitlocker-summary small{color:#748eae;font-size:9px;line-height:1.4}
+.bitlocker-bar{height:7px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.08);margin:0 0 15px}
+.bitlocker-bar span{display:block;width:92%;height:100%;border-radius:99px;background:linear-gradient(90deg,#28b88e,#67d8bb)}
+.bitlocker-device-list{display:flex;flex-direction:column}
+.bitlocker-device-list>div{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(113,155,207,.11)}
+.bitlocker-device-list>div:last-child{border-bottom:0}
+.bitlocker-device-list>div>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.bitlocker-device-list b{color:#dceaff;font-size:10px}
+.bitlocker-device-list small{color:#829ab8;font-size:9px;line-height:1.5}
+.bitlocker-device-list em{font-size:9px;font-style:normal;font-weight:750;white-space:nowrap}
+.bitlocker-device-list>div:nth-child(1)>em{color:#75dfc2}
+.bitlocker-device-list>div:nth-child(2)>em{color:#e7bb70}
+.bitlocker-device-list>div:nth-child(3)>em{color:#9fb1c8}
+.bitlocker-state{width:7px;height:7px;margin-top:4px;border-radius:50%}
+.bitlocker-state.good{background:#4ad0a6;box-shadow:0 0 9px rgba(74,208,166,.2)}
+.bitlocker-state.warn{background:#e7b55f}
+.bitlocker-state.unknown{background:#829bb9}
+.bitlocker-boundary{display:flex;align-items:flex-start;gap:9px;padding:12px;border:1px solid rgba(113,155,207,.15);border-radius:9px;background:rgba(6,17,33,.5);color:#88a3c3;font-size:9px;line-height:1.65}
+.bitlocker-boundary svg{flex-shrink:0;color:#69d9f4;margin-top:1px}
+.bitlocker-boundary b{color:#bcd3ec}
+@media(max-width:700px){.bitlocker-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.bitlocker-device-list>div{grid-template-columns:8px minmax(0,1fr)}.bitlocker-device-list em{grid-column:2}}
+
