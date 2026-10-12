@@ -65,3 +65,50 @@ function TicketsPage({tickets,setTickets,endUsers}){
 }
 function EndUsersPage({endUsers,tickets,onNavigate}){const [q,setQ]=useState('');const [selected,setSelected]=useState(endUsers[0]?.id);const filtered=endUsers.filter(u=>(u.name+u.email+u.department+u.device).toLowerCase().includes(q.toLowerCase()));const user=endUsers.find(u=>u.id===selected)||filtered[0];return <><div className="metrics-grid compact-metrics"><Metric icon={Users} label="Mock end users" value={endUsers.length} trend="Fictional directory"/><Metric icon={MonitorCog} label="Registered devices" value={endUsers.length} trend="Synthetic inventory"/><Metric icon={Activity} label="Devices online" value={endUsers.filter(u=>u.status==='Online').length} trend="Simulated status"/><Metric icon={Ticket} label="Linked tickets" value={tickets.length} trend="Demo queue"/></div><div className="ticket-layout"><Panel title="End-user directory" subtitle="Fictional employee records"><div className="table-tools"><div className="search-box"><Search size={16}/><input
  placeholder="Search name, email, department, or device…" value={q} onChange={e=>setQ(e.target.value)}/></div><button className="secondary-btn" onClick={()=>setQ('')}><X size={15}/> Clear</button></div><div className="directory-layout"><div className="directory-list">{filtered.map(u=><button key={u.id} className={'directory-person '+(user?.id===u.id?'selected':'')} onClick={()=>setSelected(u.id)}><span className="avatar">{u.name.split(' ').map(x=>x[0]).join('')}</span><span className="directory-person-copy"><b>{u.name}</b><small>{u.department} · {u.title}</small><small>{u.email}</small></span><StatusPill kind={u.status==='Online'?'good':'neutral'}>{u.status}</StatusPill></button>)}{!filtered.length&&<p className="empty-state">No users match that search.</p>}</div><Panel title={user?.name||'Select an end user'} subtitle={user?user.title:'Choose a person from the directory'}>{user?<><div className="detail-block"><span>EMAIL</span><b>{user.email}</b></div><div className="detail-block"><span>DEPARTMENT</span><b>{user.department}</b></div><div className="detail-block"><span>LOCATION</span><b>{user.location}</b></div><div className="detail-block"><span>ASSIGNED DEVICE</span><b>{user.device}</b><small>{user.os}</small></div><div className="detail-block"><span>DEVICE STATUS</span><StatusPill kind={user.status==='Online'?'good':'neutral'}>{user.status} · simulated</StatusPill></div><div className="detail-block"><span>LINKED TICKETS</span>{tickets.filter(t=>t.requesterId===user.id).length}</div><button className="primary-btn full" onClick={()=>onNavigate('tickets')}><Ticket size={15}/> Open service desk</button><p className="privacy-note">Fictional demo employee record. Device status is simulated; no endpoint is connected.</p></>:<p>Select a user to view their details.</p>}</Panel></div></Panel></div></>}
+
+
+function App(){
+  const [session,setSession]=useState(null);
+  const [activeScreen,setActiveScreen]=useState('overview');
+  const [tickets,setTickets]=useState(initialTickets);
+  const [endUsers,setEndUsers]=useState(initialEndUsers);
+  const [mobileNav,setMobileNav]=useState(false);
+  const [globalSearch,setGlobalSearch]=useState('');
+  const currentRole=session||'Super Admin';
+  const roleScreens=screenDefs.filter(item=>item.group===currentRole);
+  const currentScreen=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
+  const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);};
+  const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
+  const logout=()=>{setSession(null);setMobileNav(false);};
+  const renderPage=()=>{
+    if(activeScreen==='overview') return <Overview onNavigate={navigate}/>;
+    if(activeScreen==='users') return <UsersPage/>;
+    if(activeScreen==='integrations') return <IntegrationsPage/>;
+    if(activeScreen==='security') return <SecurityPage/>;
+    if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
+    if(activeScreen==='endusers') return <EndUsersPage endUsers={endUsers} tickets={tickets} onNavigate={navigate}/>;
+    return <Panel title={currentScreen.label} subtitle={currentScreen.description}><div className="empty-state"><div className="service-icon"><currentScreen.icon size={24}/></div><h3>{currentScreen.label}</h3><p>This section is represented in the command-center navigation, but its full workflow has not been implemented in this demo build yet.</p><p className="privacy-note">Demo environment · no live services or production systems are connected.</p><button className="primary-btn" onClick={()=>navigate(currentRole==='Help Desk Agent'?'tickets':'overview')}>Return to {currentRole==='Help Desk Agent'?'Service Desk':'Command Center'} →</button></div></Panel>;
+  };
+  if(!session) return <Login onLogin={login}/>;
+  return <div className="app-shell">
+    <aside className={'sidebar '+(mobileNav?'mobile-open':'')}>
+      <div className="sidebar-brand"><div><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
+      <div className="workspace-label">WORKSPACE</div>
+      <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch demo role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
+      <div className="nav-section-title">{currentRole.toUpperCase()}</div>
+      <nav className="side-nav">{roleScreens.map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span>{item.id==='tickets'&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}
+      {currentRole==='Super Admin'&&<><div className="nav-section-title">SERVICE OPERATIONS</div>{screenDefs.filter(item=>['tickets','endusers'].includes(item.id)).map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span></button>;})}</>}
+      </nav>
+      <div className="sidebar-spacer"/>
+      <div className="ai-shortcuts"><button onClick={()=>navigate(currentRole==='Help Desk Agent'?'tickets':'security')}><span className="ai-mini blue"><Sparkles size={16}/></span><span><b>Maximus Optimus</b><small>Operations copilot · demo</small></span><ChevronDown size={14}/></button></div>
+      <div className="sidebar-bottom"><span className="green-dot"/> Demo environment <span className="version">v1.0</span></div>
+    </aside>
+    {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
+    <main className="main-area">
+      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><span>COMMAND CENTER</span><span> / </span><b>{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search this demo…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="top-icon" title="Demo notifications" onClick={()=>window.alert('No new demo notifications.')}><Bell size={17}/><i/></button><div className="top-user"><span className="avatar user-avatar">{currentRole.split(' ').map(x=>x[0]).join('').slice(0,2)}</span><span><b>{currentRole}</b><small>Demo session</small></span></div><button className="top-icon" title="Sign out" onClick={logout}><LogOut size={17}/></button></div></header>
+      <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Demo services nominal</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a visual demo; use the page-specific search fields where available.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<footer className="app-footer">INTELLISTACK SYSTEMS · MAXIMUS OPTIMUS COMMAND CENTER <span>Portfolio demo · simulated data only</span></footer></div>
+    </main>
+  </div>;
+}
+
+export default App;
