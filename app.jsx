@@ -13,16 +13,16 @@ const screenDefs = [
   {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
-  {id:'security',label:'Security & Compliance',group:'Super Admin',icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
-  {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
-  {id:'tickets',label:'Service Desk',group:'Help Desk Agent',icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
+  {id:'security',label:'Security & Compliance',group:'Super Admin',accessRoles:['Security Agent'],icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
+  {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',accessRoles:['Security Agent','Network Operations'],icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
+  {id:'tickets',label:'Service Desk',group:'Help Desk Agent',accessRoles:['Security Agent','Network Operations'],icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
   {id:'endusers',label:'End User Directory',group:'Help Desk Agent',icon:Users,description:'Look up fictional employees, assigned devices, and ticket history.'},
   {id:'knowledge',label:'Knowledge Vault',group:'Help Desk Agent',icon:BookOpen,description:'Runbooks and support articles for consistent resolutions.'},
   {id:'maximus',label:'Maximus AI Assistant',group:'Super Admin',icon:Bot,description:'Interactive operations assistant with a built-in support and troubleshooting knowledge base.'},
   {id:'optimus',label:'Optimus Command Assistant',group:'Super Admin',icon:Sparkles,description:'Interactive Super Admin assistant for users, devices, security, audit, and integrations.'},
   {id:'status',label:'System Status',group:'Help Desk Agent',icon:Activity,description:'Service health and incident signals at a glance.'},
-  {id:'networkops',label:'Network Operations Center',group:'Super Admin',accessRoles:['IT Administrator','Governance & Compliance'],icon:Radio,description:'Network health, packet analysis, monitoring vendors, and incident handoff.'},
-  {id:'intelligence',label:'Intelligence Briefing',group:'Super Admin',icon:Newspaper,description:'Technology, cybersecurity, market news, and video sources in one workspace.'},
+  {id:'networkops',label:'Network Operations Center',group:'Super Admin',accessRoles:['IT Administrator','Governance & Compliance','Network Operations'],icon:Radio,description:'Network health, packet analysis, monitoring vendors, and incident handoff.'},
+  {id:'intelligence',label:'Intelligence Briefing',group:'Super Admin',accessRoles:['Security Agent','Network Operations'],icon:Newspaper,description:'Technology, cybersecurity, market news, and video sources in one workspace.'},
   {id:'terminal',label:'Command Line & PowerShell',group:'Super Admin',accessRoles:['IT Administrator','Help Desk Agent'],icon:Terminal,description:'Controlled command workspace for approved operators. Preview mode only until a secure endpoint agent is connected.'},
   {id:'infrastructure',label:'Infrastructure',group:'IT Administrator',icon:MonitorCog,description:'Assets, capacity, and operational maintenance.'},
   {id:'remote',label:'Remote Support',group:'IT Administrator',icon:MonitorCog,description:'Review end-user devices and launch a simulated remote-support session.'},
@@ -624,7 +624,7 @@ function App(){
   const [globalSearch,setGlobalSearch]=useState('');
   const [floatingAssistant,setFloatingAssistant]=useState(null);
   const currentRole=session||'Super Admin';
-  const roleScreens=(currentRole==='Super Admin'||currentRole==='Security Agent'||currentRole==='Network Operations')?screenDefs:screenDefs.filter(item=>item.group===currentRole);
+  const roleScreens=currentRole==='Super Admin'?screenDefs:screenDefs.filter(item=>item.group===currentRole||(item.accessRoles||[]).includes(currentRole));
   const currentScreen=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
   const globalCollaborationRole=['Super Admin','Security Agent','Network Operations'].includes(currentRole);
   const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);setFloatingAssistant(null);};
