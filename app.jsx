@@ -243,6 +243,19 @@ function PlatformBuilderPage(){
 }
 function LayersIconFallback(){return <Database size={18}/>;}
 
+function FloatingAssistantChat({assistant,onClose,onOpenFull}){
+ const maximus=assistant==='maximus', title=maximus?'Maximus AI':'Optimus AI';
+ const [draft,setDraft]=useState('');
+ const [messages,setMessages]=useState([{from:'assistant',text:maximus?'Hi, I’m Maximus. I help with ticket triage, troubleshooting, and frontline user support.':'Hi, I’m Optimus. I help with security engineering, OSINT research, infrastructure risks, and War Room coordination.'}]);
+ const send=e=>{e.preventDefault();const value=draft.trim();if(!value)return;setMessages(old=>[...old,{from:'user',text:value},{from:'assistant',text:maximus?'I’ve captured your support request in this prototype. Open the full Maximus workspace to explore ticket triage and troubleshooting workflows.':'I’ve captured your security request in this prototype. Open the full Optimus workspace to explore security intelligence and incident coordination.'}]);setDraft('');};
+ return <section className={'floating-ai-chat '+(maximus?'floating-maximus':'floating-optimus')} role="dialog" aria-label={title}>
+ <header className="floating-ai-head"><span className="floating-ai-avatar">{maximus?<Bot size={19}/>:<Sparkles size={19}/>}</span><div><b>{title}</b><small>{maximus?'Frontline support partner':'Security & engineering partner'}</small></div><button className="top-icon" onClick={onOpenFull} title="Open full workspace" aria-label={'Open full '+title+' workspace'}><ArrowUpRight size={16}/></button><button className="top-icon" onClick={onClose} title="Close chat" aria-label="Close chat"><X size={16}/></button></header>
+ <div className="floating-ai-messages" aria-live="polite">{messages.map((m,i)=><div className={'floating-ai-message '+m.from} key={i}>{m.text}</div>)}</div>
+ <form className="floating-ai-compose" onSubmit={send}><input aria-label={'Message '+title} placeholder={maximus?'Ask about a ticket or user…':'Ask about a threat or security task…'} value={draft} onChange={e=>setDraft(e.target.value)}/><button type="submit" aria-label="Send message" disabled={!draft.trim()}><ArrowUpRight size={17}/></button></form>
+ <p className="floating-ai-note">Prototype chat · responses are guided placeholders, not live AI.</p></section>;
+}
+
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -251,10 +264,11 @@ function App(){
   const [devices,setDevices]=useState(labDevices);
   const [mobileNav,setMobileNav]=useState(false);
   const [globalSearch,setGlobalSearch]=useState('');
+  const [floatingAssistant,setFloatingAssistant]=useState(null);
   const currentRole=session||'Super Admin';
   const roleScreens=screenDefs.filter(item=>item.group===currentRole);
   const currentScreen=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
-  const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);};
+  const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);setFloatingAssistant(null);};
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
@@ -287,8 +301,8 @@ function App(){
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
-      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><span>INTELLISTACK</span><span> / </span><b>{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Ticket</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="header-action ai-header-action" onClick={()=>navigate('maximus')}><Bot size={15}/> Maximus</button><button className="header-action ai-header-action" onClick={()=>navigate('optimus')}><Sparkles size={15}/> Optimus</button><button className="top-icon" title="Open security settings" aria-label="Open security settings" onClick={()=>navigate('security')}><ShieldCheck size={17}/></button><button className="top-icon" title="Sign out" onClick={logout}><LogOut size={17}/></button></div></header>
-      <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
+      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><span>INTELLISTACK</span><span> / </span><b>{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Ticket</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="top-icon" title="Open security settings" aria-label="Open security settings" onClick={()=>navigate('security')}><ShieldCheck size={17}/></button><button className="top-icon" title="Sign out" onClick={logout}><LogOut size={17}/></button></div></header>
+      <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
     </main>
   </div>;
 }
