@@ -824,3 +824,8 @@
  .profile-dropdown{width:auto}
  .footer-ops-strip{justify-content:flex-start;gap:8px 14px;line-height:1.5}
 }
+
+/* Approved IntelliStack slogan palette */
+.brand-tag .slogan-blue,.topbar-motto .slogan-blue{color:#19cfff;text-shadow:0 0 8px rgba(25,207,255,.17)}
+.brand-tag .slogan-white,.topbar-motto .slogan-white{color:#f7fbff;text-shadow:0 0 5px rgba(255,255,255,.08)}
+.brand-tag i{color:#7899bb}
