@@ -129,3 +129,13 @@ This document is a living handoff, not proof that planned features have been imp
 - No production schema changes were made in this step. Supabase schema review found existing organizations and memberships, but existing policies also include broad signed-in-user read policies on some records (for example tickets/assets/ticket events); do not assume those are safe for multi-tenant use without a policy review and tests.
 - Keep work on `feature/network-operations-secure-shell`. Do not merge or deploy production without explicit user approval.
 
+### BitLocker endpoint encryption requirement
+
+- Add BitLocker as a first-class endpoint-security/compliance control for supported Windows devices.
+- Global Tenant Command should show approved per-tenant aggregates: encrypted/protected, noncompliant, unknown/stale, and policy coverage. Sensitive device records require tenant-specific authorization.
+- Recovery keys are highly sensitive: never show them in global summaries, logs, analytics, notifications, or AI context. If retrieval is ever implemented, it needs a dedicated, scoped, step-up-authenticated, time-limited, audited workflow.
+- Do not infer live status from UI toggles or seeded records. Distinguish Compliant, Noncompliant, Unknown, Stale, Exception, and Simulated.
+- Delivery: (A) labeled mock posture panel; (B) inspect actual endpoint management provider and permissions; (C) live read-only integration; (D) policy/exception workflow; (E) controlled remediation only after explicit design and testing.
+- Section 41 of MASTER_BLUEPRINT.md defines data signals, tenant boundaries, implementation phases, and security acceptance tests. This is a requirement/plan, not a live BitLocker integration.
+- Keep work on feature/network-operations-secure-shell. No merge or production deployment without explicit user approval.
+
