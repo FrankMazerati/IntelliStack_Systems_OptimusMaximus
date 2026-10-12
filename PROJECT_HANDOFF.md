@@ -104,3 +104,16 @@ This document is a living handoff, not proof that planned features have been imp
 - Treat **1,000,000 global registered users** as an aspirational engineering target, not a provisioned user count or proven capacity. Define service objectives and test realistic concurrency, data distribution, audit volume, regional latency, and failure recovery before making scale claims.
 - The detailed requirements and acceptance checks are in section 38 of MASTER_BLUEPRINT.md. These are roadmap requirements, not implemented features.
 
+
+### Approved access model: global oversight with controlled access
+
+- User confirmed this authority model for the Enterprise Integration & M&A Hub.
+- Global command view may show only approved aggregates for explicitly authorized tenants. Access to raw/sensitive tenant content requires a separate resource-specific authorization check; global visibility is not blanket content access.
+- Use a validated tenant context, server-side default-deny authorization, database isolation/RLS, explicit tenant membership/platform grants, and detailed audit events. A parent/subsidiary relationship alone grants no access.
+- A single authenticated session may switch among authorized tenants, but every request must be authorized for the active tenant and target resource. Always display the active tenant and clear/refetch tenant-specific client state on switch.
+- Before migrations or code changes, inspect existing Supabase schema, migration history, auth configuration, and policies. The current application is React + Vite; do not assume production server routes already exist.
+- Implementation sequence: (0) inspect foundations and threat model; (1) tenant schema + server/database authorization + isolation tests; (2) tenant switcher and context safety; (3) global aggregate dashboard; (4) scoped, approved, expiring content-access grants; (5) load/reliability validation.
+- Section 39 of MASTER_BLUEPRINT.md defines the proposed entities, phases, security acceptance tests, and release gates.
+- The second organization's final name remains TBD. One million registered global users is a target, not verified capacity.
+- Keep work on feature/network-operations-secure-shell. Do not merge or deploy production without explicit user approval.
+
