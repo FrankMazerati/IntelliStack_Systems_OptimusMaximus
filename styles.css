@@ -361,3 +361,10 @@
 
 /* MFA policy administration preview */
 .mfa-policy-grid{display:grid;gap:18px}.mfa-policy-intro{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--border);border-radius:12px;background:rgba(0,212,255,.045)}.mfa-policy-intro>div{flex:1;min-width:0}.mfa-policy-intro h4,.mfa-options h4{margin:0 0 5px;font-size:13px;color:var(--text)}.mfa-policy-intro p{margin:0;color:var(--muted);line-height:1.5}.toggle-control{display:flex;align-items:center;gap:8px;color:var(--cyan);font-weight:700;white-space:nowrap}.toggle-control input,.mfa-check-row input{accent-color:var(--cyan);width:16px;height:16px}.mfa-text-input{display:block;width:100%;margin-top:8px;padding:11px 12px;color:var(--text);background:#091326;border:1px solid var(--border);border-radius:8px}.mfa-options{border:1px solid var(--border);border-radius:12px;padding:15px}.mfa-options h4{margin-bottom:12px}.mfa-check-row{display:flex;align-items:center;gap:11px;padding:12px 0;border-top:1px solid var(--border);cursor:pointer}.mfa-check-row>span:first-of-type{display:grid;gap:4px;flex:1;min-width:0}.mfa-check-row b{font-size:12px;color:var(--text)}.mfa-check-row small{font-size:10px;line-height:1.45;color:var(--muted)}.mfa-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.mfa-actions .privacy-note{max-width:580px;margin:0}@media(max-width:600px){.mfa-policy-intro{align-items:flex-start;flex-wrap:wrap}.mfa-policy-intro .toggle-control{width:100%;padding-left:42px}.mfa-actions .primary-btn{width:100%;justify-content:center}}
+
+
+/* Endpoint Operations Lab view switcher */
+.device-view-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;padding:10px;border:1px solid var(--border, #27364b);border-radius:12px;background:var(--panel, #0d1726)}
+.device-view-tabs button{min-height:38px;justify-content:center}
+.device-view-tabs button[aria-selected="true"]{box-shadow:0 0 0 1px currentColor inset}
+@media(max-width:640px){.device-view-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.device-view-tabs button{width:100%;font-size:12px;padding-inline:8px}}
