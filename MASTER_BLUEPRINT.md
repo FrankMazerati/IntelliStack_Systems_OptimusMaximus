@@ -372,3 +372,28 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Verify tenant suspension, cancellation, export, and deletion follow documented lifecycle and retention rules.
 - Verify demo metrics are clearly labeled and cannot be mistaken for connected billing or live infrastructure data.
 
+## 32. Homepage entry screen: company employees vs. contractors and hiring organizations
+
+### Required first-screen layout
+- Replace the current single generic role-selector login concept with two prominent, clearly separated entry cards on the first screen.
+- **Employee / IntelliStack Company Access — blue theme:** the primary path for IntelliStack/Maximus Optimus company employees and authorized enterprise users. Offer the appropriate employee sign-in choices and route authenticated users to the workspace permitted by their assigned account.
+- **Contractor & Hiring Organization Access — purple theme:** a separate, equally discoverable path for contractors/field workers and the employers or organizations that hire and dispatch them. From this path, users choose the appropriate Contractor / Field Worker or Employer / Organization sign-in experience.
+- Use the established premium command-center visual language: dark navy foundation, polished cards, clear icons and descriptions, blue/cyan accents for employee access, purple/pink accents for contractor and employer access, accessible contrast, and responsive touch-friendly controls.
+- Make the distinction obvious before a user enters credentials. Do not bury contractor/employer access in a dropdown or a secondary page.
+- Both entry cards must provide a clear route to the correct sign-in form, with a way back to the entry screen. The design should be cohesive rather than looking like two unrelated products.
+
+### Sign-in and assistance requirements
+- The applicable sign-in form must include account email, password, show/hide password, Sign In, Forgot Password, and Need Help.
+- Provide Maximus and Optimus chat assistance as optional guidance. Where supported, users may speak their question and hear the response, with typed input and visible instructions always available as alternatives. Do not claim speech access is active until speech recognition and synthesis are configured and tested.
+- Chat guidance must not bypass authentication, reset credentials without the approved identity workflow, or reveal account existence or private company data.
+- Show clear loading, validation, recovery, microphone-permission, speech-unavailable, and error states. Preserve keyboard navigation, screen-reader labels, sufficient contrast, and large touch targets.
+- Authentication and authorization must be enforced by the identity provider/backend. A front-end card, selected role, email field, or route is not a security boundary.
+
+### Required acceptance checks
+- The first screen visibly presents both the blue employee entry and purple contractor/employer entry.
+- The contractor/employer route lets the user distinguish field-worker/contractor access from hiring-organization access.
+- Each route reaches its intended sign-in experience without granting permissions based on the route selected.
+- Email/password, Forgot Password, Need Help, and optional Maximus/Optimus guidance are present as designed; unavailable integrations are labeled honestly.
+- The page is responsive and accessible, and the existing single role dropdown is not the only way to choose an entry path.
+- Verify the implementation in the running application; a blueprint entry alone does not mean the screen has been implemented.
+
