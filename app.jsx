@@ -287,7 +287,7 @@ function App(){
   if(!session) return <Login onLogin={login}/>;
   return <div className="app-shell">
     <aside className={'sidebar '+(mobileNav?'mobile-open':'')}>
-      <div className="sidebar-brand"><div><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
+      <div className="sidebar-brand"><div className="sidebar-brand-content"><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu sidebar-close-button" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
       <div className="workspace-label">WORKSPACE</div>
       <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch system role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
       <div className="nav-section-title">{currentRole.toUpperCase()}</div>
@@ -297,7 +297,7 @@ function App(){
       <div className="nav-section-title assistant-nav-title">AI ASSISTANTS</div><nav className="side-nav assistant-side-nav"><button className={'nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus AI</span><small className="assistant-nav-status">READY</small></button><button className={'nav-link '+(activeScreen==='optimus'?'active':'')} onClick={()=>navigate('optimus')}><Sparkles size={17}/><span>Optimus</span><small className="assistant-nav-status">READY</small></button></nav>
       <div className="sidebar-spacer"/>
       <div className="ai-shortcuts"><button onClick={()=>navigate('maximus')}><span className="ai-mini blue"><Bot size={16}/></span><span><b>Maximus AI</b><small>Operations assistant · ready</small></span><ChevronDown size={14}/></button><button onClick={()=>navigate('optimus')}><span className="ai-mini purple"><Sparkles size={16}/></span><span><b>Optimus</b><small>Command assistant · ready</small></span><ChevronDown size={14}/></button></div>
-      <div className="sidebar-bottom"><span className="green-dot"/> Preview workspace <span className="version">v1.0</span></div>
+      <div className="sidebar-bottom"><div className="sidebar-status"><span className="green-dot"/> Preview workspace <span className="version">v1.0</span></div><button type="button" className="sidebar-logout" onClick={logout}><LogOut size={15}/><span>Log out</span></button></div>
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
