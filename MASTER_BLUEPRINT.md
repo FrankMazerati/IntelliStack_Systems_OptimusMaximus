@@ -219,3 +219,14 @@ Verified from the existing branch during this blueprint update:
 
 ## 21. Acceptance rule
 A module is not considered complete merely because it appears in navigation or has a polished screen. It is complete for the prototype only when its primary workflow can be exercised end-to-end, validations and error states are meaningful, the resulting state/history is visible and persists as specified, and any simulated behavior is clearly labeled. Production readiness is a separate bar requiring real integrations, backend enforcement, security testing, and operational validation.
+
+
+## 22. Fine-grained security feature access (explicit requirement)
+Security & Compliance must use feature-level authorization, not one broad permission that unlocks the entire page.
+- Separate **Security Posture** (high-level, potentially read-only summary), **MFA Enrollment** (identity enrollment detail), **Open Findings** (finding-level detail), and **Policy Compliance** (policy/evidence detail) as distinct destinations or permission-controlled panels.
+- The Super Admin can select a specific user, grant or revoke one or more feature permissions, choose an access level such as No access, Summary/read-only, or Detailed/read-only, and where appropriate Manage/Respond. Grants should be scoped to the individual feature and must not silently unlock neighboring features.
+- Example: a Help Desk Agent may be permitted to view the overall Security Posture summary while MFA Enrollment, Open Findings, and Policy Compliance remain locked. Another Help Desk Agent may receive Open Findings access but not MFA details. A designated user could be granted MFA Enrollment only.
+- Show locked features visibly and explain that access is restricted; do not expose sensitive counts, names, evidence, or record details behind a lock. If a feature's summary is allowed, render only the approved summary.
+- Add an access-management interface for Super Admin: choose user → choose feature → choose permission level → grant/revoke → confirm and save. Display current grants, grantor, timestamp, optional expiration/reason, and audit history. Prevent self-lockout or unsafe changes to critical administrator access.
+- Evaluate permissions for every page, route, panel, API request, and record. Hiding a button is not security. Production authorization must be enforced server-side; browser-only demo grants are illustrative and not a security boundary.
+- Test access combinations for all four primary roles, including denied direct navigation and attempts to open a restricted feature URL. Keep Security Posture, MFA Enrollment, Open Findings, and Policy Compliance independent in both navigation and permission checks.
