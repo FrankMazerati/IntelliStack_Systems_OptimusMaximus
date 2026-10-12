@@ -1,47 +1,78 @@
-IntelliStack Systems — Maximus Optimus Command Center
-A responsive React + Vite portfolio demo for a fictional enterprise IT command center. All identities, metrics, tickets, audit events, connector statuses, and device states are synthetic. No production systems or real remote devices are connected.
-Included workspaces and screens
-Super Admin
-Command Center overview
-User & Role Management
-System Integrations / Connector Hub
-Security & Compliance
-Help Desk Agent
-Service Desk with ticket creation, search, filtering, status changes, resolve/reopen actions, and activity history
-End User Directory with fictional employee profiles, devices, and linked ticket history
-Knowledge Vault
-Maximus AI Assistant (scripted demo responses)
-System Status
-IT Administrator
-Infrastructure inventory
-Remote Support (simulated session state only; does not connect to an endpoint)
-Automation Workflows
-Governance & Compliance
-Governance Center
-Audit Log
-Ticket behavior and persistence
-The ticket queue starts with seeded examples. Newly created incident IDs increment from the highest numeric ticket suffix (for example, INC-7843 after INC-7842). Ticket status changes, newly created tickets, and ticket activity history are stored in the browser's localStorage, so they persist across refreshes in the same browser profile. This is local demo persistence, not a shared server database. Different browsers/devices do not share the data, and clearing site data resets it.
-The code keeps UI state and sample data in React so the storage layer can later be replaced with API/database services. A production implementation should use a server-side database, authenticated API, validation, role-based authorization, audit logging, and concurrency-safe ticket-number generation. Never generate globally unique ticket numbers only in the browser for a multi-user production system.
-Remote Support is a visual workflow demonstration only. A real deployment must integrate an approved remote-support/RMM provider, enforce authorization and end-user consent, and log sessions.
-Run locally
+# IntelliStack Systems — Maximus Optimus Command Center
+
+A responsive React + Vite prototype for an enterprise IT operations command center. This repository contains a product prototype and evolving architecture plan; it is **not yet a production-ready enterprise platform**.
+
+## Continuity and project status
+
+- **Start here when resuming work:** [PROJECT_HANDOFF.md](./PROJECT_HANDOFF.md) — current branch/PR context, implemented prototype features, known limitations, newly captured requirements, and resume instructions.
+- **Product and architecture plan:** [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md).
+- **Current working branch:** `feature/network-operations-secure-shell`.
+- **Draft pull request:** [PR #5 — Add Network Operations Center and command workspace](https://github.com/FrankMazerati/IntelliStack_Systems_OptimusMaximus/pull/5).
+- **Merge/deployment policy:** no merge to production or production deployment without explicit user approval.
+- **Verification policy:** inspect the latest PR head and checks before claiming a build, test, preview, deployment, or integration is working.
+
+## Prototype capabilities represented in the current feature branch
+
+Confirm the current branch and PR diff before assuming a feature is present or unchanged.
+
+- **Command Center and role-specific workspaces:** Super Admin, Help Desk Agent, IT Administrator, and Governance & Compliance views.
+- **Service Desk:** seeded sample tickets, ticket creation/search/filtering, status changes, resolve/reopen actions, and activity history.
+- **End User Directory, Knowledge Vault, System Status, integrations, governance/audit, and infrastructure/remote-support demonstration screens.**
+- **Network Operations Center:** vendor reference cards for Wireshark, SolarWinds NPM, PRTG, Zabbix, ManageEngine OpManager, and Cisco Catalyst Center. These are not connected monitoring integrations unless explicitly configured and verified.
+- **Command Line & PowerShell preview:** sample commands and safe preview behavior; commands do not run on the host.
+- **War Room scenario simulator:** simulated network, authentication, executive-ticket, ransomware, cloud-outage, and data-exposure scenarios. It does not page real responders or change infrastructure.
+- **Intelligence Briefing:** category-filtered external source links; not a live, ingested, or verified news feed.
+- **Remote Support:** visual workflow only; it does not connect to real endpoints.
+
+## Important data and security limitations
+
+- Identities, metrics, tickets, audit events, connector statuses, and device states may be synthetic demonstration data.
+- Ticket changes and activity history use browser `localStorage` in the prototype. This is not shared server-side persistence; separate browsers/devices do not share the data.
+- UI role switching and navigation are not security boundaries. A production system requires authenticated server-side APIs, authorization on every protected operation, tenant isolation, validation, durable database storage, concurrency-safe identifiers, and audit logging.
+- Do not store production credentials or secrets in browser code or `localStorage`.
+- No real VPN, OneDrive, firewall, monitoring, SMS/email paging, or remote-support integration should be considered connected unless the integration is configured, tested, and its state is verified.
+- Backup, recovery, and data-migration features must include tested restore/reconciliation procedures before being relied on for business continuity.
+
+## Roadmap requirements captured but not implemented merely by documentation
+
+The handoff and blueprint track planned work including:
+- Secure VPN connectivity with MFA, least privilege, monitoring, and revocation.
+- Backup and disaster recovery with protected recovery points, restore testing, and audit history.
+- Microsoft OneDrive integration with explicit consent and tenant-aware permissions.
+- Multi-organization hierarchy, controlled connections and resource sharing, data migration/merger workflows, **Stop Sharing**, **Disconnect Organization**, and carefully governed **Reverse Integration**.
+- Multiple isolated firewall simulators, including packet filtering, next-generation firewalls, WAF, cloud rules, and zero-trust segmentation.
+- Broader governance, incident-response, communications, migration, and workforce capabilities described in `MASTER_BLUEPRINT.md`.
+
+## Run locally
+
 Requirements: Node.js 18+.
+
+```bash
 npm install
 npm run dev
-Open the local URL printed by Vite. To create a production build:
+```
+
+To build and preview locally:
+
+```bash
 npm run build
 npm run preview
-Publish on GitHub
-Create a repository and upload the contents of this folder.
-Vercel or Netlify can build with npm run build and publish the dist folder.
-GitHub Pages also works after setting Vite's base to the repository subpath and adding a deployment workflow.
-Project layout
-intellistack-portfolio/
-├── index.html
-├── package.json
-├── README.md
-└── src/
-    ├── main.jsx
-    ├── App.jsx
-    └── styles.css
-About scale claims
-User counts, availability figures, volumes, and operational KPIs are illustrative target-state portfolio values—not real customer counts or measured service levels. A production system intended for million-user scale requires architecture design, durable data services, identity integration, server-enforced authorization, observability, load testing, and security review. Role switching in this demo is for exploration only and is not an access-control boundary.
+```
+
+Run these commands against the current branch and record the actual outcome before stating that checks pass. A successful local build does not by itself prove production security or live integrations.
+
+## Project files
+
+Inspect the current repository tree because paths can change between branches. The current prototype has included files such as `app.jsx`, `styles.css`, `main.jsx`, `index.html`, `vite.config.js`, and `package.json`, along with documentation and image assets.
+
+## Scale and readiness claims
+
+Any user counts, availability figures, operational KPIs, or scale targets shown in the prototype are illustrative unless backed by measured evidence. A large-scale production deployment requires threat modeling, identity and access design, server-enforced tenant isolation, reliable data services, observability, load testing, security review, backup/recovery drills, and documented operations.
+
+## Contributing / continuing work
+
+1. Read [PROJECT_HANDOFF.md](./PROJECT_HANDOFF.md) and [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md).
+2. Inspect the latest PR diff, branch head, and CI status.
+3. Work on a feature branch and submit reviewable changes.
+4. Clearly label mock behavior; do not represent planned functionality as implemented.
+5. Do not merge or deploy to production without explicit approval.
