@@ -76,3 +76,12 @@ Any user counts, availability figures, operational KPIs, or scale targets shown 
 3. Work on a feature branch and submit reviewable changes.
 4. Clearly label mock behavior; do not represent planned functionality as implemented.
 5. Do not merge or deploy to production without explicit approval.
+
+### Global Tenant Command (mock preview)
+
+The Super Admin workspace includes a **Global Tenant Command** prototype using the fictional company **Northstar Harvest Foods**. It demonstrates a multi-organization portfolio, tenant-context switching, illustrative organizational hierarchy and metrics, and creation of additional mock tenants.
+
+This is a local UI demonstration, not a production multi-tenant security implementation. Mock tenant definitions are stored in browser localStorage. Existing prototype tickets, users, devices, and integrations are not yet tenant-isolated. Platform-owner authority over mock tenants must not be treated as permission to access real company systems or devices; live access requires company-approved scopes and server-enforced authorization. The million-user figure is a scale target, not tested capacity.
+
+See [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md) section 40 and [PROJECT_HANDOFF.md](./PROJECT_HANDOFF.md) for the architecture, security boundaries, and next implementation gates.
+
