@@ -139,3 +139,12 @@ This document is a living handoff, not proof that planned features have been imp
 - Section 41 of MASTER_BLUEPRINT.md defines data signals, tenant boundaries, implementation phases, and security acceptance tests. This is a requirement/plan, not a live BitLocker integration.
 - Keep work on feature/network-operations-secure-shell. No merge or production deployment without explicit user approval.
 
+
+
+### Free-first enterprise readiness and security validation
+
+- User requirement: enterprise-oriented integrations and security capabilities should be testable on free tiers wherever practical, against systems the owner controls or is authorized to assess, before external company demonstrations.
+- Added [FREE_TIER_ENTERPRISE_TESTING_STANDARD.md](FREE_TIER_ENTERPRISE_TESTING_STANDARD.md) as the working standard for free-tier limits, real-vs-simulated labeling, integration security, test evidence, release gates, and BitLocker/Intune.
+- Prefer local/open-source testing and protected preview environments; record quotas and plan restrictions. Never incur charges, upgrade plans, or connect customer environments without explicit approval.
+- The standard does not imply enterprise certification or production readiness. Real tenant/device integration requires authorized consent and verified least-privilege permissions; BitLocker remains simulated until a read-only Intune connection is actually verified.
+- Continue on `feature/network-operations-secure-shell`. No merge or production deployment without explicit user approval.
