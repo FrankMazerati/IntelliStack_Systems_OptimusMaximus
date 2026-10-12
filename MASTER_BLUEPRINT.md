@@ -329,3 +329,46 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Verify network dashboards distinguish live telemetry from simulated data and display collection timestamps/source health.
 - Confirm users without monitoring or endpoint-management permission cannot access restricted device/network detail through direct navigation or APIs.
 - Verify sensitive actions and changes record actor, scope, approval, time, result, and recovery outcome.
+
+## 31. Multi-tenant SaaS, enterprise onboarding, and owner revenue dashboard
+
+### Product direction
+- Build IntelliStack as a multi-tenant SaaS platform that can host multiple independent customer companies while the platform owner operates a separate, tightly controlled provider-level Super Admin console.
+- Each customer company receives a dedicated tenant workspace with its own users, employees, sites, devices/assets, policies, integrations, tickets, audit records, enabled modules, and configuration. Tenant data must remain isolated by default.
+- The provider-level Super Admin console is for operating the SaaS service: tenant provisioning, service health, subscription/plan administration, aggregate usage and revenue metrics, support escalation under approved access procedures, and platform-wide security/infrastructure monitoring. It must not become an unrestricted back door into customer content.
+- Design for the owner to operate the service remotely, but do not imply that a dashboard alone replaces on-call coverage, incident response, legal agreements, or operational controls.
+
+### Company onboarding and tenant administration
+- Provide a guided **Add Company / Provision Tenant** workflow with company name, verified organization owner, tenant identifier, subscription plan, enabled modules, user/employee count, device/asset count, sites, region/data residency where supported, identity provider, and initial administrators.
+- Allow authorized tenant admins to invite and deactivate their own users, manage groups and permissions, register/import devices, and view their own usage and service status.
+- Show licensed/registered counts separately from observed counts. Employee and device limits should be plan-aware and clearly indicate approaching or exceeded limits.
+- Support tenant lifecycle states such as setup, active, suspended, offboarding, and deleted, with explicit confirmation and an auditable retention/export/deletion policy. Never silently erase tenant data on suspension or cancellation.
+- Provide onboarding validation, progress, connector readiness, migration/import status, and clear errors. Sample tenants and counts must be labeled as demo data until backed by persistent services.
+
+### Tenant isolation and privileged access
+- Enforce tenant identity and authorization server-side for every API, query, file, search result, job, event, integration, and background task. Do not rely on UI hiding, client-side tenant IDs, or role selection as security boundaries.
+- Include automated cross-tenant isolation tests for users, devices, tickets, files, audit logs, search, exports, and integrations.
+- Keep provider administration and customer tenant administration as distinct scopes. A platform operator may see service health and approved aggregate metrics without automatically seeing customer content.
+- Any exceptional support access into a tenant must be time-limited, purpose-bound, explicitly authorized, logged, and visible to the tenant where appropriate. Use least privilege, strong authentication, session controls, and audited break-glass procedures.
+- Design for secure secrets handling, encryption in transit and at rest, backups, disaster recovery, vulnerability management, and incident notification. Exact compliance commitments must wait for actual controls and independent validation.
+
+### Subscription, usage, and revenue analytics
+- Give the platform owner a provider-level business dashboard with per-company subscription plan/status, recurring revenue metrics where applicable, billing period, seats/users, registered devices, enabled modules, usage trends, failed payments, upcoming renewals, and account health.
+- Distinguish contracted price, invoiced amount, cash collected, refunds/credits, taxes, payment-processing fees, and estimated net revenue. Label metrics with their definitions, currency, period, and data freshness; do not treat projected or unpaid amounts as collected revenue.
+- Provide company-level drill-down and export only for data the owner is authorized to access. Customer-facing tenant dashboards show that tenant's own usage and billing, not other companies' data.
+- Connect billing and payment providers only after configuration and verification. Until then, use visibly simulated sample figures and never claim a real charge, subscription, or payout occurred.
+- Include pricing/plan configuration, trial and renewal status, upgrade/downgrade workflow, usage limits, invoices, and cancellation/offboarding handling. Billing changes require explicit authorization and an audit trail.
+
+### Remote operations and infrastructure visibility
+- Provide a provider operations view for service availability, tenant provisioning health, API and job failures, connector status, latency, capacity, security alerts, backup/recovery status, and incident history, using actual telemetry when connected.
+- Separate aggregate service metrics from tenant-specific operational details. Drill-down must respect support authorization and tenant boundaries.
+- Support alert ownership, escalation, maintenance windows, incident records, and documented recovery procedures. Mark synthetic telemetry as simulated rather than live.
+
+### Acceptance tests
+- Provision two test companies and verify their users cannot access each other's devices, tickets, files, search results, exports, or audit records.
+- Verify a tenant administrator cannot change provider-level plans, access another tenant, or grant platform-wide roles.
+- Verify the provider dashboard reports tenant counts and revenue using explicit definitions, periods, currency, and freshness; unpaid invoices are not counted as cash collected.
+- Verify support access requires the defined approval, scope, duration, and audit trail.
+- Verify tenant suspension, cancellation, export, and deletion follow documented lifecycle and retention rules.
+- Verify demo metrics are clearly labeled and cannot be mistaken for connected billing or live infrastructure data.
+
