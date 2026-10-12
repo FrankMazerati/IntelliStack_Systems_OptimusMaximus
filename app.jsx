@@ -95,9 +95,9 @@ function Overview({onNavigate,tickets,endUsers,devices}){
  const quickActions=quickActionIds.map(id=>superActionCatalog.find(item=>item[0]===id)).filter(Boolean);
  const moreActions=superActionCatalog.filter(item=>!quickActionIds.includes(item[0]));
  return <>
-  <Panel title="Daily Build Tracker" subtitle="Project baseline: October 11, 2026 · Dates are planning estimates until validated against working acceptance tests." action={<span className="status-pill neutral">Prototype · v1.0.0</span>}>
+  <Panel title="Daily Build Tracker" subtitle="Project baseline: October 10, 2026 · Dates are planning estimates until validated against working acceptance tests." action={<span className="status-pill neutral">Prototype · v1.0.0</span>}>
    <div className="build-tracker-summary">
-    <div className="build-tracker-stat"><small>BUILD DAY</small><strong>{Math.max(3,Math.floor((new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate())-new Date(2026,9,11))/86400000)+1)}</strong><span>Inclusive count from start date</span></div>
+    <div className="build-tracker-stat"><small>BUILD DAY</small><strong>{Math.max(1,Math.floor((new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate())-new Date(2026,9,10))/86400000)+1)}</strong><span>Inclusive count from start date</span></div>
     <div className="build-tracker-stat"><small>VERSION</small><strong>1.0.0</strong><span>Package version · demo build</span></div>
     <div className="build-tracker-stat"><small>RELEASE FORECAST</small><strong>Not estimated</strong><span>Pending scope and milestone sizing</span></div>
    </div>
