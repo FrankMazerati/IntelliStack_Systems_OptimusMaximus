@@ -464,3 +464,82 @@
 
 /* Intelligence Briefing */
 .intel-briefing{margin:0 0 17px;padding:18px;border:1px solid rgba(88,151,208,.2);border-radius:13px;background:linear-gradient(145deg,rgba(12,25,44,.94),rgba(7,16,30,.96));min-width:0}.intel-briefing-compact{margin-top:16px}.intel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}.intel-heading-main{display:flex;align-items:flex-start;gap:12px;min-width:0}.intel-mark,.intel-source-icon{display:grid;place-items:center;flex-shrink:0;border:1px solid rgba(52,199,237,.22);border-radius:10px;background:rgba(0,191,239,.08);color:#61d7f5}.intel-mark{width:42px;height:42px}.intel-heading .eyebrow{color:#6ad7ed;font-size:9px;font-weight:800;letter-spacing:1.4px}.intel-heading h2{margin:5px 0;color:#e4efff;font-size:16px;line-height:1.35}.intel-heading p{margin:0;color:#8ea5c3;font-size:10px;line-height:1.6}.intel-filters{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 13px}.intel-filters button{padding:7px 11px;border:1px solid rgba(113,155,207,.17);border-radius:20px;background:rgba(255,255,255,.025);color:#9db2cd;font-size:10px}.intel-filters button.active{border-color:rgba(60,201,239,.4);background:rgba(0,191,239,.12);color:#c8f5ff}.intel-source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.intel-source-card{display:flex;flex-direction:column;min-width:0;padding:13px;border:1px solid rgba(113,155,207,.14);border-radius:10px;background:rgba(255,255,255,.018)}.intel-source-top{display:flex;align-items:center;justify-content:space-between;gap:7px}.intel-source-icon{width:32px;height:32px;border-radius:8px}.intel-category{color:#84a4c9;font-size:8px;font-weight:800;letter-spacing:.6px;text-transform:uppercase}.intel-source-card h3{margin:12px 0 6px;color:#e0ecfc;font-size:12px}.intel-source-card p{flex:1;margin:0 0 13px;color:#91a7c4;font-size:10px;line-height:1.6}.intel-source-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid rgba(113,155,207,.12)}.intel-source-bottom small{color:#738cac;font-size:9px}.intel-source-bottom a,.intel-footer .text-btn{display:inline-flex;align-items:center;gap:4px;color:#6dd8f5;font-size:10px;font-weight:700;text-decoration:none}.intel-source-bottom a:hover,.intel-footer .text-btn:hover{text-decoration:underline}.intel-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid rgba(113,155,207,.13)}.intel-footer>span{display:flex;align-items:center;gap:7px;color:#829ab9;font-size:9px}.intel-status-dot{width:6px;height:6px;border-radius:50%;background:#e4b35b;display:inline-block}.intel-footer .text-btn{padding:0;border:0;background:transparent}.intel-disclaimer{display:flex;align-items:flex-start;gap:9px;margin-top:14px;padding:11px;border:1px solid rgba(113,155,207,.13);border-radius:9px;background:rgba(3,12,25,.28);color:#91a7c4;font-size:10px;line-height:1.6}.intel-disclaimer svg{flex-shrink:0;color:#6ad7ed}@media(max-width:900px){.intel-source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.intel-briefing{padding:13px}.intel-heading{flex-direction:column}.intel-heading .secondary-btn{width:100%}.intel-source-grid{grid-template-columns:1fr}.intel-source-card{padding:12px}.intel-source-bottom{align-items:flex-start}}
+
+/* Global Tenant Command — mock multi-tenant executive oversight */
+.tenant-command{display:flex;flex-direction:column;gap:16px;min-width:0}
+.tenant-hero{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px;border:1px solid rgba(74,193,236,.2);border-radius:15px;background:radial-gradient(circle at 90% 0,rgba(0,178,225,.14),transparent 42%),linear-gradient(120deg,rgba(13,34,60,.9),rgba(8,19,37,.94))}
+.tenant-hero-copy{min-width:0;max-width:720px}
+.tenant-hero .eyebrow{display:flex;align-items:center;gap:7px;color:#6bdcf5;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.tenant-hero h2{margin:10px 0 7px;color:#edf6ff;font-size:clamp(19px,2.4vw,27px);line-height:1.2}
+.tenant-hero p{max-width:670px;margin:0;color:#9ab0ca;font-size:12px;line-height:1.7}
+.tenant-owner-badge{display:flex;align-items:center;gap:10px;flex-shrink:0;padding:12px 14px;border:1px solid rgba(67,211,170,.23);border-radius:11px;background:rgba(24,177,130,.08);color:#67e2c2}
+.tenant-owner-badge span{display:flex;flex-direction:column;gap:4px}
+.tenant-owner-badge b{font-size:11px;color:#d5fff2}
+.tenant-owner-badge small{font-size:9px;color:#91cdbb;line-height:1.4}
+.tenant-safety-note{display:flex;align-items:flex-start;gap:10px;padding:13px 15px;border:1px solid rgba(228,179,91,.24);border-radius:11px;background:rgba(228,179,91,.055);color:#e6c37f}
+.tenant-safety-note svg{flex-shrink:0;margin-top:1px}
+.tenant-safety-note div{display:flex;flex-direction:column;gap:4px}
+.tenant-safety-note b{font-size:11px;color:#f2dba8}
+.tenant-safety-note span{font-size:10px;line-height:1.65;color:#b5a580}
+.tenant-toolbar{display:flex;align-items:end;justify-content:space-between;gap:14px;padding:15px;border:1px solid rgba(113,155,207,.15);border-radius:12px;background:rgba(8,20,39,.7)}
+.tenant-toolbar>div{display:flex;flex-direction:column;gap:7px;min-width:0}
+.tenant-toolbar .eyebrow{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#819cbe}
+.tenant-select-wrap{display:flex;align-items:center;gap:10px;max-width:100%;color:#68d9f4}
+.tenant-select-wrap select{max-width:min(480px,65vw);padding:8px 30px 8px 0;border:0;outline:none;background:transparent;color:#edf5ff;font-size:15px;font-weight:750}
+.tenant-select-wrap select option{background:#0c1b31;color:#edf5ff}
+.tenant-create-form{display:grid;grid-template-columns:1.3fr 1fr auto;align-items:end;gap:12px;padding:15px;border:1px solid rgba(75,199,236,.22);border-radius:12px;background:rgba(6,18,35,.7)}
+.tenant-create-form label{display:flex;flex-direction:column;gap:7px;color:#a8bdd6;font-size:10px;font-weight:700}
+.tenant-create-form input{width:100%;min-width:0;padding:10px 11px;border:1px solid rgba(113,155,207,.24);border-radius:8px;outline:none;background:rgba(255,255,255,.035);color:#eaf4ff;font-size:12px}
+.tenant-create-form input:focus{border-color:rgba(78,209,244,.65)}
+.tenant-form-actions{display:flex;gap:8px}
+.tenant-notice{padding:10px 12px;border:1px solid rgba(65,197,161,.2);border-radius:9px;background:rgba(36,173,129,.07);color:#9debd4;font-size:11px;line-height:1.5}
+.tenant-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tenant-metric{display:flex;flex-direction:column;gap:6px;min-width:0;padding:15px;border:1px solid rgba(113,155,207,.15);border-radius:11px;background:linear-gradient(145deg,rgba(16,37,63,.8),rgba(7,18,34,.72))}
+.tenant-metric span{color:#8fa8c6;font-size:10px;line-height:1.4}
+.tenant-metric b{color:#f0f7ff;font-size:clamp(19px,2.3vw,26px);letter-spacing:-.6px}
+.tenant-metric small{color:#748eae;font-size:9px;line-height:1.45}
+.tenant-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px}
+.tenant-section-heading .eyebrow{font-size:9px;font-weight:800;letter-spacing:1.2px;color:#6dd7f1}
+.tenant-section-heading h3{margin:5px 0 0;color:#e8f2ff;font-size:17px}
+.tenant-status-label{display:flex;align-items:center;gap:7px;color:#b5a580;font-size:9px}
+.tenant-status-label>span{width:6px;height:6px;border-radius:50%;background:#d7a84c}
+.tenant-org-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.tenant-org-card{display:flex;flex-direction:column;min-width:0;padding:16px;border:1px solid rgba(113,155,207,.15);border-radius:13px;background:linear-gradient(150deg,rgba(14,31,53,.85),rgba(6,17,33,.85));transition:border-color .15s,background .15s}
+.tenant-org-card.selected{border-color:rgba(64,204,239,.48);box-shadow:inset 0 0 0 1px rgba(64,204,239,.06);background:linear-gradient(150deg,rgba(12,47,69,.7),rgba(6,17,33,.9))}
+.tenant-org-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tenant-org-icon{display:grid;place-items:center;width:40px;height:40px;border:1px solid rgba(69,198,233,.2);border-radius:10px;background:rgba(0,179,223,.08);color:#69d9f4}
+.tenant-org-state{padding:5px 7px;border:1px solid rgba(225,179,92,.19);border-radius:6px;background:rgba(225,179,92,.05);color:#d9b879;font-size:8px;font-weight:750}
+.tenant-org-card h3{margin:14px 0 4px;color:#edf5ff;font-size:15px;overflow-wrap:anywhere}
+.tenant-org-card>p{margin:0;color:#8ca5c3;font-size:10px;line-height:1.5}
+.tenant-org-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0 13px;padding:12px 0;border-top:1px solid rgba(113,155,207,.12);border-bottom:1px solid rgba(113,155,207,.12)}
+.tenant-org-stats>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tenant-org-stats b{color:#eaf5ff;font-size:17px}
+.tenant-org-stats small{color:#8199b6;font-size:9px}
+.tenant-org-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tenant-org-foot>span{display:flex;align-items:center;gap:5px;color:#7cdbbf;font-size:9px}
+.tenant-org-foot .secondary-btn{display:inline-flex;align-items:center;gap:5px}
+.tenant-org-note{margin-top:12px;color:#7189a7;font-size:9px;line-height:1.5}
+.tenant-detail-grid{margin-top:1px}
+.tenant-demo-pill{padding:5px 7px;border:1px solid rgba(113,155,207,.18);border-radius:6px;color:#90a9c8;font-size:8px;font-weight:800;letter-spacing:.7px}
+.tenant-hierarchy{display:flex;flex-direction:column;gap:12px;padding:4px 0 3px}
+.tenant-tree-node{display:flex;align-items:center;gap:10px;min-width:0;padding:11px;border:1px solid rgba(113,155,207,.13);border-radius:9px;background:rgba(255,255,255,.018);color:#67d5f0}
+.tenant-tree-node.root{border-color:rgba(64,204,239,.23);background:rgba(0,179,223,.055)}
+.tenant-tree-node>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tenant-tree-node b{color:#dceaff;font-size:10px;overflow-wrap:anywhere}
+.tenant-tree-node small{color:#829ab8;font-size:9px;line-height:1.45}
+.tenant-tree-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-left:13px;border-left:1px solid rgba(75,190,225,.25);margin-left:12px}
+.tenant-access-list{display:flex;flex-direction:column;gap:0}
+.tenant-access-list>div{display:grid;grid-template-columns:18px minmax(0,1fr);gap:9px;padding:12px 0;border-bottom:1px solid rgba(113,155,207,.12);color:#69d9bf}
+.tenant-access-list>div:last-child{border-bottom:0}
+.tenant-access-list>div>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tenant-access-list b{color:#dceaff;font-size:10px}
+.tenant-access-list small{color:#829ab8;font-size:9px;line-height:1.55}
+.tenant-access-list em{grid-column:2;font-size:9px;font-style:normal;font-weight:750}
+.tenant-access-open{color:#75dfc2}
+.tenant-access-controlled{color:#d8b46d}
+.tenant-footer-note{display:flex;align-items:flex-start;gap:9px;padding:13px;border:1px solid rgba(113,155,207,.15);border-radius:10px;background:rgba(6,17,33,.62);color:#88a3c3;font-size:10px;line-height:1.65}
+.tenant-footer-note svg{flex-shrink:0;color:#6dd7f1;margin-top:1px}
+.tenant-footer-note b{color:#bcd3ec}
+@media(max-width:900px){.tenant-hero{align-items:flex-start;flex-direction:column}.tenant-owner-badge{width:100%}.tenant-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tenant-org-grid{grid-template-columns:1fr}.tenant-create-form{grid-template-columns:1fr 1fr}.tenant-form-actions{grid-column:1/-1;justify-content:flex-end}}
+@media(max-width:560px){.tenant-hero{padding:16px}.tenant-toolbar{align-items:stretch;flex-direction:column}.tenant-toolbar>.primary-btn{width:100%;justify-content:center}.tenant-select-wrap select{max-width:calc(100vw - 100px);font-size:13px}.tenant-create-form{grid-template-columns:1fr}.tenant-form-actions{grid-column:auto}.tenant-metric-grid{gap:8px}.tenant-metric{padding:12px}.tenant-org-card{padding:13px}.tenant-org-foot{align-items:flex-start;flex-direction:column}.tenant-tree-branches{grid-template-columns:1fr}.tenant-section-heading{align-items:flex-start;flex-direction:column}}
+
