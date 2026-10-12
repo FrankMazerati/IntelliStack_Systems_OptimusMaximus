@@ -592,3 +592,53 @@ Support parent companies, subsidiaries, business units, and approved external pa
 
 ### Status
 These are roadmap requirements. They do not indicate that production multi-tenancy, VPN connectivity, cross-organization sharing, OneDrive integration, backups, or merger/migration execution is already implemented.
+
+## 38. Global executive command view, cross-tenant administration, and scale target
+
+### Product goal
+Allow an authorized platform owner / Super Admin to oversee multiple legally and operationally distinct organizations from one authenticated command-center experience. The first demonstration case is IntelliStack Systems alongside a separately branded acquired or partner company. The second company's final brand/name remains **TBD**; do not present it as a real customer or completed acquisition.
+
+### Tenant structure and organizational hierarchy
+- Create a separate top-level tenant for the second company, independent from the IntelliStack tenant.
+- Support a multi-tier organization tree within each tenant: parent organization, subsidiaries or legal entities, business units, departments, regions/countries, sites/locations, teams, and users, where applicable.
+- Each tenant maintains its own user directory/memberships, roles, identity configuration, connected systems, assets, tickets, incidents, policies, retention settings, and audit scope unless a specific, approved sharing relationship is configured.
+- Support organization-specific branding and configuration without confusing company identity or implying that the organizations have merged legally.
+- A target of **up to 1,000,000 registered users globally across the platform** is a scale objective for architecture and validation, not a claim that one million users have been provisioned, licensed, or tested. Tenant-level user counts and enabled/active accounts must be separately reported.
+
+### Unified Super Admin experience
+- Provide a tenant/org switcher after a single authenticated login for platform administrators who are explicitly authorized for multiple tenants.
+- Show the current tenant prominently at all times; use clear tenant-specific visual identity and context in headers, records, search, exports, audit events, and confirmation dialogs.
+- Offer a global executive overview of authorized tenants, regions, departments, sites, connected systems, connector freshness/health, incidents, risk, compliance evidence, and service availability.
+- Global rollups must state coverage, last update, source, and known blind spots. Do not imply visibility into systems or data that are not connected and authorized.
+- Opening a tenant workspace must apply that tenant's effective authorization on the server. Switching context is not an authorization bypass and must not silently elevate the administrator's privileges.
+- Keep global platform operations (service health, tenant provisioning, platform configuration) separate from access to customer/tenant content.
+
+### Cross-tenant privilege and audit controls
+- Use least privilege, MFA, and step-up authentication for sensitive cross-tenant actions where supported.
+- For support access to tenant content, require a specific purpose, approved scope, limited duration, and auditable start/end events; support customer-approved access workflows where appropriate.
+- Log administrator identity, active tenant, target tenant/resource, purpose or ticket, approvals, action, timestamp, outcome, and relevant request/session correlation IDs.
+- Provide tenant-specific roles and delegated administrators; parent-company hierarchy alone does not grant unrestricted access to subsidiary or partner data.
+- Prevent cross-tenant leakage through APIs, database queries/RLS, global search, AI context, reports, exports, attachments, notifications, caches, background jobs, and direct-object URLs.
+- Provide emergency/break-glass access only through a separate, narrowly scoped, time-limited, justified and audited workflow with post-event review; it must not be a hidden permanent bypass.
+- When a user switches tenant, invalidate or re-evaluate tenant-scoped caches, selections, queries, and sessions. Never show stale data from the previous tenant.
+
+### Million-user global-scale engineering target
+- Design for horizontal scaling, indexed and tenant-aware data access, background job queues, rate limits, connection pooling, resilient notification delivery, observability, and graceful degradation.
+- Define explicit service objectives for authentication, tenant switching, dashboard freshness, search, incident creation, audit-event durability, and recovery.
+- Plan for regional latency, data residency, tenant-configurable retention, disaster recovery, and regional failure scenarios. Do not replicate restricted data across regions without approved policy.
+- Support bulk provisioning/deprovisioning and identity lifecycle integration (for example, supported SSO/SCIM where implemented), pagination, asynchronous imports/exports, and rate-limited APIs.
+- Validate capacity with a documented test plan covering realistic tenant distribution, concurrent active users, read/write patterns, burst traffic, incidents, audit volume, and regional latency. Record the tested scale and bottlenecks; never label a million-user target as proven until measured.
+- Start with architecture and load-test planning; do not create one million fake accounts as a substitute for performance testing or seed synthetic users into production.
+
+### Acceptance checks
+- An authorized Super Admin can sign in once and switch between the IntelliStack tenant and a separately named Company B tenant without re-authenticating at every navigation step, subject to session and policy requirements.
+- The active tenant is always visible, and switching tenants changes the data and permissions available to the UI and server APIs.
+- A user who belongs to only one tenant cannot access another tenant by changing an ID, URL, request payload, search query, export, or AI prompt.
+- Cross-tenant support access is blocked until required authorization, purpose, scope, and duration are satisfied, and every action is audited.
+- Global dashboards aggregate only explicitly authorized, available sources and display data freshness and coverage gaps.
+- Automated tests cover tenant isolation, role matrices, stale sessions/caches, exports, background jobs, attachments, audit access, and break-glass expiration.
+- Load tests and architecture evidence substantiate any published concurrency/user capacity claims.
+
+### Status
+This is a roadmap and scale target only. It does not mean that a second company tenant, global tenant switcher, cross-tenant executive dashboard, production authorization controls, or million-user capacity is implemented or load-tested.
+
