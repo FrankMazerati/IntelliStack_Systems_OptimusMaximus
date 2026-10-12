@@ -3,7 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './Login.png';
 import React, { useMemo, useState } from 'react';
-import { Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
 const screenDefs = [
@@ -21,6 +21,7 @@ const screenDefs = [
   {id:'optimus',label:'Optimus Command Assistant',group:'Super Admin',icon:Sparkles,description:'Interactive Super Admin assistant for users, devices, security, audit, and integrations.'},
   {id:'status',label:'System Status',group:'Help Desk Agent',icon:Activity,description:'Service health and incident signals at a glance.'},
   {id:'networkops',label:'Network Operations Center',group:'Super Admin',accessRoles:['IT Administrator','Governance & Compliance'],icon:Radio,description:'Network health, packet analysis, monitoring vendors, and incident handoff.'},
+  {id:'intelligence',label:'Intelligence Briefing',group:'Super Admin',icon:Newspaper,description:'Technology, cybersecurity, market news, and video sources in one workspace.'},
   {id:'terminal',label:'Command Line & PowerShell',group:'Super Admin',accessRoles:['IT Administrator','Help Desk Agent'],icon:Terminal,description:'Controlled command workspace for approved operators. Preview mode only until a secure endpoint agent is connected.'},
   {id:'infrastructure',label:'Infrastructure',group:'IT Administrator',icon:MonitorCog,description:'Assets, capacity, and operational maintenance.'},
   {id:'remote',label:'Remote Support',group:'IT Administrator',icon:MonitorCog,description:'Review end-user devices and launch a simulated remote-support session.'},
@@ -74,6 +75,7 @@ function Overview({onNavigate,tickets,endUsers,devices}){
    <Metric icon={AlertTriangle} label="High-priority open" value={highPriority} trend="Triage priority items" positive={highPriority===0} onClick={()=>onNavigate('tickets')}/>
    <Metric icon={MonitorCog} label="Managed asset records" value={devices.length} trend="Open device inventory" onClick={()=>onNavigate('devices')}/>
   </div>
+  <IntelligenceBriefing onNavigate={onNavigate} compact/>
   <div className="content-grid two-col">
    <Panel title="Management Hub" subtitle="Ten primary workspaces, with additional tools grouped under More Features.">
     <div className="management-grid">
@@ -413,6 +415,25 @@ function WarRoomPage(){
 }
 
 
+function IntelligenceBriefing({onNavigate,compact=false}){
+ const [category,setCategory]=useState('All');
+ const sources=[
+  {category:'IT & AI',name:'Techmeme',description:'Technology headlines and industry developments.',detail:'Technology news aggregator',url:'https://techmeme.com/river',icon:Globe2},
+  {category:'Security',name:'CISA Cybersecurity Advisories',description:'Official cybersecurity alerts, guidance, and advisories.',detail:'Official government source',url:'https://www.cisa.gov/news-events/cybersecurity-advisories',icon:ShieldCheck},
+  {category:'Security',name:'BleepingComputer',description:'Cybersecurity incidents, vulnerabilities, and threat reporting.',detail:'Cybersecurity news publisher',url:'https://www.bleepingcomputer.com/',icon:ShieldCheck},
+  {category:'Markets',name:'Reuters Markets',description:'Business, financial-market, and technology-company coverage.',detail:'Market news',url:'https://www.reuters.com/markets/',icon:TrendingUp},
+  {category:'Videos',name:'Technology News Videos',description:'Search technology, AI, and cybersecurity video briefings.',detail:'Video search',url:'https://www.youtube.com/results?search_query=technology+cybersecurity+news',icon:ArrowUpRight}
+ ];
+ const filtered=sources.filter(item=>category==='All'||item.category===category);
+ const shown=compact?sources.slice(0,3):filtered;
+ return <section className={'intel-briefing '+(compact?'intel-briefing-compact':'')}>
+  <div className="intel-heading"><div className="intel-heading-main"><span className="intel-mark"><Newspaper size={19}/></span><div><div className="eyebrow">INTELLIGENCE BRIEFING</div><h2>{compact?'Signals beyond your environment':'Technology, security & market intelligence'}</h2><p>{compact?'External source shortcuts for technology and security coverage.':'Browse trusted source pages, advisories, market news, and video briefings.'}</p></div></div>{!compact&&<button className="secondary-btn" onClick={()=>onNavigate('overview')}>Back to dashboard</button>}</div>
+  {!compact&&<div className="intel-filters" aria-label="Intelligence categories">{['All','IT & AI','Security','Markets','Videos'].map(item=><button key={item} className={category===item?'active':''} onClick={()=>setCategory(item)}>{item}</button>)}</div>}
+  <div className="intel-source-grid">{shown.map(item=>{const Icon=item.icon;return <article className="intel-source-card" key={item.name}><div className="intel-source-top"><span className="intel-source-icon"><Icon size={17}/></span><span className="intel-category">{item.category}</span></div><h3>{item.name}</h3><p>{item.description}</p><div className="intel-source-bottom"><small>{item.detail}</small><a href={item.url} target="_blank" rel="noreferrer">Open source <ArrowUpRight size={13}/></a></div></article>;})}</div>
+  {compact&&<div className="intel-footer"><span><span className="intel-status-dot"/> External links · No feed API connected</span><button className="text-btn" onClick={()=>onNavigate('intelligence')}>Open Intelligence Center <ArrowUpRight size={14}/></button></div>}
+  {!compact&&<div className="intel-disclaimer"><ShieldCheck size={16}/><span>These are source links, not a connected live feed. This build does not ingest headlines, verify publication times, provide live stock quotes, or connect a news API. Validate security advisories against the original source before action.</span></div>}
+ </section>;
+}
 function NetworkOperationsPage({onNavigate}){
  const [selected,setSelected]=useState('Wireshark');
  const [notice,setNotice]=useState('');
@@ -530,7 +551,8 @@ function App(){
     if(activeScreen==='integrations') return <IntegrationsPage/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
-    if(activeScreen==='networkops') return <NetworkOperationsPage onNavigate={navigate}/>;
+    if(activeScreen==='networkops') return <NetworkOperationsPage onNavigate={navigate}/>
+    if(activeScreen==='intelligence') return <IntelligenceBriefing onNavigate={navigate}/>;
     if(activeScreen==='terminal') return <CommandWorkspacePage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
     if(activeScreen==='endusers') return <EndUsersPage endUsers={endUsers} tickets={tickets} onNavigate={navigate}/>;
@@ -553,7 +575,7 @@ function App(){
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
-      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Network</button><button className="header-action" onClick={()=>navigate('warroom')}><Activity size={15}/> War Room</button><button className="header-action" onClick={()=>navigate('networkops')}><Radio size={15}/> Network NOC</button><button className="header-action" onClick={()=>navigate('terminal')}><Terminal size={15}/> CMD / PowerShell</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
+      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Network</button><button className="header-action" onClick={()=>navigate('warroom')}><Activity size={15}/> War Room</button><button className="header-action" onClick={()=>navigate('networkops')}><Radio size={15}/> Network NOC</button><button className="header-action" onClick={()=>navigate('intelligence')}><Newspaper size={15}/> Intelligence</button><button className="header-action" onClick={()=>navigate('terminal')}><Terminal size={15}/> CMD / PowerShell</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
       <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
     </main>
   </div>;
