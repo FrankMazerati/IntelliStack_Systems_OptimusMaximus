@@ -61,6 +61,61 @@ Do not apply one timer indiscriminately to all credential types. Service identit
 - Do not expose arbitrary key material, password values, recovery secrets, or provider credentials to the frontend.
 - Keep an independently protected emergency-recovery path and alert on changes to global security policy.
 
+
+## Privileged access model: owner-controlled, capability-scoped access
+
+IntelliStack Systems must distinguish the company owner / designated primary global authority from users who hold a generic global-administrator title. A title alone must never confer access to cryptographic key operations, authentication policy, secret stores, recovery material, or every critical security feature.
+
+### Primary owner / root security authority
+- The designated owner account can authorize and administer the global security policy, subject to strong phishing-resistant MFA, step-up authentication, audit, and safe recovery controls.
+- Protect this authority with a dedicated privileged identity, not routine email/browsing use. Do not make the system dependent on one active browser session or one device.
+- Maintain a separately secured emergency recovery mechanism. Any emergency use must be time-limited, alerted, audited, and reviewed after the event.
+- High-risk actions may require a second independent approver even when initiated by the owner, according to a configurable risk policy. This reduces accidental lockout and compromised-session risk.
+
+### Other global administrators
+- Global administration is a collection of explicitly granted capabilities, not an automatic superuser bypass.
+- Default-deny access to key material, key lifecycle operations, authentication-policy changes, secret stores, global recovery controls, and privilege escalation.
+- Grant only the named administrative capabilities needed for the person's duties. Separate viewing metadata, proposing a change, approving a change, executing it, and verifying enforcement where practical.
+- No administrator may grant themselves new privileges or bypass approval rules simply because their role is global.
+
+### Cybersecurity specialist grants
+Authorized specialists may receive one of three broad grant patterns, then narrowed by resource and action:
+1. **Full security operations access:** manage the approved security operations domains, such as threat triage, incident response, security findings, and specified containment workflows. This does not automatically include raw cryptographic keys, identity-root controls, secret-store access, or authority to alter their own privileges.
+2. **Limited security access:** view and investigate approved findings, manage assigned incidents, or propose remediation, without permission to execute high-impact changes.
+3. **Single-feature / single-resource access:** access only a specified feature, integration, policy, environment, device group, or action, for a stated purpose and time window.
+
+Every grant must record the subject, grantor, justification, exact capabilities, resource/environment scope, start and expiry, approval requirements, and revocation state. Prefer just-in-time and time-bound grants for elevated actions. Expiry and revocation must be enforced server-side.
+
+### Permission model
+Use explicit capabilities and policy checks rather than a single broad role flag. Illustrative capabilities include:
+- `security.findings.read`
+- `security.incidents.manage`
+- `security.containment.propose`
+- `security.containment.execute`
+- `security.policy.read`
+- `security.policy.propose`
+- `security.policy.approve`
+- `security.policy.publish`
+- `crypto.key_metadata.read`
+- `crypto.key.create`
+- `crypto.key.rotate`
+- `crypto.key.disable`
+- `crypto.key.revoke`
+- `identity.authentication_policy.manage`
+- `secrets.metadata.read`
+- `privileged_access.grant`
+- `audit.security.read`
+
+These names are examples for design, not proof that the current application implements them. Raw key export should be disabled by default and allowed only when a documented cryptographic use case, approved custody process, and provider capability justify it.
+
+### Enforcement requirements
+- Resolve identity, role, capabilities, scope, grant expiry, and approval state on the server for every sensitive request. Never trust UI visibility, client-side role values, or a browser-supplied `isGlobalAdmin` flag.
+- Enforce the same authorization in API handlers, Supabase policies/RLS where applicable, and the downstream provider adapter. Database service-role credentials and KMS credentials stay server-side.
+- Require step-up authentication for sensitive operations and explicit, separately recorded approval for high-impact operations. An executor must not be able to silently approve their own high-risk change when policy requires separation of duties.
+- Audit allow and deny decisions, grant/revoke events, policy versions, approvals, provider execution results, and independently verified outcomes. Do not put passwords, access tokens, raw key material, or recovery secrets in audit records.
+- Add negative tests proving that a second global admin cannot access ungranted key features, that a specialist cannot escape their feature/resource scope, that expired grants fail closed, and that privilege-escalation attempts are denied.
+- Keep global tenant oversight distinct from permission to inspect or operate on tenant-specific raw data. Tenant-scoped access must be separately authorized and audited before multi-tenancy is enabled.
+
 ## Minimum acceptance tests
 
 - Non-admin roles cannot view or change global security policies or invoke key-management operations.
