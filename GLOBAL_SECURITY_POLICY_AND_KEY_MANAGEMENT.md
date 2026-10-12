@@ -116,6 +116,61 @@ These names are examples for design, not proof that the current application impl
 - Add negative tests proving that a second global admin cannot access ungranted key features, that a specialist cannot escape their feature/resource scope, that expired grants fail closed, and that privilege-escalation attempts are denied.
 - Keep global tenant oversight distinct from permission to inspect or operate on tenant-specific raw data. Tenant-scoped access must be separately authorized and audited before multi-tenancy is enabled.
 
+
+## Noble Admin Center: real-time permission control and emergency elevation
+
+The Noble Admin Center should provide authorized administrators with immediate controls to grant, deny, modify, suspend, and revoke permissions for MSP operations. “Instantaneous” means the authorization change is committed by the authoritative backend and enforced on the next authorization check; the UI must not claim success until the backend confirms the change. External providers may have propagation delays, so their effective state must be verified separately.
+
+### Permission action controls
+
+For each user, group, role, integration, device, and protected resource, show:
+- Current effective permissions and their source (role, direct grant, group, policy, or temporary elevation).
+- **Grant**, **Deny**, **Modify**, **Suspend**, **Revoke**, and **Request approval** actions, only where the operator is authorized.
+- Resource and tenant/environment scope, permitted actions, reason/ticket/incident ID, grantor, approver, creation time, expiry, and enforcement/verification state.
+- A preflight preview of exactly what will change and which access will remain denied.
+- Confirmation and step-up authentication for sensitive changes; bulk or high-impact changes require stronger approval.
+
+### Emergency just-in-time access workflow
+
+Example: a CEO's managed Windows device has a BitLocker recovery problem shortly before a meeting, and the usual cybersecurity team is occupied.
+
+1. The help desk agent opens the authorized CEO support case in the Noble Admin Center and selects **Request emergency access**.
+2. The agent selects the exact target user/device and task, such as viewing a recovery-key record for that device or performing an approved recovery workflow. The system checks the agent's identity, training/eligibility, current role, device ownership, incident context, and policy.
+3. The authorized grantor (for example, the company owner or an explicitly delegated emergency-access approver) reviews a concise impact summary and grants only the minimum capability needed. If policy permits pre-authorized low-risk emergency grants, the grant can be issued immediately within those boundaries; otherwise it waits for approval.
+4. The backend creates a time-bound, device-specific, purpose-bound grant. Example duration might be 10–15 minutes, configurable by policy, with no ability to reuse the grant on another user/device or escalate privileges.
+5. The support agent performs the approved action through a server-side integration with the authoritative endpoint-management provider. The system must not reveal BitLocker recovery keys in general dashboards, logs, chat transcripts, browser analytics, or screenshots. Where the provider supports it, use a protected, audited recovery workflow and display secrets only to the authorized operator in a restricted context.
+6. The service records the request, grant decision, operator, target device, reason/ticket, approvals, provider action, and result—never the recovery secret itself. It verifies the actual provider/device state where possible.
+7. The temporary grant expires automatically, is revoked immediately after completion where safe, and triggers a post-event review/notification for sensitive access.
+
+Emergency access must not mean bypassing identity verification, device ownership checks, tenant boundaries, or provider permissions. If the authoritative provider is unavailable or does not support the requested operation, show **Manual action required** rather than pretending the fix occurred.
+
+### Deny and revoke behavior
+
+- A deny rule must be explicit, scoped, auditable, and evaluated by the server. Define precedence carefully so a direct deny cannot be silently overridden by a broad role grant.
+- Revocation blocks future authorization checks immediately at the application/backend layer. Revoke or invalidate active sessions, tokens, and provider-side grants when supported; do not promise that already-issued external tokens or provider permissions disappear instantaneously without verification.
+- Show separate states for **Requested**, **Granted**, **Enforcement confirmed**, **Revocation requested**, **Revoked**, **Provider pending**, and **Failed**.
+- Avoid a single-button global lockout without a preflight, independent recovery path, and additional safeguards against operator error or compromised accounts.
+
+### Abuse prevention and operational reliability
+
+- Require strong MFA and recent step-up authentication for granting privileged or sensitive access.
+- Do not allow an operator to approve their own request when separation of duties is required.
+- Use policy-defined maximum durations, resource allowlists, rate limits, alerts, and reason/ticket capture.
+- Maintain append-only, tamper-resistant audit events and alert on unusual elevation, repeated denials, access to executive devices, and attempts to access unrelated resources.
+- Make the authorization decision and grant creation atomic where possible; use idempotency keys to prevent duplicate grants and handle retries safely.
+- Test provider outages, partial failures, delayed revocation, stale sessions, expired grants, clock skew, and simultaneous grant/revoke requests.
+
+### Acceptance tests
+
+- An authorized grant is enforced on the next backend authorization check and the UI reflects the backend-confirmed state.
+- An unauthorized operator cannot grant permissions or target resources outside their scope.
+- Emergency access expires at the configured deadline and cannot be reused for a different target.
+- A BitLocker recovery secret never appears in ordinary dashboards, logs, analytics, or chat history.
+- Revocation blocks subsequent app access and reports any provider-side propagation still pending.
+- A failed provider action is reported honestly and does not show “fixed” or “completed.”
+- All grant, deny, modify, approval, execution, expiry, and revoke events are attributable and auditable.
+- Tenant-scoped resources remain protected independently of global administrative visibility.
+
 ## Minimum acceptance tests
 
 - Non-admin roles cannot view or change global security policies or invoke key-management operations.
