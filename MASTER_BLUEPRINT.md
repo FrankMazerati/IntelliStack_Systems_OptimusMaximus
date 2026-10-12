@@ -722,3 +722,34 @@ Confirm the existing database schema and migration history before implementing m
 ### Delivery status and release guardrails
 This section is an approved architecture/implementation plan, not evidence of implemented controls. Do not represent tenant isolation, a global dashboard, tenant switching, or cross-tenant grants as operational until code, database policies, and automated tests verify them. Work stays on the agreed feature branch. Do not merge the PR or deploy production without the user's explicit approval.
 
+## 40. Mock tenant portfolio and platform-owner demo authority
+
+### Approved mock-company example
+- Use **Northstar Harvest Foods** as a fictional food manufacturing and distribution company for demonstrations. Clearly label it as a mock organization and do not imply that it is an actual customer or acquired company.
+- Seed example organizational dimensions such as corporate headquarters, regions, manufacturing plants, warehouses, distribution centers, departments, and teams. All headcounts, incident totals, locations, and connected-system counts shown in the UI are illustrative demo values.
+- The mock tenant registry may be used to create additional fictional companies for demonstrations. Do not create real users, external connections, or production records when adding a mock tenant.
+
+### Platform-owner authority in the demonstration environment
+- A designated platform-owner identity can have full administrative authority over explicitly designated mock tenants in the isolated demo environment, including the mock organization tree and mock tenant configuration.
+- The global command view can show the portfolio and allow switching between those mock tenant contexts.
+- This demo authority must be an explicit environment-scoped capability, not inferred solely from a UI role dropdown, a company relationship, or a user-controlled tenant ID.
+- The demonstration interface must clearly label its authority as simulated until server-side identity, grants, database policy, and tenant-isolation tests enforce it.
+
+### Boundary for actual connected systems and devices
+- Access to real company systems, devices, endpoints, SaaS applications, network equipment, telemetry, and sensitive records is limited to the specific integration scopes and permissions approved by that company.
+- A platform owner may manage tenant registration and view approved global aggregates without automatically receiving raw tenant-content or device-level access.
+- A company-approved connection or grant must specify scope, permitted actions, owner/approver, expiry/revocation, and audit requirements. Connection health does not mean permission to read or control every resource in that system.
+- Mock-tenant full access must never be reused as a default grant for a real tenant or live connector.
+
+### Current prototype UI behavior
+- Add a Super Admin navigation page called **Global Tenant Command**.
+- Show an active-tenant selector, organization portfolio cards, illustrative global metrics, a sample multi-tier hierarchy, and a create-mock-tenant workflow.
+- Persist mock tenant definitions in browser localStorage for the local demonstration only; this is not shared or authoritative server-side tenant storage.
+- Display an explicit notice that existing prototype tickets, devices, users, and integrations are not yet tenant-isolated. The mock selector is a demonstration context and must not imply that existing records or connected systems have been safely partitioned.
+- Label seeded counts and system states as illustrative/simulated; one million users remains a target, not a tested capacity claim.
+
+### Production gates
+- Before treating the feature as production-capable, implement authenticated server-side tenant context, explicit platform-owner grants, per-tenant membership and role checks, database RLS, tenant-scoped records, secure global aggregate APIs, scoped system/device authorization, and tamper-resistant audit events.
+- Add automated negative tests for tenant ID tampering, direct-object access, search/export leakage, background tasks, stale client state, and attempted use of demo grants against real tenants.
+- Do not merge or deploy production without explicit user approval.
+
