@@ -457,3 +457,40 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Verify audit events persist across sessions and server restarts in the production architecture, and that tampering or unauthorized deletion is prevented or detected.
 - Existing blueprint requirements already call for ticket history, audit logging, and governance reporting; this section makes the shared ticketing and platform-wide audit/memory model explicit. These requirements are not proof that a production-grade audit backend is currently implemented.
 
+## 35. AI-assisted design-to-code delivery pipeline
+
+### Goal
+- Reduce manual handoffs by coordinating specialist stages for design, implementation, and independent inspection while keeping GitHub as the source of truth for code and review history.
+- Treat this as an orchestrated pipeline with explicit inputs, outputs, timeouts, retries, and approval gates—not as three agents editing the same working tree simultaneously.
+
+### Proposed stages
+1. **Specification / planning agent:** reads the approved requirement, identifies affected screens/components, writes acceptance criteria, accessibility checks, and a bounded implementation plan.
+2. **Design agent:** creates or updates editable Figma frames/components and exports required image assets. Each deliverable includes frame links, dimensions, asset names, and notes about intended behavior. Avoid baking UI text into images when it should be editable HTML.
+3. **Implementation agent:** after the design handoff is complete, works on a dedicated Git branch, implements the approved design in the application, and commits changes with a summary and traceability to the requirement.
+4. **Independent inspector agent:** reviews the diff and requirement, runs lint/type/build/unit tests and accessibility checks, inspects screenshots where browser automation is available, flags security or responsive regressions, and produces a findings report. It should not silently approve its own implementation.
+5. **Human approval / merge gate:** present changed files, preview screenshots, test results, known limitations, and rollback instructions. Merge only after required checks and authorized review pass.
+
+### Orchestration and integrations
+- **GitHub:** source of truth for requirements/issues, branches, commits, pull requests, review comments, and CI checks. Use branch protections and least-privilege tokens.
+- **Figma:** design collaboration, reusable components, screen handoff, and editable design artifacts.
+- **Airtable (optional):** structured product backlog, screen inventory, feature status, design links, acceptance criteria, and agent-run tracking. Do not use Airtable as the authoritative code store or as a substitute for secure production databases.
+- **CI/build and deployment:** use GitHub Actions or an equivalent CI runner for repeatable builds and tests; use a deployment host such as Vercel only after environment variables, preview deployments, and access controls are configured.
+- **Backend/data:** select a real application database and authenticated API before production. A vector store is optional for semantic search over approved documentation and tickets; it is not required to build screens. If a vector database is used, enforce tenant and record permissions before retrieval and filter results server-side.
+- **Orchestrator:** use a workflow runner (for example, a configured automation platform or CI workflow) to trigger stages from completed outputs and successful checks. A two-minute pause can be a scheduling preference, but stage completion and verified artifacts—not elapsed time—must determine whether the next stage begins.
+
+### Safety and quality controls
+- Pin each run to a requirement ID, design version, branch, commit SHA, and test report so every artifact is traceable.
+- Give each agent a narrow role and scoped credentials. Do not share production secrets with design/review agents or let an agent expand its own permissions.
+- Prevent overlapping writes to the same branch/files. Use separate branches or isolated worktrees and let Git resolve reviewed changes through pull requests.
+- Stop the pipeline on failing tests, missing design assets, unexpected file changes, security findings, or unclear requirements; request a human decision rather than guessing.
+- Store run status, timings, token/cost estimates where available, failures, retries, approvals, and final outcomes in an auditable run log.
+- Keep generated imagery and source code as separate artifacts when the UI needs editable text, responsive layout, semantic markup, or working interactions. Image generation alone is not a substitute for accessible, functioning UI code.
+
+### Initial pilot and acceptance checks
+- Pilot one bounded task, such as the two-path login homepage, before automating broad application changes.
+- Verify design assets are delivered before implementation starts; implementation starts only from the approved design/spec handoff; inspection runs against the exact resulting commit.
+- Verify CI results are attached to the pull request and the inspector reports pass/fail with evidence.
+- Verify no agent can merge or deploy without the configured approval and branch-protection rules.
+- Verify a failed stage can be retried without duplicating commits or corrupting another run, and every run has a clear audit trail.
+- This section specifies the intended workflow; it does not claim these agents or integrations are already connected or running.
+
