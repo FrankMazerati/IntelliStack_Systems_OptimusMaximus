@@ -93,3 +93,7 @@ The company-only security-policy specification defines separate controls for AES
 ## Identity Lifecycle & Access Orchestration
 
 The unified onboarding specification defines a reusable, tenant-isolated employee lifecycle workflow for enterprise customers and MSPs: identity, MFA, approved role templates, licenses, ServiceNow and other application access, endpoint readiness, verification, exception handling, and offboarding. It is a design specification, not evidence that live provisioning is implemented. See [IDENTITY_LIFECYCLE_AND_ACCESS_ORCHESTRATION.md](./IDENTITY_LIFECYCLE_AND_ACCESS_ORCHESTRATION.md). Named companies in examples are potential customer types, not claimed customers.
+
+## Role-Aware Briefing & Demo Automation
+
+The proposed [ROLE_AWARE_BRIEFING_AND_DEMO_AUTOMATION.md](./ROLE_AWARE_BRIEFING_AND_DEMO_AUTOMATION.md) defines how IntelliStack can assemble audience-specific investor, executive, MSP, IT, security, compliance, finance, HR, and technical briefings from approved source material. It requires source provenance, claim-status checks, permission-aware retrieval, and human approval before external sharing. This is a design specification, not a claim that automated generation is already implemented.
