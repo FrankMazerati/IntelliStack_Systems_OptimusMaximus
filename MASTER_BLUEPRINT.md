@@ -642,3 +642,83 @@ Allow an authorized platform owner / Super Admin to oversee multiple legally and
 ### Status
 This is a roadmap and scale target only. It does not mean that a second company tenant, global tenant switcher, cross-tenant executive dashboard, production authorization controls, or million-user capacity is implemented or load-tested.
 
+## 39. Controlled cross-tenant access architecture and implementation plan
+
+### Confirmed authority model
+**Global Oversight with Controlled Access** is the approved product decision.
+- A Super Admin may see an aggregated global overview only for tenants explicitly within their authorized oversight scope.
+- Global summaries should contain operational metadata and risk/health aggregates by default, not unrestricted raw tickets, messages, documents, user details, or evidence.
+- Opening sensitive tenant content requires a separate authorization check for the specific tenant, resource/action, purpose, and policy. Global visibility does not imply tenant-content access.
+- The selected model does not grant blanket content access, permanent impersonation, or a hidden authorization bypass.
+- One authenticated session can support smooth tenant switching when policy permits; every request is still authorized against the selected tenant and requested resource on the server.
+- The second company's legal name, brand, and actual onboarding are TBD. Do not invent a customer or claim an acquisition has occurred.
+
+### Logical architecture
+1. **Identity/session layer:** use the configured identity provider; require MFA for privileged roles where supported; bind the authenticated subject to explicit platform grants and tenant memberships. Do not rely on a client-side role selector.
+2. **Tenant context resolver:** derive the active tenant from a validated request/context and verify that the authenticated user has a valid membership or specific platform-level grant for the requested operation. Never trust a client-supplied tenant ID on its own.
+3. **Authorization policy layer:** centralize policy checks for global summary, tenant workspace access, resource read/write, administration, exports, connector secrets, support access, and emergency access. Default to deny.
+4. **Data layer:** persist tenant-owned business records with tenant identity and enforce isolation in server-side queries and database policies. If Supabase/Postgres is used, use RLS policies tied to authenticated identities and membership/grant tables; privileged service credentials must remain server-side and must not bypass authorization accidentally.
+5. **Global oversight API:** return only explicitly approved aggregates from authorized tenants, with tenant coverage, source, freshness timestamp, and unavailable/stale indicators. Do not implement the overview as a client-side union of unrestricted tenant queries.
+6. **Privileged access workflow:** require purpose/reason, requested scope, target tenant/resource, expiry, and appropriate approval for sensitive support access. Enforce expiration server-side and log both grant and revocation/use. Avoid persistent impersonation.
+7. **Audit and monitoring:** record authentication and tenant switching, denied cross-tenant attempts, grant creation/approval/use/revocation, exports, policy changes, and sensitive reads/writes. Audit records should include actor, active tenant, target tenant, action, purpose/ticket, timestamp, outcome, correlation ID, and grant/approval reference where applicable.
+8. **UI layer:** always show the active tenant name/brand and environment; use tenant context in navigation, breadcrumbs, search, forms, dialogs, and exports. Clear tenant-specific local state and refetch data on switching. UI indicators are helpful but never substitute for server authorization.
+
+### Initial data model proposal
+Confirm the existing database schema and migration history before implementing migrations. Proposed logical entities:
+- organizations / tenants: tenant ID, canonical name, brand/configuration, lifecycle status, region and policy references.
+- organization_units: tenant ID, parent unit ID, type (legal entity, business unit, department, region, site, team), name and status.
+- tenant_memberships: tenant ID, user/identity subject, role, status, provisioning source and timestamps.
+- platform_admin_grants: identity subject, permitted global operations, allowed tenant scope, status, approver, expiry and reason. Keep platform operations distinct from tenant-content access.
+- tenant_relationships: source and target tenant IDs, relationship type (parent/subsidiary/partner/acquisition project), status, effective dates and approvals. A relationship alone must not confer data access.
+- cross_tenant_access_grants: actor, target tenant, resource/action scope, purpose or ticket, approver(s), valid-from/expiry, status and revocation metadata.
+- audit_events: actor, active/target tenant, action/resource, purpose, decision/outcome, timestamp, correlation ID, and associated grant/approval references.
+- Tenant-owned records (tickets, incidents, assets, connector metadata, evidence, communications, etc.) must carry or resolve to a tenant ID and have an explicit ownership/sharing rule.
+- Optional global aggregate views/RPCs must be narrowly scoped, reviewed, and incapable of returning unrestricted raw tenant content.
+
+### Implementation sequence and gates
+**Phase 0 — Verify current foundations**
+- Inspect current branch/PR, package stack, Supabase schema/migrations, authentication setup, RLS policies, and existing data before coding.
+- The repository currently contains a React + Vite prototype. Do not assume it has Next.js server routes or a production backend. Confirm available server-side execution before selecting API placement.
+- Write a tenant/resource/action authorization matrix and a short threat model covering tenant ID tampering, direct-object access, search/export leakage, stale sessions/caches, background jobs, AI context, and privileged support access.
+- Gate: architecture and existing schema reviewed; no production data changes.
+
+**Phase 1 — Tenant data and authorization foundation**
+- Create reviewed, version-controlled database migrations for tenant/organization units, memberships, platform grants, relationship metadata, cross-tenant access grants, and audit events as needed after schema inspection.
+- Implement server-side authorization helpers and database RLS policies; avoid broad service-role access from client code.
+- Add tests proving default-deny behavior and that changing a tenant ID cannot cross boundaries.
+- Gate: isolation tests pass before global overview or tenant-switch UI can read tenant-owned records.
+
+**Phase 2 — Tenant switcher and context safety**
+- Add a tenant switcher that lists only authorized tenant contexts and clearly identifies the active tenant.
+- Re-resolve permissions for every API/resource request; reset/refetch client data, clear tenant-specific selections, and handle revoked access or expired sessions.
+- Add visible context in page headers and confirmations for destructive or sensitive operations.
+- Gate: tenant switching and direct URL/request tampering tests pass.
+
+**Phase 3 — Global executive overview**
+- Add a server-side aggregation endpoint/view for approved metrics: tenant and site inventory, incident counts/severity, connector status/freshness, service health, risk trends, and coverage gaps.
+- Return only fields approved for global oversight. Link into tenant workspaces without silently expanding privileges.
+- Mark every value as live, stale, simulated, unavailable, or unmonitored as applicable.
+- Gate: aggregate responses are tested for both authorized scope and prohibited sensitive fields.
+
+**Phase 4 — Controlled content access and review**
+- Add request/approval/expiry/revocation workflows for specific sensitive records where business requirements justify access.
+- Require purpose, scope, expiry, approval, and audit trail; support a review report for privileged access.
+- Gate: expired/revoked grants stop access server-side and produce auditable outcomes.
+
+**Phase 5 — Scale and reliability**
+- Establish SLOs, observability, rate limiting, queueing, backup/recovery, regional/data-residency requirements, and load-test scenarios.
+- Test representative tenant distribution and concurrency before claiming any capacity. One million registered users remains an aspirational target until measured evidence supports a precise claim.
+- Gate: publish only the scale and performance actually validated.
+
+### Security acceptance tests
+- A user with membership in Tenant A only cannot read, mutate, search, export, or infer Tenant B records, even by changing URL parameters, request bodies, record IDs, filters, attachment URLs, or AI prompts.
+- A platform administrator with global summary permission sees only approved aggregates, not arbitrary raw records.
+- A cross-tenant grant is constrained by tenant, resource/action, purpose, approval, and expiry; revocation and expiration take effect server-side.
+- Tenant switching never reuses cached records from the previous tenant; permission revocation and session expiry are handled safely.
+- Background jobs, notifications, exports, search, AI tools, connector callbacks, and audit readers enforce the same tenant policy as interactive APIs.
+- Denied attempts are logged without leaking the existence or contents of protected resources to unauthorized callers.
+- No privileged database secret is shipped to the browser; production changes require migration review, backup/recovery planning, and explicit release approval.
+
+### Delivery status and release guardrails
+This section is an approved architecture/implementation plan, not evidence of implemented controls. Do not represent tenant isolation, a global dashboard, tenant switching, or cross-tenant grants as operational until code, database policies, and automated tests verify them. Work stays on the agreed feature branch. Do not merge the PR or deploy production without the user's explicit approval.
+
