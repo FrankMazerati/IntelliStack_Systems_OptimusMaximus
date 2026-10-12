@@ -8,6 +8,7 @@ import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle,
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
+  {id:'globaltenants',label:'Global Tenant Command',group:'Super Admin',icon:Globe2,description:'Oversee mock organizations, switch tenant context, and review company-level operational summaries.'},
   {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
   {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
@@ -526,6 +527,38 @@ function CommandWorkspacePage(){
  </>;
 }
 
+
+function GlobalTenantCommandPage(){
+ const seedTenants=[
+  {id:'intellistack',name:'IntelliStack Systems',industry:'Enterprise technology',kind:'Platform owner tenant',regions:6,units:18,users:420,incidents:4,systems:12,coverage:'Demo inventory',status:'Preview tenant'},
+  {id:'northstar',name:'Northstar Harvest Foods',industry:'Food manufacturing & distribution',kind:'Mock enterprise tenant',regions:9,units:42,users:8420,incidents:11,systems:27,coverage:'Demo inventory',status:'Mock tenant'}
+ ];
+ const [tenants,setTenants]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-mock-tenants')||'null');return Array.isArray(saved)&&saved.length?saved:seedTenants}catch{return seedTenants}});
+ const [activeId,setActiveId]=useState('intellistack');
+ const [newName,setNewName]=useState('');
+ const [newIndustry,setNewIndustry]=useState('General business');
+ const [showCreate,setShowCreate]=useState(false);
+ const [notice,setNotice]=useState('');
+ const active=tenants.find(t=>t.id===activeId)||tenants[0];
+ const save=(next)=>{setTenants(next);try{localStorage.setItem('intellistack-mock-tenants',JSON.stringify(next))}catch{}};
+ const createTenant=(e)=>{e.preventDefault();const name=newName.trim();if(!name){setNotice('Enter a company name first.');return}if(tenants.some(t=>t.name.toLowerCase()===name.toLowerCase())){setNotice('A tenant with that name already exists in this demo.');return}const id='mock-'+Date.now().toString(36);const next=[...tenants,{id,name,industry:newIndustry.trim()||'General business',kind:'Mock tenant',regions:1,units:3,users:25,incidents:0,systems:0,coverage:'No connected systems',status:'Preview only'}];save(next);setActiveId(id);setNewName('');setNewIndustry('General business');setShowCreate(false);setNotice(name+' created as a local mock tenant. No real company or systems were connected.')};
+ return <div className="tenant-command">
+  <div className="tenant-hero">
+   <div className="tenant-hero-copy"><span className="eyebrow"><Globe2 size={13}/> GLOBAL EXECUTIVE OVERSIGHT</span><h2>One command view. Separate company boundaries.</h2><p>Review the mock organization portfolio, then switch to an authorized tenant context. Core platform administration is separate from access to company systems and devices.</p></div>
+   <div className="tenant-owner-badge"><ShieldCheck size={19}/><span><b>Platform Owner</b><small>Full administrative access to demo tenants</small></span></div>
+  </div>
+  <div className="tenant-safety-note"><ShieldCheck size={17}/><div><b>Demo authority is enabled for mock tenants.</b><span>Company systems, devices, and sensitive live data still require the company's approved connection scope and authorization. This selector is a UI prototype; production server-side tenant enforcement is not yet implemented.</span></div></div>
+  <div className="tenant-toolbar"><div><span className="eyebrow">ACTIVE TENANT CONTEXT</span><div className="tenant-select-wrap"><Building2 size={18}/><select value={activeId} onChange={e=>{setActiveId(e.target.value);setNotice('Active demo context changed. Existing prototype records are not yet tenant-isolated.')}} aria-label="Switch active mock tenant">{tenants.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select><ChevronDown size={15}/></div></div><button className="primary-btn" onClick={()=>{setShowCreate(!showCreate);setNotice('')}}><Plus size={16}/> Create mock tenant</button></div>
+  {showCreate&&<form className="tenant-create-form" onSubmit={createTenant}><label>Company name<input value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Blue Meadow Logistics" required maxLength={80}/></label><label>Industry<input value={newIndustry} onChange={e=>setNewIndustry(e.target.value)} placeholder="Industry" maxLength={80}/></label><div className="tenant-form-actions"><button className="secondary-btn" type="button" onClick={()=>setShowCreate(false)}>Cancel</button><button className="primary-btn" type="submit"><Plus size={15}/> Add mock tenant</button></div></form>}
+  {notice&&<div className="tenant-notice" role="status">{notice}</div>}
+  <div className="tenant-metric-grid"><div className="tenant-metric"><span>Organizations in portfolio</span><b>{tenants.length}</b><small>Local demo registry</small></div><div className="tenant-metric"><span>Illustrative registered users</span><b>{tenants.reduce((sum,t)=>sum+(Number(t.users)||0),0).toLocaleString()}</b><small>Seeded demo values, not real accounts</small></div><div className="tenant-metric"><span>Reported incidents</span><b>{tenants.reduce((sum,t)=>sum+(Number(t.incidents)||0),0)}</b><small>Simulated counts</small></div><div className="tenant-metric"><span>Global scale objective</span><b>1,000,000</b><small>Target only · not load-tested</small></div></div>
+  <div className="tenant-section-heading"><div><span className="eyebrow">AUTHORIZED PORTFOLIO</span><h3>Organization overview</h3></div><span className="tenant-status-label"><span/> Mock data · no live connectors</span></div>
+  <div className="tenant-org-grid">{tenants.map(t=><article key={t.id} className={'tenant-org-card '+(t.id===activeId?'selected':'')}><div className="tenant-org-top"><div className="tenant-org-icon"><Building2 size={20}/></div><span className="tenant-org-state">{t.status}</span></div><h3>{t.name}</h3><p>{t.industry}</p><div className="tenant-org-stats"><div><b>{Number(t.regions||0).toLocaleString()}</b><small>Regions</small></div><div><b>{Number(t.units||0).toLocaleString()}</b><small>Org units</small></div><div><b>{Number(t.users||0).toLocaleString()}</b><small>Demo users</small></div></div><div className="tenant-org-foot"><span><ShieldCheck size={13}/> Platform oversight</span><button className="secondary-btn small" onClick={()=>{setActiveId(t.id);setNotice('Selected '+t.name+'. Full demo-tenant authority is illustrative; production resource access remains policy-controlled.')}}>{t.id===activeId?'Active tenant':'Switch tenant'} <ArrowUpRight size={13}/></button></div><div className="tenant-org-note">{t.incidents} simulated incidents · {t.systems} illustrative systems · {t.coverage}</div></article>)}</div>
+  <div className="content-grid two-col tenant-detail-grid"><section className="panel"><div className="panel-head"><div><h3>{active.name}: organizational hierarchy</h3><p>Example multi-tier structure for the selected mock tenant</p></div><span className="tenant-demo-pill">SIMULATED</span></div><div className="tenant-hierarchy"><div className="tenant-tree-node root"><Building2 size={16}/><span><b>{active.name}</b><small>Tenant / legal organization</small></span></div><div className="tenant-tree-branches"><div className="tenant-tree-node"><Globe2 size={15}/><span><b>Regions</b><small>{active.regions} illustrative regions</small></span></div><div className="tenant-tree-node"><Network size={15}/><span><b>Business units & departments</b><small>{active.units} illustrative units</small></span></div><div className="tenant-tree-node"><Users size={15}/><span><b>Users & role groups</b><small>{Number(active.users||0).toLocaleString()} illustrative identities</small></span></div><div className="tenant-tree-node"><MonitorCog size={15}/><span><b>Sites, systems & devices</b><small>Inventory requires tenant-approved connectors</small></span></div></div></div></section><section className="panel"><div className="panel-head"><div><h3>Access boundary</h3><p>What the platform owner can do</p></div><LockKeyhole size={18}/></div><div className="tenant-access-list"><div><CheckCircle2 size={16}/><span><b>Core platform</b><small>Manage demo tenant registry and global configuration</small></span><em className="tenant-access-open">Full demo access</em></div><div><CheckCircle2 size={16}/><span><b>Mock tenant workspace</b><small>Demonstrate admin navigation and seeded organization hierarchy</small></span><em className="tenant-access-open">Full demo access</em></div><div><ShieldCheck size={16}/><span><b>Connected company systems</b><small>Production data, endpoints, and vendor systems follow approved scopes and authorization</small></span><em className="tenant-access-controlled">Approval required</em></div><div><FileText size={16}/><span><b>Audit trail</b><small>Tenant switching and privileged access must be logged server-side in production</small></span><em className="tenant-access-controlled">Planned control</em></div></div></section></div>
+  <div className="tenant-footer-note"><LockKeyhole size={15}/><span><b>Security boundary:</b> mock-tenant full access is a demonstration capability, not a global bypass. Before production, enforce platform grants, tenant memberships, row-level security, server-side checks, and audited scoped access to connected systems.</span></div>
+ </div>;
+}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -543,6 +576,7 @@ function App(){
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
     if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
+    if(activeScreen==='globaltenants') return <GlobalTenantCommandPage/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
