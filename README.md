@@ -89,3 +89,7 @@ See [MASTER_BLUEPRINT.md](./MASTER_BLUEPRINT.md) section 40 and [PROJECT_HANDOFF
 ## Global Security Policy & Key Management
 
 The company-only security-policy specification defines separate controls for AES-256-capable encryption layers, key lifecycle and custody, password/authentication policy, session and credential timers, server-side enforcement, verification, auditing, and recovery. It is a design specification, not proof that those controls are implemented or enforced. Start with [GLOBAL_SECURITY_POLICY_AND_KEY_MANAGEMENT.md](./GLOBAL_SECURITY_POLICY_AND_KEY_MANAGEMENT.md). Keep production key material and plaintext credentials out of the browser and logs. Multi-tenant enablement remains gated on authorization, isolation, and security testing.
+
+## Identity Lifecycle & Access Orchestration
+
+The unified onboarding specification defines a reusable, tenant-isolated employee lifecycle workflow for enterprise customers and MSPs: identity, MFA, approved role templates, licenses, ServiceNow and other application access, endpoint readiness, verification, exception handling, and offboarding. It is a design specification, not evidence that live provisioning is implemented. See [IDENTITY_LIFECYCLE_AND_ACCESS_ORCHESTRATION.md](./IDENTITY_LIFECYCLE_AND_ACCESS_ORCHESTRATION.md). Named companies in examples are potential customer types, not claimed customers.
