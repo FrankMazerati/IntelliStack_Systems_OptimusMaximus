@@ -74,15 +74,13 @@ const superActionCatalog = [
  ['governance','Administration',Settings,'Open governance and admin controls'],
  ['integrations','Integrations & APIs',Network,'Connected systems and integration health'],
  ['globaltenants','Global Tenant Command',Globe2,'Review authorized organization summaries'],
- ['security','Security Center',ShieldCheck,'Security posture and response'],
  ['infrastructure','Backup & Recovery',Database,'Infrastructure and recovery planning'],
  ['knowledge','Knowledge & Documentation',BookOpen,'Support articles and runbooks'],
  ['endusers','End User Directory',UserCog,'Look up people, devices, and ticket history'],
  ['maximus','Maximus AI Assistant',Bot,'Operations assistant and troubleshooting knowledge'],
  ['optimus','Optimus Command Assistant',Sparkles,'Super Admin command assistant'],
  ['intelligence','Intelligence Briefing',Newspaper,'Technology and cybersecurity source links'],
- ['remote','Remote Support',MonitorCog,'Review device support workflows'],
- ['governance','Reports & Analytics',FileText,'Governance and reporting workspace']
+ ['remote','Remote Support',MonitorCog,'Review device support workflows']
 ];
 const defaultQuickActionIds = ['users','security','warroom','automation','builder','devices','tickets','audit','networkops','terminal'];
 function Overview({onNavigate,tickets,endUsers,devices}){
