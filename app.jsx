@@ -56,6 +56,7 @@ function Panel({title,subtitle,children,action}){return <section className="pane
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
 function Overview({onNavigate,tickets,endUsers,devices}){
+ const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
  return <>
@@ -72,7 +73,35 @@ function Overview({onNavigate,tickets,endUsers,devices}){
    <Metric icon={MonitorCog} label="Managed asset records" value={devices.length} trend="Open device inventory" onClick={()=>onNavigate('devices')}/>
   </div>
   <div className="content-grid two-col">
-   <Panel title="Administration" subtitle="Choose a task to continue"><div className="quick-actions">{[['Users & roles','users',Users],['Devices & peripherals','devices',MonitorCog],['Service desk','tickets',Ticket],['System integrations','integrations',Network],['Security & compliance','security',ShieldCheck],['End-user directory','endusers',UserCog],['Audit log','audit',ClipboardList]].map(([label,id,Icon])=><button key={id} onClick={()=>onNavigate(id)}><Icon size={18}/><span>{label}</span><span className="quick-arrow">↗</span></button>)}</div></Panel>
+   <Panel title="Management Hub" subtitle="Ten primary workspaces, with additional tools grouped under More Features.">
+    <div className="management-grid">
+     {[
+      ['Users & Groups','users',Users,'Manage user records and group membership'],
+      ['Roles & Permissions','users',ShieldCheck,'Review role assignments and access'],
+      ['War Room','warroom',Activity,'Coordinate incidents and response teams'],
+      ['Workflows','automation',Workflow,'Review automation workflows'],
+      ['Platform Builder','builder',LayoutDashboard,'Register planned pages and modules'],
+      ['Systems & Devices','devices',MonitorCog,'Inspect managed assets and devices'],
+      ['Help Desk','tickets',Ticket,'Create, triage, and resolve tickets'],
+      ['Audit & Compliance','audit',ClipboardList,'Review audit records and evidence'],
+      ['Monitoring','status',Activity,'View service status workspace'],
+      ['Administration','governance',Settings,'Open governance and admin controls']
+     ].map(([label,id,Icon,description])=><button className="management-tile" key={label} onClick={()=>onNavigate(id)}><span className="management-tile-icon"><Icon size={19}/></span><span className="management-tile-copy"><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}
+    </div>
+    <div className="more-features">
+     <button type="button" className="more-features-toggle" aria-expanded={showMoreFeatures} onClick={()=>setShowMoreFeatures(value=>!value)}><span><PlusCircle size={17}/><b>More Features</b><small>Additional tools and workspaces</small></span><ChevronDown size={17} className={showMoreFeatures?'chevron-open':''}/></button>
+     {showMoreFeatures&&<div className="more-features-menu">
+      {[
+       ['Security Center','security',ShieldCheck,'Security posture and response'],
+       ['Reports & Analytics','governance',FileText,'Governance and reporting workspace'],
+       ['Integrations & APIs','integrations',Network,'Connected systems and integration health'],
+       ['Backup & Recovery','infrastructure',Database,'Infrastructure and recovery planning'],
+       ['Knowledge & Documentation','knowledge',BookOpen,'Support articles and runbooks'],
+       ['End User Directory','endusers',UserCog,'Look up people, devices, and ticket history']
+      ].map(([label,id,Icon,description])=><button key={label} onClick={()=>onNavigate(id)}><Icon size={17}/><span><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}
+     </div>}
+    </div>
+   </Panel>
    <Panel title="Workspace data" subtitle="Current in-memory test records"><div className="workspace-data-list"><div><span>Ticket records</span><b>{tickets.length}</b><button onClick={()=>onNavigate('tickets')}>Open ↗</button></div><div><span>End-user records</span><b>{endUsers.length}</b><button onClick={()=>onNavigate('endusers')}>Open ↗</button></div><div><span>Lab user accounts</span><b>{labUsers.length}</b><button onClick={()=>onNavigate('users')}>Open ↗</button><span>Device & peripheral records</span><b>{devices.length}</b><button onClick={()=>onNavigate('devices')}>Open ↗</button></div></div><div className="workspace-note"><ShieldCheck size={16}/><span>These counts come from the current app workspace. No company-wide totals or live system health are claimed.</span></div></Panel>
   </div>
  </>;
