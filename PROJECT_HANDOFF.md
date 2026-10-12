@@ -93,3 +93,14 @@ Tell the next assistant/agent:
 > Continue IntelliStack Systems / Maximus Optimus from GitHub. First read `PROJECT_HANDOFF.md`, `README.md`, `MASTER_BLUEPRINT.md`, and draft PR #5. Verify the current branch/head/checks and inspect the diff before changing anything. Work on a feature branch, distinguish simulation from live integrations, update the handoff when status changes, and do not merge or deploy without my explicit approval.
 
 This document is a living handoff, not proof that planned features have been implemented.
+
+
+### Global executive command view and million-user scale target
+
+- Add a separately branded acquired/partner-company tenant; its final company name is **TBD** and must not be invented as an actual customer.
+- Give both organizations their own multi-tier hierarchy, memberships, roles, policies, systems, assets, tickets, incidents, and audit boundaries.
+- Add a unified global executive view and a tenant switcher for explicitly authorized Super Admins. Keep the active tenant visible and enforce permissions server-side; one login is not unrestricted cross-tenant access.
+- Cross-tenant content access requires least privilege, MFA/step-up controls where supported, approved purpose/scope, time limits, and detailed audit records. Provide a reviewed, time-limited break-glass path rather than a permanent bypass.
+- Treat **1,000,000 global registered users** as an aspirational engineering target, not a provisioned user count or proven capacity. Define service objectives and test realistic concurrency, data distribution, audit volume, regional latency, and failure recovery before making scale claims.
+- The detailed requirements and acceptance checks are in section 38 of MASTER_BLUEPRINT.md. These are roadmap requirements, not implemented features.
+
