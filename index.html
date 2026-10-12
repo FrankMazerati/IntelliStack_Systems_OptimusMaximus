@@ -1,2 +1,29 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="theme-color" content="#070c19"/><meta name="description" content="IntelliStack Systems — fictional enterprise IT command center portfolio demo."/><title>IntelliStack Systems | Maximus Optimus Command Center</title></head><body><div id="root"></div><script type="module" src="./main.jsx"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070c19" />
+    <meta name="description" content="IntelliStack Systems — fictional enterprise IT command center portfolio demo." />
+    <title>IntelliStack Systems | Maximus Optimus Command Center</title>
+    <style>
+      html,body{margin:0;min-height:100%;background:#070c19;color:#e8efff;font-family:Inter,system-ui,sans-serif}
+      #startup-fallback{box-sizing:border-box;max-width:760px;margin:12vh auto;padding:28px;border:1px solid #23344d;border-radius:18px;background:#0c1425}
+      #startup-fallback h1{margin:0 0 12px;color:#00d4ff;font-size:clamp(22px,5vw,32px)}
+      #startup-fallback p{line-height:1.6;color:#c4cee0}
+      #startup-fallback code{color:#00d4ff;overflow-wrap:anywhere}
+      #startup-fallback a{color:#00d4ff}
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <main id="startup-fallback">
+        <h1>IntelliStack Systems</h1>
+        <p>The command center page loaded, but its application script has not started yet.</p>
+        <p>If this message stays on screen, the browser could not start the React app. Please share this message so we can identify the next deployment fix.</p>
+        <p>Deployment source: <code>GitHub Actions · Vite production build</code></p>
+      </main>
+    </div>
+    <script type="module" src="./main.jsx"></script>
+  </body>
+</html>
