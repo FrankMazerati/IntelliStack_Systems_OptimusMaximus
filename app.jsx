@@ -3,7 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './Login.png';
 import React, { useMemo, useState } from 'react';
-import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
 const screenDefs = [
@@ -20,6 +20,8 @@ const screenDefs = [
   {id:'maximus',label:'Maximus AI Assistant',group:'Super Admin',icon:Bot,description:'Interactive operations assistant with a built-in support and troubleshooting knowledge base.'},
   {id:'optimus',label:'Optimus Command Assistant',group:'Super Admin',icon:Sparkles,description:'Interactive Super Admin assistant for users, devices, security, audit, and integrations.'},
   {id:'status',label:'System Status',group:'Help Desk Agent',icon:Activity,description:'Service health and incident signals at a glance.'},
+  {id:'networkops',label:'Network Operations Center',group:'Super Admin',accessRoles:['IT Administrator','Governance & Compliance'],icon:Radio,description:'Network health, packet analysis, monitoring vendors, and incident handoff.'},
+  {id:'terminal',label:'Command Line & PowerShell',group:'Super Admin',accessRoles:['IT Administrator','Help Desk Agent'],icon:Terminal,description:'Controlled command workspace for approved operators. Preview mode only until a secure endpoint agent is connected.'},
   {id:'infrastructure',label:'Infrastructure',group:'IT Administrator',icon:MonitorCog,description:'Assets, capacity, and operational maintenance.'},
   {id:'remote',label:'Remote Support',group:'IT Administrator',icon:MonitorCog,description:'Review end-user devices and launch a simulated remote-support session.'},
   {id:'automation',label:'Automation Workflows',group:'IT Administrator',icon:Workflow,description:'Review workflow runs and operational automations.'},
@@ -84,6 +86,8 @@ function Overview({onNavigate,tickets,endUsers,devices}){
       ['Systems & Devices','devices',MonitorCog,'Inspect managed assets and devices'],
       ['Help Desk','tickets',Ticket,'Create, triage, and resolve tickets'],
       ['Audit & Compliance','audit',ClipboardList,'Review audit records and evidence'],
+      ['Network Operations Center','networkops',Radio,'Packet analysis and network monitoring'],
+      ['CMD & PowerShell','terminal',Terminal,'Controlled command workspace for approved operators'],
       ['Monitoring','status',Activity,'View service status workspace'],
       ['Administration','governance',Settings,'Open governance and admin controls']
      ].map(([label,id,Icon,description])=><button className="management-tile" key={label} onClick={()=>onNavigate(id)}><span className="management-tile-icon"><Icon size={19}/></span><span className="management-tile-copy"><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}
@@ -398,6 +402,99 @@ function WarRoomPage(){
  <p className="privacy-note">Prototype only: room roster, chat, and text drafts are saved in this browser, not transmitted. Video is a placeholder until a conferencing provider is integrated. Production needs authenticated shared storage, role-based oversight, audit logs, tested on-call rotations, and approved messaging/video connectors.</p></>;
 }
 
+
+function NetworkOperationsPage({onNavigate}){
+ const [selected,setSelected]=useState('Wireshark');
+ const [notice,setNotice]=useState('');
+ const tools=[
+  {name:'Wireshark',kind:'Packet analysis',description:'Inspect packet captures, decode protocols, and investigate network conversations.',status:'Not connected',url:'https://www.wireshark.org/',actions:['PCAP / PCAPNG review','Display filters','Protocol dissection']},
+  {name:'SolarWinds NPM',kind:'Network performance monitoring',description:'Monitor device availability, interfaces, latency, packet loss, and performance trends.',status:'Not connected',url:'https://www.solarwinds.com/network-performance-monitor',actions:['Device health','Topology and interfaces','Performance alerts']},
+  {name:'PRTG Network Monitor',kind:'Monitoring alternative',description:'Sensor-based network, bandwidth, and infrastructure monitoring.',status:'Not connected',url:'https://www.paessler.com/prtg',actions:['Sensor status','Bandwidth trends','Threshold alerts']},
+  {name:'Zabbix',kind:'Monitoring alternative',description:'Open-source infrastructure monitoring with metrics, triggers, and dashboards.',status:'Not connected',url:'https://www.zabbix.com/',actions:['Metrics and triggers','Availability history','Alert rules']},
+  {name:'ManageEngine OpManager',kind:'Monitoring alternative',description:'Network device monitoring, fault management, and performance visibility.',status:'Not connected',url:'https://www.manageengine.com/network-monitoring/',actions:['Network discovery','Fault monitoring','Capacity trends']},
+  {name:'Cisco Catalyst Center',kind:'Cisco network management',description:'Cisco enterprise network assurance and network-device operations.',status:'Not connected',url:'https://www.cisco.com/',actions:['Network assurance','Device inventory','Policy and health']},
+ ];
+ const active=tools.find(t=>t.name===selected)||tools[0];
+ return <>
+  <div className="ops-hero"><div><div className="eyebrow"><span className="pulse"/> NETWORK OPERATIONS CENTER</div><h2>Network visibility & packet investigation</h2><p>One workspace for packet-level analysis and network-wide monitoring. Connect only approved tools and authorized monitoring sensors.</p></div><div className="ops-hero-mark"><Radio size={30}/><span>NETWORK<br/>OPERATIONS</span></div></div>
+  <div className="metrics-grid ops-metrics">
+   <Metric icon={Network} label="Monitoring platforms" value={tools.length} trend="Available connector options"/>
+   <Metric icon={Activity} label="Live data sources" value="0" trend="No monitoring connectors configured" positive={false}/>
+   <Metric icon={Cable} label="Packet capture sensors" value="0" trend="Requires an authorized sensor" positive={false}/>
+   <Metric icon={ShieldCheck} label="Access mode" value="Controlled" trend="Connection approval required"/>
+  </div>
+  <div className="ops-connector-grid">{tools.map(t=><button key={t.name} type="button" className={'ops-connector-card '+(selected===t.name?'selected':'')} onClick={()=>{setSelected(t.name);setNotice('')}}><span className="ops-card-top"><span className="ops-tool-icon">{t.name==='Wireshark'?<Activity size={19}/>:t.name==='Cisco Catalyst Center'?<Network size={19}/>:<Radio size={19}/>}</span><StatusPill kind="neutral">{t.status}</StatusPill></span><b>{t.name}</b><small>{t.kind}</small><p>{t.description}</p><span className="ops-card-action">View integration plan ↗</span></button>)}</div>
+  <div className="content-grid two-col ops-detail-grid">
+   <Panel title={active.name} subtitle={active.kind}>
+    <p className="ops-description">{active.description}</p><div className="ops-capability-list">{active.actions.map(a=><div key={a}><CheckCircle2 size={15}/><span>{a}</span></div>)}</div>
+    <div className="ops-notice"><ShieldCheck size={17}/><span><b>Integration status: not connected.</b> These are integration options, not live telemetry. A secure backend, credentials stored server-side, approved connector, and access policy are required before data appears here.</span></div>
+    <div className="ops-button-row"><a className="secondary-btn ops-link" href={active.url} target="_blank" rel="noreferrer">Vendor website ↗</a><button className="primary-btn" onClick={()=>setNotice('Connection request recorded in this preview only. No vendor credentials were collected and no system was contacted.')}>Request connector setup</button></div>
+    {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}</div>}
+   </Panel>
+   <Panel title="Packet investigation workflow" subtitle="Designed for authorized security and network staff">
+    <div className="ops-workflow-list"><div><span>01</span><div><b>Choose a capture source</b><p>Use an approved sensor or upload an authorized PCAP/PCAPNG file.</p></div></div><div><span>02</span><div><b>Inspect packets</b><p>Use Wireshark/TShark analysis for protocol details and display filters.</p></div></div><div><span>03</span><div><b>Correlate with monitoring</b><p>Compare packet findings with SolarWinds or another connected NMS alert.</p></div></div><div><span>04</span><div><b>Escalate and audit</b><p>Open an incident and send the authorized summary to the War Room.</p></div></div></div>
+    <button className="primary-btn" onClick={()=>onNavigate('warroom')}><Activity size={15}/> Open War Room</button>
+   </Panel>
+  </div>
+  <p className="privacy-note">Packet capture can expose credentials, personal data, and confidential traffic. Production capture must be scoped, time-limited, permission-checked, and audited. Never capture traffic on networks you are not authorized to monitor.</p>
+ </>;
+}
+
+function CommandWorkspacePage(){
+ const [shell,setShell]=useState('PowerShell');
+ const [command,setCommand]=useState('');
+ const [history,setHistory]=useState([]);
+ const [notice,setNotice]=useState('');
+ const [approvedRoles,setApprovedRoles]=useState(['Super Admin','IT Administrator']);
+ const samples={
+  PowerShell:{
+   'Get-Date':'Monday, October 12, 2026 6:30:00 AM\n[SIMULATED OUTPUT — preview only]',
+   'Get-ComputerInfo':'CsName: IS-LAB-WIN-014\nWindowsProductName: Windows 11 Pro\nOsArchitecture: 64-bit\n[SIMULATED OUTPUT — preview only]',
+   'Get-Service':'Status   Name                 DisplayName\nRunning  EventLog             Windows Event Log\nRunning  Winmgmt              Windows Management Instrumentation\n[SIMULATED OUTPUT — preview only]',
+   'Get-NetIPConfiguration':'InterfaceAlias: Ethernet0\nIPv4Address: 192.0.2.24\nIPv4DefaultGateway: 192.0.2.1\n[SIMULATED OUTPUT — documentation-only sample addresses]',
+   'Get-Process':'Handles  NPM(K)  PM(K)   CPU(s)  ProcessName\n    412      28   86400    12.8  explorer\n    285      19   43820     4.1  svchost\n[SIMULATED OUTPUT — preview only]'
+  },
+  CMD:{
+   'whoami':'intellistack\\approved-operator\n[SIMULATED OUTPUT — preview only]',
+   'hostname':'IS-LAB-WIN-014\n[SIMULATED OUTPUT — preview only]',
+   'ipconfig':'Ethernet adapter Ethernet0:\n   IPv4 Address. . . . . . : 192.0.2.24\n   Default Gateway . . . . : 192.0.2.1\n[SIMULATED OUTPUT — documentation-only sample addresses]',
+   'systeminfo':'Host Name: IS-LAB-WIN-014\nOS Name: Microsoft Windows 11 Pro\nSystem Type: x64-based PC\n[SIMULATED OUTPUT — preview only]',
+   'tasklist':'Image Name                     PID Session Name\nexplorer.exe                   4120 Console\nsvchost.exe                    1024 Services\n[SIMULATED OUTPUT — preview only]'
+  }
+ };
+ const commands=Object.keys(samples[shell]);
+ const runCommand=()=>{
+  const input=command.trim();
+  if(!input)return;
+  const found=Object.entries(samples[shell]).find(([k])=>k.toLowerCase()===input.toLowerCase());
+  const output=found?found[1]:'Preview mode did not execute this command. Only the listed demonstration commands have sample output. Live execution requires an authenticated endpoint agent, server-side role enforcement, a device/session approval, and audit logging.';
+  setHistory(prev=>[{id:Date.now(),shell,command:input,output},...prev].slice(0,12));
+  setNotice(found?'Displayed sample output only; no command ran on a device.':'Command blocked in preview mode; no system command was executed.');
+  setCommand('');
+ };
+ return <>
+  <div className="ops-hero terminal-hero"><div><div className="eyebrow"><span className="pulse"/> APPROVED OPERATOR WORKSPACE</div><h2>Command Line & PowerShell</h2><p>A centralized interface for approved users to request command sessions on managed Windows endpoints. This build is a safe interface preview; it does not execute commands.</p></div><div className="ops-hero-mark terminal-mark"><Terminal size={30}/><span>CMD<br/>POWERSHELL</span></div></div>
+  <div className="ops-notice terminal-warning"><LockKeyhole size={18}/><span><b>Secure execution is not connected.</b> The console below returns demonstration output only. It cannot access your browser, server, or employee devices.</span></div>
+  <div className="content-grid two-col terminal-layout">
+   <Panel title="Command console" subtitle="Select a shell and enter one of the demonstration commands">
+    <div className="terminal-shell-tabs" role="tablist" aria-label="Command shell">{['PowerShell','CMD'].map(s=><button key={s} role="tab" aria-selected={shell===s} className={shell===s?'active':''} onClick={()=>{setShell(s);setCommand('');}}>{s==='PowerShell'?<Terminal size={15}/>:<span className="cmd-glyph">C:\u005f</span>}{s}</button>)}</div>
+    <div className="terminal-window"><div className="terminal-window-bar"><span/><span/><span/><b>{shell==='PowerShell'?'Windows PowerShell':'Command Prompt'} · Preview</b></div><div className="terminal-prompt">{shell==='PowerShell'?'PS C:\\IntelliStack>':'C:\\IntelliStack>'}</div><form className="terminal-command-form" onSubmit={e=>{e.preventDefault();runCommand();}}><span>{shell==='PowerShell'?'PS>':'>'}</span><input aria-label={shell+' command'} value={command} onChange={e=>setCommand(e.target.value)} placeholder={shell==='PowerShell'?'Enter a sample PowerShell command':'Enter a sample CMD command'}/><button type="submit" className="primary-btn"><Play size={14}/> Run preview</button></form><div className="terminal-hint">Safe preview · commands are not sent to an endpoint</div></div>
+    <div className="terminal-command-picks"><span>Sample commands</span>{commands.map(c=><button key={c} onClick={()=>setCommand(c)}>{c}</button>)}</div>
+    {notice&&<div className="ops-notice"><ShieldCheck size={16}/><span>{notice}</span></div>}
+   </Panel>
+   <Panel title="Access policy preview" subtitle="Illustrative role approvals; not enforced by this browser UI">
+    <p className="ops-description">Choose which role groups should be proposed for command-console access. Production approvals must be stored and enforced server-side against authenticated identities.</p>
+    <div className="terminal-role-list">{['Super Admin','IT Administrator','Help Desk Agent','Governance & Compliance'].map(r=><label key={r}><input type="checkbox" checked={approvedRoles.includes(r)} onChange={e=>setApprovedRoles(prev=>e.target.checked?[...prev,r]:prev.filter(x=>x!==r))}/><span><b>{r}</b><small>{r==='Super Admin'?'Full oversight; privileged sessions still require strong authentication.':r==='IT Administrator'?'Managed endpoint administration and troubleshooting.':r==='Help Desk Agent'?'Limited support commands on assigned devices after approval.':'Audit and evidence visibility; command execution only if separately authorized.'}</small></span><span className={'terminal-role-state '+(approvedRoles.includes(r)?'approved':'restricted')}>{approvedRoles.includes(r)?'Proposed access':'Not approved'}</span></label>)}</div>
+    <div className="ops-notice"><ShieldCheck size={17}/><span>Recommended controls: MFA, just-in-time elevation, per-device approval, session timeout, command allowlists where practical, transcript/audit records, and emergency revocation.</span></div>
+   </Panel>
+  </div>
+  <Panel title="Session activity" subtitle="Most recent demonstration commands in this browser session">
+   {history.length?<div className="terminal-history">{history.map(h=><div key={h.id}><div className="terminal-history-head"><b>{h.shell}</b><code>{h.command}</code><span>Preview only</span></div><pre>{h.output}</pre></div>)}</div>:<div className="empty-state terminal-empty"><Terminal size={28}/><h3>No commands in this session</h3><p>Choose a sample command above to see clearly labeled demonstration output.</p></div>}
+  </Panel>
+  <p className="privacy-note">Production implementation requires a managed endpoint agent or approved remote management platform. Do not implement a public web shell or pass arbitrary user-supplied commands directly to a server-side shell. Authenticate each operator, authorize every target device, log requests and results, and restrict high-risk actions.</p>
+ </>;
+}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -423,6 +520,8 @@ function App(){
     if(activeScreen==='integrations') return <IntegrationsPage/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
+    if(activeScreen==='networkops') return <NetworkOperationsPage onNavigate={navigate}/>;
+    if(activeScreen==='terminal') return <CommandWorkspacePage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
     if(activeScreen==='endusers') return <EndUsersPage endUsers={endUsers} tickets={tickets} onNavigate={navigate}/>;
     return <Panel title={currentScreen.label} subtitle={currentScreen.description}><div className="empty-state"><div className="service-icon"><currentScreen.icon size={24}/></div><h3>{currentScreen.label}</h3><p>This section is represented in the command-center navigation, but its full workflow has not been implemented in this build yet.</p><p className="privacy-note">Preview workspace · no live services or production systems are connected.</p><button className="primary-btn" onClick={()=>navigate(currentRole==='Help Desk Agent'?'tickets':'overview')}>Return to {currentRole==='Help Desk Agent'?'Service Desk':'Command Center'} →</button></div></Panel>;
