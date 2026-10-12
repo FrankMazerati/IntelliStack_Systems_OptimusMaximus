@@ -59,17 +59,51 @@ function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const conte
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
+const superActionCatalog = [
+ ['users','Users & Groups',Users,'Manage user records and group membership'],
+ ['security','Roles & Permissions',ShieldCheck,'Review role assignments and access'],
+ ['warroom','War Room',Activity,'Coordinate incidents and response teams'],
+ ['automation','Workflows',Workflow,'Review automation workflows'],
+ ['builder','Platform Builder',LayoutDashboard,'Register planned pages and modules'],
+ ['devices','Systems & Devices',MonitorCog,'Inspect managed assets and devices'],
+ ['tickets','Help Desk',Ticket,'Create, triage, and resolve tickets'],
+ ['audit','Audit & Compliance',ClipboardList,'Review audit records and evidence'],
+ ['networkops','Network Operations Center',Radio,'Packet analysis and network monitoring'],
+ ['terminal','CMD & PowerShell',Terminal,'Controlled command workspace for approved operators'],
+ ['status','Monitoring',Activity,'View service status workspace'],
+ ['governance','Administration',Settings,'Open governance and admin controls'],
+ ['integrations','Integrations & APIs',Network,'Connected systems and integration health'],
+ ['globaltenants','Global Tenant Command',Globe2,'Review authorized organization summaries'],
+ ['security','Security Center',ShieldCheck,'Security posture and response'],
+ ['infrastructure','Backup & Recovery',Database,'Infrastructure and recovery planning'],
+ ['knowledge','Knowledge & Documentation',BookOpen,'Support articles and runbooks'],
+ ['endusers','End User Directory',UserCog,'Look up people, devices, and ticket history'],
+ ['maximus','Maximus AI Assistant',Bot,'Operations assistant and troubleshooting knowledge'],
+ ['optimus','Optimus Command Assistant',Sparkles,'Super Admin command assistant'],
+ ['intelligence','Intelligence Briefing',Newspaper,'Technology and cybersecurity source links'],
+ ['remote','Remote Support',MonitorCog,'Review device support workflows'],
+ ['governance','Reports & Analytics',FileText,'Governance and reporting workspace']
+];
+const defaultQuickActionIds = ['users','security','warroom','automation','builder','devices','tickets','audit','networkops','terminal'];
 function Overview({onNavigate,tickets,endUsers,devices}){
+ const [quickActionIds,setQuickActionIds]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-super-actions')||'null');if(Array.isArray(saved))return [...new Set(saved.filter(id=>superActionCatalog.some(item=>item[0]===id))].slice(0,10));}catch{}return defaultQuickActionIds;});
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
+ const [showManageActions,setShowManageActions]=useState(false);
+ const [notice,setNotice]=useState('');
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
+ const saveActions=(next)=>{setQuickActionIds(next);localStorage.setItem('intellistack-super-actions',JSON.stringify(next));setNotice('Quick actions saved in this browser.');};
+ const toggleAction=(id)=>{if(quickActionIds.includes(id)){saveActions(quickActionIds.filter(item=>item!==id));return;}if(quickActionIds.length>=10){setNotice('You can save up to 10 quick actions. Remove one before adding another.');return;}saveActions([...quickActionIds,id]);};
+ const quickActions=quickActionIds.map(id=>superActionCatalog.find(item=>item[0]===id)).filter(Boolean);
+ const moreActions=superActionCatalog.filter(item=>!quickActionIds.includes(item[0]));
  return <>
-  <div className="dashboard-action-strip"><div><span className="eyebrow"><span className="pulse"/> WORKSPACE OVERVIEW</span><h2>What would you like to do?</h2><p>Shortcuts to the main administrative workflows.</p></div><div className="dashboard-actions">
-   <button className="primary-btn" onClick={()=>onNavigate('tickets')}><Plus size={16}/> Create / manage tickets</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('users')}><Users size={16}/> User management</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('integrations')}><Network size={16}/> Add integration</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('security')}><ShieldCheck size={16}/> Security settings</button>
-  </div></div>
+  <div className="dashboard-action-strip"><div><span className="eyebrow"><span className="pulse"/> SUPER ACTION DASHBOARD</span><h2>Your command shortcuts</h2><p>Pin up to 10 favorite actions. New workspaces belong here or in More Features.</p></div><div className="dashboard-actions"><button className="primary-btn" onClick={()=>setShowManageActions(value=>!value)}><SlidersHorizontal size={16}/>{showManageActions?'Done customizing':'Customize quick actions'}</button><button className="secondary-btn" onClick={()=>onNavigate('tickets')}><Plus size={16}/> Create / manage tickets</button></div></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  {showManageActions&&<Panel title="Customize saved icons" subtitle="Choose up to 10 quick actions. Your choices are saved in this browser."><div className="quick-action-editor"><div className="quick-action-editor-count">{quickActionIds.length} of 10 saved</div>{superActionCatalog.map(([id,label,Icon,description])=>{const selected=quickActionIds.includes(id);return <button type="button" key={id+'-'+label} className={'quick-action-choice '+(selected?'selected':'')} onClick={()=>toggleAction(id)} aria-pressed={selected}><span className="management-tile-icon"><Icon size={17}/></span><span><b>{label}</b><small>{description}</small></span><span className="quick-choice-state">{selected?'✓':quickActionIds.length>=10?'Limit reached':'＋'}</span></button>})}</div></Panel>}
+  <Panel title="Saved Quick Actions" subtitle="Tap an icon to open its workspace. Use Customize quick actions to change the saved set." action={<span className="status-pill neutral">{quickActions.length}/10 pinned</span>}>
+   <div className="super-action-grid">{quickActions.map(([id,label,Icon,description])=><button type="button" className="super-action-tile" key={id+'-'+label} onClick={()=>onNavigate(id)} title={description}><span className="super-action-icon"><Icon size={21}/></span><b>{label}</b><small>{description}</small>{showManageActions&&<span className="pin-remove" onClick={e=>{e.stopPropagation();toggleAction(id)}} aria-label={'Remove '+label}>×</span>}</button>)}</div>
+   {quickActions.length===0&&<div className="empty-state">No saved quick actions yet. Select Customize quick actions to pin your favorites.</div>}
+  </Panel>
   <div className="metrics-grid">
    <Metric icon={Users} label="Active lab users" value={labUsers.length} trend="Manage users and roles" onClick={()=>onNavigate('users')}/>
    <Metric icon={Ticket} label="Open tickets" value={openTickets} trend="Review and update tickets" onClick={()=>onNavigate('tickets')}/>
@@ -78,35 +112,10 @@ function Overview({onNavigate,tickets,endUsers,devices}){
   </div>
   <IntelligenceBriefing onNavigate={onNavigate} compact/>
   <div className="content-grid two-col">
-   <Panel title="Management Hub" subtitle="Ten primary workspaces, with additional tools grouped under More Features.">
-    <div className="management-grid">
-     {[
-      ['Users & Groups','users',Users,'Manage user records and group membership'],
-      ['Roles & Permissions','users',ShieldCheck,'Review role assignments and access'],
-      ['War Room','warroom',Activity,'Coordinate incidents and response teams'],
-      ['Workflows','automation',Workflow,'Review automation workflows'],
-      ['Platform Builder','builder',LayoutDashboard,'Register planned pages and modules'],
-      ['Systems & Devices','devices',MonitorCog,'Inspect managed assets and devices'],
-      ['Help Desk','tickets',Ticket,'Create, triage, and resolve tickets'],
-      ['Audit & Compliance','audit',ClipboardList,'Review audit records and evidence'],
-      ['Network Operations Center','networkops',Radio,'Packet analysis and network monitoring'],
-      ['CMD & PowerShell','terminal',Terminal,'Controlled command workspace for approved operators'],
-      ['Monitoring','status',Activity,'View service status workspace'],
-      ['Administration','governance',Settings,'Open governance and admin controls']
-     ].map(([label,id,Icon,description])=><button className="management-tile" key={label} onClick={()=>onNavigate(id)}><span className="management-tile-icon"><Icon size={19}/></span><span className="management-tile-copy"><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}
-    </div>
+   <Panel title="More Features" subtitle="All other available workspaces are organized here. Select one to open it." action={<button className="text-btn" onClick={()=>setShowMoreFeatures(value=>!value)}>{showMoreFeatures?'Hide features':'Browse features'} <ChevronDown size={13} className={showMoreFeatures?'chevron-open':''}/></button>}>
     <div className="more-features">
-     <button type="button" className="more-features-toggle" aria-expanded={showMoreFeatures} onClick={()=>setShowMoreFeatures(value=>!value)}><span><PlusCircle size={17}/><b>More Features</b><small>Additional tools and workspaces</small></span><ChevronDown size={17} className={showMoreFeatures?'chevron-open':''}/></button>
-     {showMoreFeatures&&<div className="more-features-menu">
-      {[
-       ['Security Center','security',ShieldCheck,'Security posture and response'],
-       ['Reports & Analytics','governance',FileText,'Governance and reporting workspace'],
-       ['Integrations & APIs','integrations',Network,'Connected systems and integration health'],
-       ['Backup & Recovery','infrastructure',Database,'Infrastructure and recovery planning'],
-       ['Knowledge & Documentation','knowledge',BookOpen,'Support articles and runbooks'],
-       ['End User Directory','endusers',UserCog,'Look up people, devices, and ticket history']
-      ].map(([label,id,Icon,description])=><button key={label} onClick={()=>onNavigate(id)}><Icon size={17}/><span><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}
-     </div>}
+     <button type="button" className="more-features-toggle" aria-expanded={showMoreFeatures} onClick={()=>setShowMoreFeatures(value=>!value)}><span><PlusCircle size={17}/><b>Feature directory</b><small>{moreActions.length} actions not currently pinned</small></span><ChevronDown size={17} className={showMoreFeatures?'chevron-open':''}/></button>
+     {showMoreFeatures&&<div className="more-features-menu">{moreActions.map(([id,label,Icon,description])=><button key={id+'-'+label} onClick={()=>onNavigate(id)}><Icon size={17}/><span><b>{label}</b><small>{description}</small></span><span className="quick-arrow">↗</span></button>)}</div>}
     </div>
    </Panel>
    <Panel title="Workspace data" subtitle="Current in-memory test records"><div className="workspace-data-list"><div><span>Ticket records</span><b>{tickets.length}</b><button onClick={()=>onNavigate('tickets')}>Open ↗</button></div><div><span>End-user records</span><b>{endUsers.length}</b><button onClick={()=>onNavigate('endusers')}>Open ↗</button></div><div><span>Lab user accounts</span><b>{labUsers.length}</b><button onClick={()=>onNavigate('users')}>Open ↗</button><span>Device & peripheral records</span><b>{devices.length}</b><button onClick={()=>onNavigate('devices')}>Open ↗</button></div></div><div className="workspace-note"><ShieldCheck size={16}/><span>These counts come from the current app workspace. No company-wide totals or live system health are claimed.</span></div></Panel>
