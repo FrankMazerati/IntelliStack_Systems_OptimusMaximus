@@ -609,3 +609,33 @@
 .build-tracker-note svg{flex-shrink:0;color:var(--cyan);margin-top:1px}
 @media(max-width:1100px){.super-action-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:740px){.super-action-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-action-editor{grid-template-columns:1fr}.build-tracker-summary{grid-template-columns:1fr}.build-tracker-stat{padding:11px}.build-tracker-stat strong{font-size:17px}.build-milestone{align-items:flex-start}.milestone-label{font-size:7px;padding-top:4px}}
+
+/* Pinned global operations world clock strip */
+.world-clock-bar{position:sticky;top:0;z-index:18;display:grid;grid-template-columns:140px minmax(0,1fr) auto;align-items:stretch;gap:12px;padding:11px 18px;border-bottom:1px solid rgba(81,171,220,.2);background:rgba(5,13,26,.97);backdrop-filter:blur(16px);box-shadow:0 8px 22px rgba(0,0,0,.16);min-width:0}
+.world-clock-title{display:flex;align-items:center;gap:9px;min-width:0}
+.world-clock-mark{display:grid;place-items:center;flex-shrink:0;width:34px;height:34px;border:1px solid rgba(62,207,239,.23);border-radius:9px;background:rgba(0,191,239,.08);color:#69d9f4}
+.world-clock-title>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.world-clock-title b{color:#dceaff;font-size:10px;letter-spacing:1px}
+.world-clock-title small{color:#8199b7;font-size:8px;line-height:1.4}
+.world-clock-list{display:flex;gap:8px;min-width:0;overflow-x:auto;padding:1px 2px 5px;scrollbar-width:thin;scrollbar-color:rgba(83,157,198,.35) transparent}
+.world-clock-card{position:relative;display:flex;flex-direction:column;justify-content:center;gap:4px;flex:0 0 138px;min-width:138px;padding:8px 10px;border:1px solid rgba(113,155,207,.15);border-radius:9px;background:linear-gradient(145deg,rgba(18,39,65,.83),rgba(8,19,36,.92))}
+.world-clock-city{display:flex;align-items:center;justify-content:space-between;gap:5px}
+.world-clock-city b{color:#e6f1ff;font-size:10px}
+.world-clock-city span{overflow:hidden;color:#8299b7;font-size:8px;text-overflow:ellipsis;white-space:nowrap}
+.world-clock-card>strong{color:#71def4;font-size:20px;line-height:1.1;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+.world-clock-meta{display:flex;justify-content:space-between;gap:6px;color:#8ba2c0;font-size:8px}
+.world-clock-window{display:flex;align-items:center;gap:5px;font-size:8px;font-weight:700}
+.world-clock-window i{width:5px;height:5px;border-radius:50%;background:currentColor}
+.world-clock-window.in-window{color:#78dfbe}.world-clock-window.out-window{color:#d5b475}
+.world-clock-remove{position:absolute;right:4px;top:4px;display:grid;place-items:center;width:17px;height:17px;border:0;border-radius:50%;background:rgba(0,0,0,.2);color:#92a9c5;font-size:14px;line-height:1}
+.world-clock-remove:hover{background:rgba(255,100,100,.14);color:#ffaaaa}
+.world-clock-controls{display:grid;grid-template-columns:auto minmax(115px,1fr) auto;align-items:center;gap:6px;min-width:205px}
+.world-clock-controls label{grid-column:1/-1;color:#8ca4c2;font-size:8px;font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.world-clock-controls select{min-width:0;width:100%;padding:7px 5px;border:1px solid rgba(113,155,207,.2);border-radius:7px;background:#0b1a2f;color:#dceaff;font-size:9px}
+.world-clock-controls select option{background:#0b1a2f;color:#dceaff}
+.world-clock-add{display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 8px;border:1px solid rgba(62,207,239,.24);border-radius:7px;background:rgba(0,191,239,.08);color:#74def4;font-size:9px;font-weight:700}
+.world-clock-add:disabled{opacity:.4}
+.world-clock-footnote{grid-column:1/-1;display:flex;align-items:flex-start;gap:6px;padding:1px 2px 0;color:#8197b5;font-size:8px;line-height:1.45}
+.world-clock-footnote svg{flex-shrink:0;color:#6bd8ef}
+@media(max-width:1200px){.world-clock-bar{grid-template-columns:125px minmax(0,1fr);gap:9px;padding:9px 12px}.world-clock-controls{grid-column:1/-1;grid-template-columns:auto minmax(120px,1fr) auto;min-width:0}.world-clock-controls label{grid-column:auto}.world-clock-footnote{grid-column:1/-1}}
+@media(max-width:640px){.world-clock-bar{grid-template-columns:1fr;gap:8px;padding:9px}.world-clock-title{gap:8px}.world-clock-title small{font-size:8px}.world-clock-list{margin:0 -2px}.world-clock-card{flex-basis:132px;min-width:132px}.world-clock-controls{grid-template-columns:auto minmax(0,1fr) auto}.world-clock-controls label{font-size:8px}}
