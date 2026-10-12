@@ -178,3 +178,104 @@
 .sidebar-logout:hover{background:rgba(255,109,138,.12);border-color:rgba(255,109,138,.4);color:#fff}
 .sidebar-logout svg{flex-shrink:0}
 @media(max-width:420px){.sidebar-brand-content .brand-name{font-size:9px}.sidebar-brand-content .brand-tag{font-size:6px;letter-spacing:.45px}}
+
+
+/* Enterprise module visual system: Service Desk, Identity, Endpoint and Connect */
+.page-content{background:radial-gradient(ellipse at 82% 0%,rgba(28,111,181,.075),transparent 34%),var(--app-bg)}
+.page-heading{position:relative;padding:5px 0 18px;border-bottom:1px solid rgba(119,157,207,.12);margin-bottom:22px}
+.page-heading h1{letter-spacing:-.045em}
+.page-heading .eyebrow{color:#63c8f5;letter-spacing:1.65px}
+.page-heading-actions .status-pill{box-shadow:inset 0 1px rgba(255,255,255,.04)}
+/* Make every major module use the same layered command-center surfaces */
+.page-content .panel,.page-content .metric-card,.page-content .device-hero,.page-content .selected-user-detail,.page-content .ticket-layout>*,.page-content .device-layout>*{
+ background:linear-gradient(145deg,rgba(17,31,52,.96),rgba(9,18,33,.98));
+ border:1px solid rgba(103,153,211,.19);
+ box-shadow:0 12px 32px rgba(0,0,0,.15),inset 0 1px rgba(255,255,255,.025);
+}
+.page-content .panel{border-radius:15px;overflow:hidden}
+.page-content .panel-header{padding:18px 20px;border-bottom:1px solid rgba(122,161,211,.12);background:linear-gradient(90deg,rgba(36,93,146,.10),transparent)}
+.page-content .panel-header h3,.page-content .panel-header h2{letter-spacing:-.02em}
+.page-content .panel-body{padding:18px 20px}
+.page-content .metrics-grid{gap:13px}
+.page-content .metric-card{position:relative;overflow:hidden;border-radius:14px;padding:17px 18px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.page-content .metric-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,#24c5f5,rgba(124,91,255,.35),transparent)}
+.page-content .metric-card:hover{transform:translateY(-2px);border-color:rgba(55,190,255,.36);box-shadow:0 16px 36px rgba(0,0,0,.22)}
+.page-content .metric-value{font-variant-numeric:tabular-nums;letter-spacing:-.045em}
+.page-content .primary-btn{border:1px solid rgba(76,205,255,.28);background:linear-gradient(135deg,#087fae,#1558a5);box-shadow:0 5px 16px rgba(0,136,210,.16);border-radius:9px}
+.page-content .primary-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.page-content .secondary-btn,.page-content .icon-btn{border:1px solid rgba(128,164,211,.2);background:rgba(125,160,207,.065);border-radius:9px;color:#c7d8ed}
+.page-content input:not([type=checkbox]),.page-content select,.page-content textarea{background:rgba(4,12,25,.78);border:1px solid rgba(118,157,207,.22);border-radius:9px;color:#e6f1ff;outline:none;transition:border-color .15s,box-shadow .15s}
+.page-content input:not([type=checkbox]):focus,.page-content select:focus,.page-content textarea:focus{border-color:rgba(49,196,255,.68);box-shadow:0 0 0 3px rgba(22,167,230,.09)}
+.page-content .search-box{background:rgba(4,12,25,.62);border:1px solid rgba(118,157,207,.2);border-radius:10px}
+.page-content .table-scroll{border:1px solid rgba(113,155,207,.13);border-radius:11px;overflow:hidden}
+.page-content .table-scroll thead{background:linear-gradient(90deg,rgba(31,85,132,.25),rgba(17,34,57,.55))}
+.page-content .table-scroll th{color:#83a6cb;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:13px 12px;border-bottom:1px solid rgba(113,155,207,.17)}
+.page-content .table-scroll td{padding:13px 12px;border-bottom:1px solid rgba(113,155,207,.09);color:#c6d7eb}
+.page-content .table-scroll tbody tr:last-child td{border-bottom:0}
+.page-content .status-pill,.page-content .role-chip{font-weight:650;letter-spacing:.15px}
+/* Service Desk: a high-signal queue and readable ticket work area */
+.ticket-layout{gap:16px;align-items:start}
+.ticket-layout>.panel:first-child{border-top:2px solid rgba(48,195,255,.45)}
+.ticket-layout>.panel:last-child{border-top:2px solid rgba(151,111,255,.42)}
+.create-ticket-form{padding:16px;margin:14px 0;border:1px solid rgba(44,191,255,.22);border-radius:12px;background:linear-gradient(145deg,rgba(19,73,111,.18),rgba(15,25,44,.72));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.create-ticket-form h4,.create-ticket-form .field-label{grid-column:1/-1}
+.create-ticket-form h4{font-size:13px;color:#eff7ff;margin:0 0 3px}
+.create-ticket-form label{display:flex;flex-direction:column;gap:7px;color:#8da8c8;font-size:10px}
+.create-ticket-form input,.create-ticket-form select,.create-ticket-form textarea{width:100%;min-width:0;padding:10px;font-size:11px}
+.create-ticket-form button{align-self:end;justify-self:start}
+.ticket-detail,.ticket-card,.ticket-summary{border-radius:12px}
+.ticket-layout .table-tools{gap:9px;margin-bottom:14px}
+.ticket-layout .table-tools select{min-height:37px}
+.ticket-layout .table-scroll tbody tr{cursor:pointer}
+.ticket-layout .table-scroll tbody tr:hover{background:rgba(21,153,222,.08)}
+/* Identity directory: clearer selected account and form hierarchy */
+.selected-user-detail{box-shadow:inset 3px 0 rgba(37,190,245,.55),0 12px 30px rgba(0,0,0,.12)}
+.selected-user-detail>div:first-child{padding-bottom:13px;border-bottom:1px solid rgba(113,155,207,.13)}
+.selected-user-detail .builder-form{margin-top:14px;padding:15px;border:1px solid rgba(113,155,207,.14);border-radius:11px;background:rgba(3,12,25,.28)}
+.selected-user-detail .builder-form label{color:#8da8c8;font-size:10px}
+.group-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px 14px;padding:10px 12px;border:1px solid rgba(113,155,207,.16);border-radius:10px;background:rgba(3,12,25,.32)}
+.group-checks input[type=checkbox]{accent-color:#20bdf2}
+.builder-registry .builder-item{border:1px solid rgba(113,155,207,.13);border-radius:10px;margin-bottom:8px;background:rgba(6,16,31,.5);transition:border-color .15s,background .15s}
+.builder-registry .builder-item:hover{border-color:rgba(43,190,245,.35);background:rgba(20,75,112,.14)}
+.permission-row{padding:13px 0;border-bottom:1px solid rgba(113,155,207,.11)}
+/* Endpoint operations: asset registration, filters and editable configuration */
+.device-hero{position:relative;overflow:hidden;padding:22px 24px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:17px}
+.device-hero:after{content:"";position:absolute;width:240px;height:240px;right:12%;top:-175px;border-radius:50%;border:1px solid rgba(35,190,245,.16);box-shadow:0 0 0 25px rgba(35,190,245,.025),0 0 0 55px rgba(35,190,245,.018);pointer-events:none}
+.device-hero h2{font-size:22px;letter-spacing:-.04em;margin:9px 0}
+.device-hero p{max-width:650px;color:#91a9c7;line-height:1.65;font-size:11px}
+.device-hero .primary-btn{position:relative;z-index:1;flex-shrink:0}
+.device-add-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;padding:17px;border:1px solid rgba(36,187,244,.19);border-radius:12px;background:linear-gradient(140deg,rgba(13,75,111,.13),rgba(5,14,28,.48));margin:14px 0}
+.device-add-form label{display:flex;flex-direction:column;gap:7px;color:#8da8c8;font-size:10px;min-width:0}
+.device-add-form input,.device-add-form select,.device-add-form textarea{width:100%;min-width:0;padding:10px;font-size:11px}
+.device-add-form button{justify-self:start}
+.device-layout{gap:16px;align-items:start}
+.device-layout>.panel:first-child{border-top:2px solid rgba(39,191,246,.42)}
+.device-layout>.panel:last-child{border-top:2px solid rgba(145,111,255,.4)}
+.device-layout .table-tools{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px}
+.device-layout .table-tools input,.device-layout .table-tools select{min-height:37px}
+.device-layout .detail-block{padding:13px;margin-bottom:10px;border:1px solid rgba(113,155,207,.13);border-radius:10px;background:rgba(3,12,25,.32)}
+.device-layout .detail-block>span{display:block;color:#6faed1;font-size:9px;letter-spacing:1px;margin-bottom:8px}
+.device-layout .detail-block input,.device-layout .detail-block select,.device-layout .detail-block textarea{width:100%;padding:10px;font-size:11px}
+.device-layout .detail-block b{font-size:12px;color:#dcecff}
+.device-layout .builder-form-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+/* Connect: make API registration feel like a dedicated integration console */
+.page-action-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 18px;padding:19px 22px;border:1px solid rgba(40,188,242,.2);border-radius:15px;background:linear-gradient(115deg,rgba(13,77,116,.2),rgba(13,23,41,.88) 60%,rgba(92,54,142,.11));box-shadow:inset 0 1px rgba(255,255,255,.025)}
+.page-action-row h2{margin:0 0 6px;font-size:20px;letter-spacing:-.035em}
+.page-action-row p{margin:0;color:#8ca7c7;font-size:11px;line-height:1.6}
+.page-content .connector-card,.page-content .integration-card,.page-content .connection-card{border:1px solid rgba(113,155,207,.18);border-radius:13px;background:linear-gradient(145deg,rgba(18,34,57,.92),rgba(7,15,29,.97));box-shadow:0 10px 26px rgba(0,0,0,.14)}
+.page-content .connector-card:hover,.page-content .integration-card:hover,.page-content .connection-card:hover{border-color:rgba(43,190,245,.35)}
+.page-content .privacy-note{border-left:2px solid rgba(52,184,235,.38);padding:10px 13px;background:rgba(9,24,43,.38);border-radius:0 8px 8px 0;color:#7991b0;line-height:1.65}
+.page-content .inline-success{border:1px solid rgba(48,198,157,.22);border-radius:10px;background:rgba(19,116,94,.1);padding:11px 13px;color:#a5ead7}
+/* Touch-friendly responsive layouts */
+@media(max-width:760px){
+ .page-content .panel-header{padding:15px}
+ .page-content .panel-body{padding:14px}
+ .device-hero{padding:17px;align-items:flex-start;flex-direction:column}
+ .device-hero .primary-btn{align-self:flex-start}
+ .device-add-form,.create-ticket-form{grid-template-columns:1fr}
+ .create-ticket-form h4,.create-ticket-form .field-label{grid-column:1}
+ .group-checks{grid-template-columns:1fr}
+ .page-action-row{align-items:flex-start;flex-direction:column;padding:16px}
+ .ticket-layout,.device-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){.page-content .metric-card,.page-content .primary-btn,.builder-registry .builder-item{transition:none}}
