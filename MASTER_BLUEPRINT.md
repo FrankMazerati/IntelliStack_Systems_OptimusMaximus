@@ -494,3 +494,57 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Verify a failed stage can be retried without duplicating commits or corrupting another run, and every run has a clear audit trail.
 - This section specifies the intended workflow; it does not claim these agents or integrations are already connected or running.
 
+## 36. Unified collaboration rooms, five-item delivery batches, and scale-readiness roadmap
+
+### One connected workspace
+- Treat Rooms as a shared collaboration layer connected to the central ticket system, identity/permissions, audit ledger, notifications, workflows, and knowledge base—not as isolated chat pages.
+- Provide room templates for War Room / Incident Response, Help Desk, Sales / Customer Success, IT Operations, Security & Compliance, Project / Change Management, and company-specific department rooms.
+- Support public-to-company, private, and invite-only rooms; direct messages and group chats; membership management; room owners/moderators; pinned decisions; file and evidence links; searchable history; and retention controls.
+- Link discussions to tickets, incidents, changes, assets, customers, and approved knowledge records. Allow a message or decision to create a ticket or action item with explicit confirmation and traceability.
+- Support in-app notifications first, with configurable email, SMS/text, and mobile/web push channels as integrations are implemented. Users must control notification preferences; sensitive content should not be sent in notification previews by default.
+- Show delivery status, failures, retries, consent/opt-out status where applicable, and an audit trail for outbound notifications. SMS and email delivery must not be represented as live until providers are connected and tested.
+- Enforce tenant and room permissions on every read, search, attachment, notification, export, and API request. Private-room content must not leak through global search, AI summaries, or notifications.
+
+### Room-specific capabilities
+- **War Room:** incident timeline, severity, affected services/tenants, incident commander, assignments, live status updates, runbooks, evidence, decisions, communications templates, post-incident review, and links to central tickets.
+- **Help Desk Room:** requester conversations, ticket-linked private or group collaboration, escalation, knowledge suggestions, response templates, and service-level tracking.
+- **Sales / Customer Success Room:** prospect/customer account notes, onboarding milestones, demos, service health summaries, renewals, follow-up tasks, and handoff to support. Restrict commercial records by role and tenant.
+- **IT Operations Room:** changes, maintenance windows, device/network health, rollout progress, dependencies, approvals, and rollback plans.
+- **Security & Compliance Room:** restricted incident collaboration, evidence chain-of-custody, approvals, audit references, and carefully scoped access.
+- **Project / Change Room:** milestones, design decisions, code/pull-request links, deployment status, risks, owners, and acceptance criteria.
+
+### Five-item visual-to-code batch loop
+- Let the owner select a bounded batch of up to five related changes at a time—for example, five room enhancements or five UI components—and give each item its own requirement ID, design reference, acceptance criteria, owner, and status.
+- Pipeline states: Backlog -> Spec Approved -> Design Ready -> Implementation -> Automated Checks -> Independent Inspection -> Human Review -> Merged -> Preview Verified -> Approved Deployment.
+- Design handoff must include editable frames/components, assets, responsive states, interaction notes, and accessibility expectations. Keep text and functional controls in application code rather than flattening them into pictures.
+- Each implementation runs on an isolated branch or worktree. Do not have agents concurrently overwrite the same files. Changes are grouped into a batch for planning, but each item remains independently traceable and revertible.
+- The inspector evaluates each item and the combined batch for build/test failures, visual regressions, keyboard/accessibility issues, permission mistakes, tenant leaks, and unexpected file changes. A failed item blocks the relevant merge or deployment until fixed or explicitly waived by an authorized reviewer.
+- Use completion signals and successful checks to advance stages. A target delay (such as two minutes between stages) may be configured, but elapsed time alone never means a stage is complete.
+- Show a batch dashboard with progress, current agent/stage, commit and pull-request links, screenshots/previews, test evidence, blockers, estimated costs when available, and explicit approve/reject/retry/rollback controls.
+- Begin with a small pilot on the split login homepage, then rooms, then central ticketing/audit foundations. Expand batch size only after quality and failure recovery are proven.
+
+### Enterprise readiness and sustainable scale
+- Prioritize tenant isolation, identity and access management, durable server-side storage, centralized audit, backup/recovery, observability, secure secrets, rate limits, abuse prevention, and incident response before promising large-scale customer deployments.
+- Design for horizontal scaling and queues where appropriate; test realistic concurrent users, message volume, notification delivery, search, and background jobs. Millions of users is an aspirational scale target, not a verified capacity claim.
+- Separate provider-level platform operations from customer tenant administration and customer content. Support access to tenant data must be approved, scoped, time-limited, and audited.
+- Provide documented service tiers, usage limits, support expectations, data processing terms, retention/export/deletion procedures, and customer onboarding/offboarding.
+- Measure actual value with customer-visible usage, incident response time, ticket resolution time, automation success/failure, service availability, and verified cost savings. Avoid marketing claims about savings until supported by measured customer outcomes.
+
+### Intellectual property and product differentiation
+- Keep private source code in access-controlled repositories, require MFA and least-privilege access, protect secrets, review dependencies, scan for leaked credentials, and use branch protections and audited release permissions.
+- Keep sensitive business logic and privileged operations on authenticated server-side services rather than shipping secrets or critical authorization logic to the browser.
+- Use appropriate contracts, contributor/IP assignment terms, customer licensing terms, trademark protection, and legal advice for patent/copyright/trade-secret questions as applicable. Maintain provenance for generated assets and third-party dependencies and comply with their licenses.
+- Do not promise that software can be made impossible to duplicate. Focus on reducing source exposure and building defensible differentiation through service quality, integrations, workflows, operational data governance, customer trust, and execution.
+
+### Career and operating-model milestones
+- Use the next 6–12 months as a measurable development plan, not a guaranteed outcome: deliver a secure, demonstrable MVP; document architecture and threat model; establish CI and test coverage; ship a working login and room workflow; prove tenant isolation; build an audit-backed demo; and produce a portfolio of design decisions, pull requests, test reports, and deployment runbooks.
+- Track monthly milestones, risks, shipped capabilities, technical debt, and evidence of outcomes so the platform work can support future remote engineering, platform operations, and technical leadership opportunities.
+
+### Acceptance checks
+- Verify private room messages and attachments cannot be retrieved by unauthorized users, global search, direct URLs, AI summaries, or notifications.
+- Verify a room discussion can create a central ticket with links to the originating room and audit events.
+- Verify email, SMS, and push channels accurately show connected/unavailable status and respect user preferences and required consent.
+- Verify a batch of up to five items has separate traceability, isolated code changes, independent inspection, and a clear human approval gate.
+- Verify failed tests or inspection findings stop the pipeline and that approved rollback/retry procedures work.
+- Verify claims about performance, security, and cost savings are supported by test results or measured production evidence.
+
