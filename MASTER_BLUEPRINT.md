@@ -753,3 +753,55 @@ This section is an approved architecture/implementation plan, not evidence of im
 - Add automated negative tests for tenant ID tampering, direct-object access, search/export leakage, background tasks, stale client state, and attempted use of demo grants against real tenants.
 - Do not merge or deploy production without explicit user approval.
 
+## 41. BitLocker and endpoint encryption compliance
+
+### Objective
+Treat BitLocker as a first-class Windows endpoint security and compliance control across IntelliStack Systems / Maximus Optimus. The Global Tenant Command should summarize encryption posture only for tenants within the platform owner's authorized oversight scope. This feature begins as a labeled prototype until a real endpoint-management integration is configured and verified.
+
+### Required device-level signals
+For each supported Windows endpoint, track the best available authoritative state:
+- Device identity, tenant, owning organization unit/site, operating system and last check-in.
+- BitLocker capability/eligibility and OS volume protection state.
+- Encryption method and encryption progress/status where the management provider exposes them.
+- Protection status (for example, protection on/off/suspended), not merely whether encryption once completed.
+- TPM / Secure Boot readiness signals where available and relevant to policy.
+- Recovery-key escrow status and last verified escrow/check-in state. Do not show the recovery key itself in general compliance views.
+- Policy assignment, compliance result, exception/waiver, last evaluated timestamp, and data freshness/source.
+- Remediation state, failure reason, and the authorized management action history.
+
+### Tenant and role boundaries
+- Global oversight may display approved aggregate metrics by tenant: eligible endpoints, encrypted/protected endpoints, noncompliant endpoints, unknown/stale state, and policy coverage.
+- Opening a tenant's endpoint record requires that tenant's specific device/resource authorization.
+- Recovery keys are highly sensitive secrets. Never expose them in the global dashboard, general device cards, logs, analytics, notifications, or AI context. If recovery-key retrieval is ever added, use a dedicated high-privilege workflow with step-up authentication, explicit purpose/ticket, narrow device scope, time limits, audit logging, and provider-side authorization.
+- A platform-owner demo grant must not automatically authorize BitLocker key retrieval or real device changes.
+- Do not infer encryption status from a browser-only toggle or a seeded status label. Mark mock telemetry as simulated and live status with provider/source and freshness.
+
+### Integration and implementation approach
+1. Inspect the existing endpoint/device schema, identity model, RLS policies, and any installed device-management connector before creating migrations or UI bindings.
+2. Choose the authoritative management source based on the user's actual environment (for example, Microsoft Intune / Microsoft Graph or an approved endpoint-management provider). Do not assume an integration is connected merely because a card or settings page exists.
+3. Define a provider-neutral normalized device-encryption status model and map provider fields into it; retain raw provider payloads only when justified, access-controlled, and redacted.
+4. Implement server-side connector credentials and least-privilege permissions. Never place client secrets, recovery keys, or privileged provider tokens in browser code or localStorage.
+5. Add tenant-scoped APIs and database policies so device status is visible only to authorized tenant roles, while the global view consumes a narrowly scoped aggregate endpoint.
+6. Add policy configuration for required encryption, protection enabled, recovery-key escrow, allowed algorithms where organizational policy requires them, stale-check-in limits, and exception expiry. Avoid enforcing one universal policy without confirming fleet and regulatory requirements.
+7. Add remediation actions only after the management provider, action permissions, confirmation UX, rollback/recovery considerations, and audit behavior are implemented and tested. Do not imply that this prototype can turn BitLocker on/off or escrow keys.
+8. Provide clear state labels: Compliant, Noncompliant, Unknown, Stale, Exception, and Simulated. A missing report is Unknown, not Compliant.
+
+### Recommended delivery phases
+- **Phase A — Read-only mock posture:** add the BitLocker compliance panel using clearly simulated seed data; show per-tenant aggregate counts and a device-state breakdown without keys.
+- **Phase B — Provider and schema design:** verify the management provider and required read-only permissions; design normalized device-encryption records and safe secret handling.
+- **Phase C — Live read-only integration:** retrieve device encryption posture through the approved provider, validate tenant scoping, source timestamps, and error/unknown states.
+- **Phase D — Policy and exception workflow:** evaluate policy, track waivers and expirations, and expose evidence/audit summaries.
+- **Phase E — Controlled remediation:** implement supported encryption/remediation commands only after explicit design approval and provider-specific testing, including recovery and failure paths.
+
+### Security acceptance tests
+- A tenant administrator cannot view another tenant's endpoint posture, device identifiers, exceptions, or remediation history.
+- The global dashboard returns only approved aggregate fields and never returns recovery-key material.
+- Direct API calls, modified tenant/device IDs, search, exports, background jobs, and AI queries cannot bypass device authorization.
+- A stale, missing, or failed check-in cannot be rendered as compliant.
+- Recovery-key access, if separately implemented, is excluded from standard global oversight and is explicitly approved, scoped, time-limited, and audited.
+- No management credentials or recovery keys are shipped to the browser or stored in localStorage.
+- Demo seed data is visibly labeled simulated; no real endpoint is changed by prototype interactions.
+
+### Status and release gates
+BitLocker is now a documented architecture requirement. It is not yet a live BitLocker integration, verified device inventory, or functioning encryption enforcement. First add a mock compliance panel, then inspect and approve the actual device-management integration and tenant-safe backend before claiming live posture or remediation. Keep work on the agreed feature branch; no merge or production deployment without explicit user approval.
+
