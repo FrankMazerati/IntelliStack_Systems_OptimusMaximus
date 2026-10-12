@@ -1,3 +1,7 @@
+import SuperAdminImage from '../SuperAdmin.png';
+import ServiceDeskImage from '../ServiceDesk.png';
+import ServiceDesk2Image from '../ServiceDesk2.png';
+import LoginImage from '../Login.png';
 import React, { useMemo, useState } from 'react';
 import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap } from 'lucide-react';
 
