@@ -292,3 +292,40 @@ Provide configurable workspaces, with these suggested starting departments:
 - HR and IT exchange the minimum necessary onboarding/offboarding tasks without exposing HR case notes.
 - Super Admin can create a custom department and assign a department owner without changing the four primary platform roles.
 - Read-only users cannot modify records through UI actions or direct routes; every sensitive approval and permission change is auditable.
+
+
+## 26. Super Admin endpoint management, policy groups, updates/rollback, and live network monitoring
+Expand the Super Admin workspace with endpoint/mobile-device management and network observability. These are distinct capabilities, with simulations clearly labeled until approved agents, APIs, and network data sources are connected.
+
+### Device groups and group policy
+- Create, rename, describe, and archive dynamic or manually managed device groups; search/filter membership and view membership history.
+- Assign policy sets to groups of computers and supported mobile devices/phones. Support device types, operating systems, ownership, location, department, and compliance posture as grouping criteria where available.
+- Policy areas may include approved configuration baselines, update rings/windows, encryption and screen-lock requirements, firewall settings, application allow/block lists, certificates, Wi-Fi/VPN profiles, and compliance checks. Only show controls supported by the connected management platform and target OS.
+- Show policy assignment, effective policy, conflicts, compliance state, last check-in, policy version, and per-device rollout status. Support staged deployment (pilot → small group → broad rollout), maintenance windows, exclusions, approval gates, and audit records.
+- Separate policy authoring from assignment and execution permissions. Require validation and explicit confirmation for disruptive changes. Never suggest a browser-only prototype can enforce endpoint policy.
+
+### Software and operating-system updates, rollback, and recovery
+- Provide an update center for managed computers and supported phones: available/approved/deferred updates, device eligibility, maintenance windows, rings, deployment progress, failures, restart requirements, and compliance reporting.
+- Support staged push/deploy, pause, retry, cancel where safe, and rollback/recovery actions only when the operating system, package, management agent, and vendor API genuinely support them.
+- Before execution, show scope, expected impact, prerequisites, backups/recovery point, affected devices, approval requirements, and a clear confirmation. Track actor, package/policy version, timestamps, result, errors, and rollback outcome.
+- Distinguish uninstalling an update, reverting an application/package, restoring a configuration snapshot, and rolling back an OS version; these are different capabilities and not universally supported. Never promise a universal one-click rollback.
+- In prototype mode, simulate deployment and rollback against synthetic devices and show a visible **Simulated** label. Do not send commands to real devices until an authorized connector/agent and explicit deployment approval exist.
+
+### Real-time network monitoring and traffic analysis
+- Add a Network Operations / Live Traffic workspace for authorized Super Admin and network operators. Display monitored sites, networks, interfaces, links, device availability, utilization, latency, packet loss, errors, alerts, and recent events when supported by actual telemetry.
+- Include a traffic-analysis view with time range, source/destination, protocol, ports, volume, and filter/search controls, plus trends and alert drill-down. Packet capture and payload inspection are separate sensitive capabilities; default to metadata/flow telemetry, minimize collection, mask sensitive payloads, and require explicit authorization for packet capture.
+- Integrate through approved sources such as SNMP polling/traps, flow telemetry (NetFlow/IPFIX/sFlow), syslog, streaming telemetry, monitoring-platform APIs, or a managed packet sensor. Show source, collection time, freshness, gaps, and monitoring health so stale data is not mistaken for live traffic.
+- Provide alert rules, severity, acknowledgements, ownership, escalation, maintenance/suppression windows, and incident/ticket creation. Correlate network alerts with relevant devices, sites, incidents, and service-desk tickets where authorized.
+- Show synthetic/demo traffic only in simulation mode; never label fabricated values as live. Respect network authorization, retention policy, privacy requirements, and role-based access. Avoid collecting credentials or unrelated personal content.
+
+### Tool/product references and integration boundaries
+- The user recalls a network monitoring tool pronounced “solo lands,” which may be **SolarWinds**; confirm the exact product before designing a specific connector. **Wireshark** is another likely tool for packet-level traffic analysis. **Cisco Packet Tracer** is primarily a network simulation/learning environment, not a production live network monitor; **Kali Linux** is a security testing distribution, not itself a network-monitoring platform.
+- Treat SolarWinds, Wireshark, Cisco tooling, endpoint management, and mobile device management as possible integrations, not assumed connected systems. Each connector needs health/status, supported features, permission scope, credentials kept server-side, test connection, sync/telemetry timestamps, and audit history.
+
+### Acceptance tests
+- Create a device group and assign a policy; verify only eligible devices receive the assignment and each reports the expected result.
+- Stage a software update to a pilot group, observe success/failure, pause a rollout, and verify an eligible rollback/recovery action is guarded by prerequisites and approval.
+- Confirm unsupported devices/actions are clearly marked unavailable rather than falsely reported successful.
+- Verify network dashboards distinguish live telemetry from simulated data and display collection timestamps/source health.
+- Confirm users without monitoring or endpoint-management permission cannot access restricted device/network detail through direct navigation or APIs.
+- Verify sensitive actions and changes record actor, scope, approval, time, result, and recovery outcome.
