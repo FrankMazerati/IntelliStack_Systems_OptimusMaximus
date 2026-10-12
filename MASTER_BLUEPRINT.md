@@ -397,3 +397,31 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - The page is responsive and accessible, and the existing single role dropdown is not the only way to choose an entry path.
 - Verify the implementation in the running application; a blueprint entry alone does not mean the screen has been implemented.
 
+## 33. Active Directory and Microsoft Entra directory workspace
+
+### Goal and presentation
+- Add an **Active Directory** workspace to IntelliStack that presents real directory information in a familiar, administrator-oriented layout: domain/tenant overview, organizational units, users, groups, computers/devices, group membership, account status, directory attributes, and recent directory/synchronization events where the connected source exposes them.
+- Use a searchable, filterable directory tree and detail panels with familiar directory concepts; do not claim to reproduce Microsoft's exact proprietary UI. Provide a cohesive IntelliStack design and clearly label the connected directory source.
+- Support a read-only discovery/monitoring mode first, with controlled write operations added only after the connector and permissions are implemented and tested.
+
+### Supported directory types
+- **On-premises Active Directory Domain Services (AD DS):** integrate through a secure, appropriately networked connector using supported directory protocols and least-privilege service permissions.
+- **Microsoft Entra ID:** integrate through Microsoft identity authentication and Microsoft Graph permissions appropriate to the features enabled.
+- **Hybrid environments:** show the relationship between on-premises and cloud identities where the organization has configured synchronization. Do not assume that every user or device is synchronized.
+- During setup, ask the authorized administrator which source is in use, validate prerequisites, and show connection, permissions, last-sync, and error status. Official Microsoft guidance distinguishes AD DS, Entra ID, and Entra Domain Services because their capabilities differ. Reference: https://learn.microsoft.com/en-us/entra/identity/domain-services/compare-identity-solutions
+
+### Directory capabilities
+- Search and filter users, groups, computers/devices, and organizational units, with useful attributes such as display name, sign-in identifier, enabled/disabled state, department, group membership, and last synchronization time when available.
+- Show user and group detail views, membership relationships, device/domain status where exposed, and directory change or sync history where available.
+- Support controlled import/synchronization of approved directory objects into IntelliStack's asset and identity views, preserving source identifiers and indicating the authoritative source.
+- Make synchronization scope configurable and preview additions, updates, and removals before applying changes. Provide conflict handling, error reporting, retry, audit history, and a safe rollback/recovery plan where technically supported.
+- Any account enable/disable, group membership change, password reset, OU move, or other write operation must be separately permissioned, confirmed, logged, and executed through the connected identity system's supported APIs/protocols. Never store or display directory passwords.
+
+### Multi-tenant security and acceptance tests
+- Bind each directory connection to exactly one authorized customer tenant and enforce tenant isolation server-side.
+- Store connector secrets in a proper secrets manager; use encrypted transport, least-privilege credentials/permissions, rotation, and audited administrative access.
+- Test that one tenant cannot search, inspect, export, or modify another tenant's directory objects.
+- Test read-only mode, missing permissions, expired credentials, unavailable domain controller/API, sync conflicts, disabled accounts, and partial failures.
+- Label mock directory records as sample data. Do not show a green/live connection status or claim successful sync until a real connection test confirms it.
+- Start with read-only visibility and synchronization; only enable directory writes after a security review and end-to-end testing.
+
