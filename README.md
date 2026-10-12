@@ -97,3 +97,7 @@ The unified onboarding specification defines a reusable, tenant-isolated employe
 ## Role-Aware Briefing & Demo Automation
 
 The proposed [ROLE_AWARE_BRIEFING_AND_DEMO_AUTOMATION.md](./ROLE_AWARE_BRIEFING_AND_DEMO_AUTOMATION.md) defines how IntelliStack can assemble audience-specific investor, executive, MSP, IT, security, compliance, finance, HR, and technical briefings from approved source material. It requires source provenance, claim-status checks, permission-aware retrieval, and human approval before external sharing. This is a design specification, not a claim that automated generation is already implemented.
+
+## Role-Based Onboarding Automation
+
+The [ROLE_BASED_ONBOARDING_AUTOMATION.md](./ROLE_BASED_ONBOARDING_AUTOMATION.md) specification defines a server-side onboarding workflow that resolves approved role templates, previews changes, obtains approvals, coordinates identity/apps/licenses/device setup, retries safely, verifies provider state, and produces an auditable readiness report. It covers MSP tenant scoping and phased delivery from simulated dry-run to verified integrations. It is a specification, not proof of live provisioning.
