@@ -115,7 +115,7 @@ const superActionCatalog = [
 ];
 const defaultQuickActionIds = ['users','security','warroom','automation','builder','devices','tickets','audit','networkops','terminal'];
 function Overview({onNavigate,tickets,endUsers,devices}){
- const [quickActionIds,setQuickActionIds]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-super-actions')||'null');if(Array.isArray(saved))return [...new Set(saved.filter(id=>superActionCatalog.some(item=>item[0]===id)))].slice(0,10));}catch{}return defaultQuickActionIds;});
+ const [quickActionIds,setQuickActionIds]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-super-actions')||'null');if(Array.isArray(saved))return [...new Set(saved.filter(id=>superActionCatalog.some(item=>item[0]===id)))].slice(0,10);}catch{}return defaultQuickActionIds;});
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const [showManageActions,setShowManageActions]=useState(false);
  const [notice,setNotice]=useState('');
