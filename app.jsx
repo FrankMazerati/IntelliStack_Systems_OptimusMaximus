@@ -8,6 +8,7 @@ import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
+  {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
   {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
@@ -210,6 +211,38 @@ function AssistantPage({assistant,tickets,devices,endUsers,onNavigate}){
  </div>;
 }
 
+function PlatformBuilderPage(){
+ const [items,setItems]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack-platform-registry')||'[]')}catch{return []}});
+ const [kind,setKind]=useState('Module');
+ const [name,setName]=useState('');
+ const [description,setDescription]=useState('');
+ const [owner,setOwner]=useState('Super Admin');
+ const [notice,setNotice]=useState('');
+ const persist=(next)=>{setItems(next);localStorage.setItem('intellistack-platform-registry',JSON.stringify(next));};
+ const addItem=(e)=>{e.preventDefault();if(!name.trim())return;const item={id:'REG-'+Date.now(),kind,name:name.trim(),description:description.trim(),owner,createdAt:new Date().toISOString(),status:'Draft'};persist([item,...items]);setName('');setDescription('');setNotice(kind+' added to the local platform registry. This records the design entry; it does not generate a live page or connect an application yet.');};
+ const removeItem=(id)=>{if(window.confirm('Remove this registry entry?'))persist(items.filter(x=>x.id!==id));};
+ return <div className="builder-layout">
+  <Panel title="Extend your command center" subtitle="Create a governed registry of the pages, modules, workflows, and applications you plan to add.">
+   <div className="builder-intro"><div className="builder-icon"><Workflow size={22}/></div><div><h3>Super Admin Platform Builder</h3><p>Use this workspace to define future capabilities without replacing the existing application. New entries are saved in this browser for this prototype.</p></div></div>
+   <form className="builder-form" onSubmit={addItem}>
+    <label>What are you adding?<select value={kind} onChange={e=>setKind(e.target.value)}><option>Page</option><option>Module</option><option>Workflow</option><option>System / Application</option></select></label>
+    <label>Name<input required value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Procurement Center"/></label>
+    <label>Responsible role<select value={owner} onChange={e=>setOwner(e.target.value)}>{roles.map(r=><option key={r}>{r}</option>)}</select></label>
+    <label className="builder-description">Purpose and notes<textarea value={description} onChange={e=>setDescription(e.target.value)} placeholder="What should it do? Who can access it? What systems does it depend on?"/></label>
+    <div className="builder-form-actions"><button className="primary-btn" type="submit"><Plus size={15}/> Add to registry</button><span>Draft only · no live integration is created</span></div>
+   </form>
+   {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  </Panel>
+  <Panel title="Platform registry" subtitle={items.length+' custom entr'+(items.length===1?'y':'ies')+' registered in this browser'} action={<span className="status-pill">{items.length} custom</span>}>
+   {items.length===0?<div className="builder-empty"><div className="service-icon"><LayoutDashboard size={21}/></div><h3>Your platform registry is empty</h3><p>Add your first custom page, module, workflow, or application using the form.</p></div>:<div className="builder-registry">{items.map(item=><article className="builder-item" key={item.id}><div className="builder-item-icon">{item.kind==='Workflow'?<Workflow size={18}/>:item.kind==='System / Application'?<Network size={18}/>:item.kind==='Page'?<LayoutDashboard size={18}/>:<LayersIconFallback/>}</div><div className="builder-item-main"><div className="builder-item-title"><b>{item.name}</b><span className="status-pill">{item.kind}</span></div><p>{item.description||'No purpose notes added yet.'}</p><small>Owner: {item.owner} · Added {new Date(item.createdAt).toLocaleDateString()}</small></div><button className="top-icon" onClick={()=>removeItem(item.id)} aria-label={'Remove '+item.name}><X size={15}/></button></article>)}</div>}
+  </Panel>
+  <Panel title="How new systems become operational" subtitle="The registry is the first layer, not an automatic app generator.">
+   <div className="builder-stages"><div><b>01 · Define</b><p>Register the module, purpose, owner, and access requirements.</p></div><div><b>02 · Build</b><p>Implement its screens, actions, data model, and validations in the application.</p></div><div><b>03 · Secure</b><p>Configure Supabase tables, server-enforced permissions, and audit events.</p></div><div><b>04 · Connect & release</b><p>Add secure integrations, test workflows, and publish after verification.</p></div></div>
+  </Panel>
+ </div>;
+}
+function LayersIconFallback(){return <Database size={18}/>;}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -226,6 +259,7 @@ function App(){
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
     if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
+    if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
     if(activeScreen==='maximus') return <AssistantPage assistant="maximus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
