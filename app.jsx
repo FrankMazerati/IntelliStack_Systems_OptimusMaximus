@@ -2,7 +2,7 @@ import SuperAdminImage from './SuperAdmin.png';
 import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './Login.png';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, Building2, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
@@ -59,6 +59,37 @@ function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const conte
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
+const WORLD_TIME_ZONES = [
+ {id:'America/Chicago',city:'Chicago',region:'US Central'},
+ {id:'America/Los_Angeles',city:'Los Angeles',region:'US Pacific'},
+ {id:'America/New_York',city:'New York',region:'US Eastern'},
+ {id:'America/Sao_Paulo',city:'São Paulo',region:'Brazil'},
+ {id:'Europe/London',city:'London',region:'UK'},
+ {id:'Europe/Berlin',city:'Berlin',region:'Central Europe'},
+ {id:'Asia/Dubai',city:'Dubai',region:'Gulf'},
+ {id:'Asia/Kolkata',city:'Mumbai',region:'India'},
+ {id:'Asia/Singapore',city:'Singapore',region:'Singapore'},
+ {id:'Asia/Tokyo',city:'Tokyo',region:'Japan'},
+ {id:'Australia/Sydney',city:'Sydney',region:'Australia East'}
+];
+function WorldClockBar(){
+ const [now,setNow]=useState(()=>new Date());
+ const [zones,setZones]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-world-clocks')||'null');if(Array.isArray(saved)&&saved.length)return [...new Set(saved.filter(id=>WORLD_TIME_ZONES.some(z=>z.id===id)))];}catch{}return ['America/Chicago','America/Los_Angeles','America/New_York','Europe/London','Asia/Tokyo'];});
+ const [newZone,setNewZone]=useState('Asia/Singapore');
+ useEffect(()=>{const timer=setInterval(()=>setNow(new Date()),15000);return ()=>clearInterval(timer);},[]);
+ const saveZones=(next)=>{setZones(next);try{localStorage.setItem('intellistack-world-clocks',JSON.stringify(next));}catch{}};
+ const format=(zone,options)=>new Intl.DateTimeFormat('en-US',{timeZone:zone,...options}).format(now);
+ const offset=(zone)=>{try{return new Intl.DateTimeFormat('en-US',{timeZone:zone,timeZoneName:'shortOffset'}).formatToParts(now).find(part=>part.type==='timeZoneName')?.value.replace('GMT','UTC')||'UTC';}catch{return 'UTC';}};
+ const localWindow=(zone)=>{const parts=new Intl.DateTimeFormat('en-US',{timeZone:zone,weekday:'short',hour:'2-digit',hourCycle:'h23'}).formatToParts(now);const weekday=parts.find(part=>part.type==='weekday')?.value;const hour=Number(parts.find(part=>part.type==='hour')?.value);return ['Mon','Tue','Wed','Thu','Fri'].includes(weekday)&&hour>=9&&hour<17;};
+ const remaining=WORLD_TIME_ZONES.filter(zone=>!zones.includes(zone.id));
+ return <section className="world-clock-bar" aria-label="Global operations world clocks">
+  <div className="world-clock-title"><span className="world-clock-mark"><Globe2 size={16}/></span><div><b>GLOBAL TIME</b><small>Live clock · updates every 15 sec</small></div></div>
+  <div className="world-clock-list">{zones.map(id=>{const zone=WORLD_TIME_ZONES.find(item=>item.id===id);if(!zone)return null;const inWindow=localWindow(id);return <div className="world-clock-card" key={id}><div className="world-clock-city"><b>{zone.city}</b><span>{zone.region}</span></div><strong>{format(id,{hour:'2-digit',minute:'2-digit',hour12:true})}</strong><div className="world-clock-meta"><span>{format(id,{weekday:'short',month:'short',day:'numeric'})}</span><span>{offset(id)}</span></div><span className={'world-clock-window '+(inWindow?'in-window':'out-window')}><i/>{inWindow?'9–5 local window':'Outside 9–5'}</span>{id!=='America/Chicago'&&<button type="button" className="world-clock-remove" onClick={()=>saveZones(zones.filter(item=>item!==id))} aria-label={'Remove '+zone.city+' clock'} title={'Remove '+zone.city}>×</button>}</div>})}</div>
+  <div className="world-clock-controls"><label htmlFor="world-clock-add">Add city</label><select id="world-clock-add" value={newZone} onChange={event=>setNewZone(event.target.value)} disabled={!remaining.length}><option value="">Choose city…</option>{remaining.map(zone=><option key={zone.id} value={zone.id}>{zone.city} · {zone.region}</option>)}</select><button type="button" className="world-clock-add" disabled={!remaining.length||!newZone} onClick={()=>{if(newZone&&!zones.includes(newZone)){saveZones([...zones,newZone]);setNewZone(remaining.find(zone=>zone.id!==newZone)?.id||'');}}}><Plus size={14}/> Add</button></div>
+  <div className="world-clock-footnote"><ShieldCheck size={13}/><span>The 9–5 indicator is a weekday local-time reference only—not a technician presence, shift assignment, or availability signal. Live staff availability requires verified schedules and presence data.</span></div>
+ </section>;
+}
+
 const superActionCatalog = [
  ['users','Users & Groups',Users,'Manage user records and group membership'],
  ['security','Roles & Permissions',ShieldCheck,'Review role assignments and access'],
@@ -634,6 +665,7 @@ function App(){
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
       <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Network</button><button className="header-action" onClick={()=>navigate('warroom')}><Activity size={15}/> War Room</button><button className="header-action" onClick={()=>navigate('networkops')}><Radio size={15}/> Network NOC</button><button className="header-action" onClick={()=>navigate('intelligence')}><Newspaper size={15}/> Intelligence</button><button className="header-action" onClick={()=>navigate('terminal')}><Terminal size={15}/> CMD / PowerShell</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
+      {currentRole==='Super Admin'&&<WorldClockBar/>}
       <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
     </main>
   </div>;
