@@ -73,6 +73,59 @@ const WORLD_TIME_ZONES = [
  {id:'Asia/Tokyo',city:'Tokyo',region:'Japan'},
  {id:'Australia/Sydney',city:'Sydney',region:'Australia East'}
 ];
+function NewsFeedTicker({currentRole}){
+ const feeds=[
+  {id:"company",label:"COMPANY",items:[
+   "INTELLISTACK SYSTEMS · Platform operations briefing updated",
+   "COMPANY NOTICE · Review current service ownership and escalation paths",
+   "WORKSPACE UPDATE · Check approved changes before operational handoff"
+  ]},
+  {id:"cyber",label:"CYBER INTELLIGENCE",roles:["Super Admin","Security Agent","IT Administrator","Governance & Compliance"],items:[
+   "SIMULATED INTELLIGENCE · Validate MFA coverage and privileged access alerts",
+   "CYBER BRIEFING · Review patch exposure, identity signals and active advisories",
+   "SECURITY WATCH · Confirm incident escalation paths and endpoint coverage"
+  ]},
+  {id:"network",label:"NETWORK BRIEFING",roles:["Super Admin","Network Operations","IT Administrator"],items:[
+   "NETWORK OPERATIONS · Review WAN health, DNS resolution and critical link telemetry",
+   "NETWORK BRIEFING · Verify backup paths and monitor packet-loss thresholds",
+   "INFRASTRUCTURE WATCH · Review latency anomalies and change windows"
+  ]},
+  {id:"helpdesk",label:"HELP DESK",roles:["Super Admin","Help Desk Agent","IT Administrator"],items:[
+   "SERVICE DESK BRIEFING · Review queue age, urgent incidents and SLA risk",
+   "SUPPORT UPDATE · Confirm device ownership and user-impact notes before escalation",
+   "HELP DESK WATCH · Prioritize recurring issues and known-workaround updates"
+  ]},
+  {id:"governance",label:"GOVERNANCE",roles:["Super Admin","Governance & Compliance","Security Agent"],items:[
+   "COMPLIANCE BRIEFING · Review evidence freshness, policy exceptions and audit trails",
+   "RISK WATCH · Confirm control owners and outstanding remediation dates",
+   "GOVERNANCE UPDATE · Review access recertification and change approvals"
+  ]},
+  {id:"global",label:"GLOBAL IT",items:[
+   "GLOBAL IT WATCH · Review resilience, identity protection and service continuity",
+   "OPERATIONS BRIEFING · Check incident communications and regional handoffs",
+   "TECHNOLOGY WATCH · Review platform reliability and recovery readiness"
+  ]}
+ ];
+ const allowed=feeds.filter(f=>!f.roles||f.roles.includes(currentRole));
+ const [selected,setSelected]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem("intellistack-news-feed-categories")||"null");return Array.isArray(saved)?saved.filter(id=>feeds.some(f=>f.id===id)):[];}catch{return [];}});
+ const [custom,setCustom]=useState(false),[index,setIndex]=useState(0);
+ const effective=selected.length?feeds.filter(f=>allowed.some(a=>a.id===f.id)&&selected.includes(f.id)):allowed;
+ const stories=effective.flatMap(feed=>feed.items.map((headline,i)=>({id:feed.id+"-"+i,category:feed.label,headline})));
+ useEffect(()=>{const t=setInterval(()=>setIndex(v=>(v+1)%Math.max(stories.length,1)),6500);return()=>clearInterval(t);},[stories.length]);
+ useEffect(()=>{if(index>=stories.length)setIndex(0);},[index,stories.length]);
+ const save=(next)=>{setSelected(next);try{localStorage.setItem("intellistack-news-feed-categories",JSON.stringify(next));}catch{}setIndex(0);};
+ const story=stories[index]||{category:"COMPANY",headline:"Company and role-relevant operational briefings"};
+ return <div className="command-news-wrap"><div className="command-news-ticker" aria-live="polite"><span className="command-news-live"><i/> SIMULATED LIVE FEED</span><b className="command-news-category">{story.category}</b><span className="command-news-headline" key={story.id}>{story.headline}</span><span className="command-news-counter">{stories.length?String(index+1).padStart(2,"0"):"00"} / {String(stories.length).padStart(2,"0")}</span><button className="command-news-customize" onClick={()=>setCustom(v=>!v)} aria-expanded={custom}>FEED SETTINGS</button></div>{custom&&<div className="command-news-preferences"><div><b>Customize your briefing</b><small>Feeds are filtered by role. These are simulated headlines, not a verified external news feed.</small></div><div className="command-news-options">{allowed.map(feed=><label key={feed.id}><input type="checkbox" checked={!selected.length||selected.includes(feed.id)} onChange={e=>{const base=selected.length?selected:allowed.map(f=>f.id);const next=e.target.checked?[...new Set([...base,feed.id])]:base.filter(id=>id!==feed.id);save(next.length===allowed.length?[]:next);}}/><span>{feed.label}</span></label>)}</div><button className="command-news-reset" onClick={()=>save([])}>Reset to role defaults</button></div>}</div>;
+}
+
+function CommandCenterClock(){
+ const [now,setNow]=useState(()=>new Date());
+ useEffect(()=>{const timer=setInterval(()=>setNow(new Date()),1000);return ()=>clearInterval(timer);},[]);
+ const time=new Intl.DateTimeFormat("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).format(now);
+ const date=new Intl.DateTimeFormat("en-US",{weekday:"long",month:"short",day:"numeric",year:"numeric"}).format(now);
+ return <div className="command-center-time"><span>GLOBAL TIME · LOCAL DEVICE TIMEZONE</span><time dateTime={now.toISOString()}>{time}</time><small>{date}</small></div>;
+}
+
 function WorldClockBar(){
  const [now,setNow]=useState(()=>new Date());
  const [zones,setZones]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack-world-clocks')||'null');if(Array.isArray(saved)&&saved.length)return [...new Set(saved.filter(id=>WORLD_TIME_ZONES.some(z=>z.id===id)))];}catch{}return ['America/Chicago','America/Los_Angeles','America/New_York','Europe/London','Asia/Tokyo'];});
@@ -723,7 +776,7 @@ function App(){
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
-      <header className="topbar"><div className="topbar-main-row"><div className="topbar-brand-side"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/></div></div><div className="topbar-main-actions"><IntellisphereMenu activeScreen={activeScreen} onNavigate={navigate}/><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><HeaderUtilities currentRole={currentRole} currentScreen={currentScreen} navigate={navigate} logout={logout}/></div></div><div className="topbar-bottom-row"><div className="topbar-current-page"><span>WORKSPACE</span><b>{currentScreen.label}</b></div><div className="topbar-center-title"><div className="topbar-main-title"><span>MAXIMUS</span> <i>OPTIMUS</i></div><div className="topbar-command-label">COMMAND CENTER</div><div className="topbar-motto"><span className="slogan-white">ONE</span> <span className="slogan-blue">WORLD.</span> <span className="slogan-white">ONE</span> <span className="slogan-blue">SYSTEM.</span> <span className="slogan-white">ONE</span> <span className="slogan-blue">INTELLIGENT NETWORK.</span></div></div><div className="topbar-bottom-status"><span className="footer-status-dot"/> GLOBAL OPERATIONS</div></div></header>
+      <header className="topbar"><div className="topbar-main-row"><div className="topbar-brand-side"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/></div></div><div className="topbar-main-actions"><IntellisphereMenu activeScreen={activeScreen} onNavigate={navigate}/><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><HeaderUtilities currentRole={currentRole} currentScreen={currentScreen} navigate={navigate} logout={logout}/></div></div><section className="command-center-hero" style={{backgroundImage:`linear-gradient(90deg,rgba(3,10,23,.82),rgba(3,12,27,.58) 50%,rgba(3,10,23,.82)),linear-gradient(0deg,rgba(3,9,20,.78),rgba(3,9,20,.18) 58%,rgba(3,9,20,.5)),url(${SuperAdminImage})`}}><div className="topbar-center-title"><div className="topbar-main-title"><span>MAXIMUS</span> <i>OPTIMUS</i></div><div className="topbar-command-label">COMMAND CENTER</div><div className="topbar-motto"><span className="slogan-white">ONE</span> <span className="slogan-blue">WORLD.</span> <span className="slogan-white">ONE</span> <span className="slogan-blue">SYSTEM.</span> <span className="slogan-white">ONE</span> <span className="slogan-blue">INTELLIGENT NETWORK.</span></div><NewsFeedTicker currentRole={currentRole}/><CommandCenterClock/></div><div className="topbar-bottom-status"><span className="footer-status-dot"/> GLOBAL OPERATIONS</div></section></header>
       {globalCollaborationRole&&<WorldClockBar/>}<FavoritesToolbar activeScreen={activeScreen} onNavigate={navigate}/>
       <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><div className="footer-trust-pills"><span><ShieldCheck size={14}/> Security Focused Design</span><span><Network size={14}/> Multi-tenant Architecture</span><span><Globe2 size={14}/> Global Platform</span></div><div className="footer-ops-strip"><span><i className="footer-status-dot"/> <b>WORKSPACE STATUS</b> Preview environment</span><span><ShieldCheck size={13}/> Security-first design</span><span><Activity size={13}/> Live service connections: not configured</span><span><CircleHelp size={13}/> Support: use the in-app Help Center</span></div><div className="app-footer-main"><div className="app-footer-brand"><Brand/><div className="footer-brand-product">Maximus <i>Optimus</i></div><div className="footer-brand-command">Command Center</div><div className="footer-brand-motto">ONE <b>WORLD.</b> ONE <b>SYSTEM.</b> ONE INTELLIGENT NETWORK.</div></div>{[{title:"Explore",links:["Home","Platform Overview","Modules & Features","Plans & Licensing"]},{title:"Company",links:["About Us","Contact Us","Sales Inquiries","Partners","Careers","News & Updates"]},{title:"Resources",links:["Help Center","Documentation","System Status","Accessibility","Security"]},{title:"Legal & Policies",links:["Privacy Policy","Terms of Service","Cookie Policy","Acceptable Use","Software License"]}].map(group=><div className="app-footer-column" key={group.title}><h4>{group.title}</h4>{group.links.map(label=><button key={label} onClick={()=>label==="Home"?navigate("overview"):setFooterInfo(label)}>{label}</button>)}</div>)}<div className="footer-assurance"><span><Globe2 size={15}/> Secure</span><span><ShieldCheck size={15}/> Trusted</span><span><CheckCircle2 size={15}/> Compliant</span></div></div><div className="app-footer-meta"><span>Secure by design · Global platform. <b>Release 1.1.0 · Preview build</b></span><span>© 2026 IntelliStack Systems. All rights reserved. <b>Maximus Optimus™</b></span></div></footer>{footerInfo&&<CommandCenterInfo kind={footerInfo} onClose={()=>setFooterInfo(null)}/>}</div>
     </main>
