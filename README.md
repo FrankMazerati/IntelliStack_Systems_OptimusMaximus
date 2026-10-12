@@ -1,29 +1,47 @@
-
-MAXIMUS OPTIMUS Portal — responsive web prototype
-This is a front-end starter for the IntelliStack Systems / MAXIMUS OPTIMUS landing and sign-in portal.
-Files
-index.html — semantic page structure, employee login, marketplace panels, connector directory and footer.
-styles.css — neon-blue/purple visual system and responsive layouts.
-app.js — UI interactions and optional Supabase Auth wiring.
-assets/maximus-command-center.png — generated background image used by the page.
+IntelliStack Systems — Maximus Optimus Command Center
+A responsive React + Vite portfolio demo for a fictional enterprise IT command center. All identities, metrics, tickets, audit events, connector statuses, and device states are synthetic. No production systems or real remote devices are connected.
+Included workspaces and screens
+Super Admin
+Command Center overview
+User & Role Management
+System Integrations / Connector Hub
+Security & Compliance
+Help Desk Agent
+Service Desk with ticket creation, search, filtering, status changes, resolve/reopen actions, and activity history
+End User Directory with fictional employee profiles, devices, and linked ticket history
+Knowledge Vault
+Maximus AI Assistant (scripted demo responses)
+System Status
+IT Administrator
+Infrastructure inventory
+Remote Support (simulated session state only; does not connect to an endpoint)
+Automation Workflows
+Governance & Compliance
+Governance Center
+Audit Log
+Ticket behavior and persistence
+The ticket queue starts with seeded examples. Newly created incident IDs increment from the highest numeric ticket suffix (for example, INC-7843 after INC-7842). Ticket status changes, newly created tickets, and ticket activity history are stored in the browser's localStorage, so they persist across refreshes in the same browser profile. This is local demo persistence, not a shared server database. Different browsers/devices do not share the data, and clearing site data resets it.
+The code keeps UI state and sample data in React so the storage layer can later be replaced with API/database services. A production implementation should use a server-side database, authenticated API, validation, role-based authorization, audit logging, and concurrency-safe ticket-number generation. Never generate globally unique ticket numbers only in the browser for a multi-user production system.
+Remote Support is a visual workflow demonstration only. A real deployment must integrate an approved remote-support/RMM provider, enforce authorization and end-user consent, and log sessions.
 Run locally
-Open index.html in a browser, or serve this folder with a local static server. For deployment, import the folder/repository into Vercel and use the project root as the deployment root. No build command is required for this static prototype.
-Responsive behavior
-The layout uses CSS media queries for mobile/tablet portrait and landscape, including orientation: landscape and available viewport height. It adapts to rotation rather than forcing a device to rotate. Test at common phone and tablet sizes in browser dev tools and on the actual devices.
-Supabase setup
-Create or select your Supabase project.
-In app.js, set SUPABASE_URL and SUPABASE_ANON_KEY to the project URL and publishable/anon key.
-Enable the Auth providers you intend to use in Supabase (email/password, Google, Apple, phone, etc.).
-Add your local and deployed callback URLs to the Supabase and provider configurations.
-Set up row-level security (RLS) policies and tenant/role checks before exposing real user or business data.
-Implement a real password-reset route at /reset-password, and route successful sessions to a protected workspace.
-Never put a Supabase service_role key or any provider client secret in front-end code. The browser can contain only public project configuration and publishable/anon keys; sensitive secrets belong in server-side environment variables or a trusted backend.
-Connector sign-in vs. connector authorization
-The connector dropdown is a UI starting point only. Signing into MAXIMUS OPTIMUS and authorizing a business application (such as ServiceNow, Power BI or Teams) are separate flows. Each connector requires an adapter, provider-specific OAuth/API configuration, requested scopes, secure server-side token storage, tenant authorization, audit logging, and disconnect/revocation handling. The current buttons intentionally do not pretend those integrations are live.
-Production items still required
-Real provider branding/assets and final text review.
-Protected routes and role-based access control.
-Supabase RLS policies and tenant membership model.
-Connector registry and server-side callback/token handling.
-Error, loading, MFA, verification, rate-limit and abuse states.
-Accessibility testing, responsive QA, browser testing, and security review.
+Requirements: Node.js 18+.
+npm install
+npm run dev
+Open the local URL printed by Vite. To create a production build:
+npm run build
+npm run preview
+Publish on GitHub
+Create a repository and upload the contents of this folder.
+Vercel or Netlify can build with npm run build and publish the dist folder.
+GitHub Pages also works after setting Vite's base to the repository subpath and adding a deployment workflow.
+Project layout
+intellistack-portfolio/
+├── index.html
+├── package.json
+├── README.md
+└── src/
+    ├── main.jsx
+    ├── App.jsx
+    └── styles.css
+About scale claims
+User counts, availability figures, volumes, and operational KPIs are illustrative target-state portfolio values—not real customer counts or measured service levels. A production system intended for million-user scale requires architecture design, durable data services, identity integration, server-enforced authorization, observability, load testing, and security review. Role switching in this demo is for exploration only and is not an access-control boundary.
