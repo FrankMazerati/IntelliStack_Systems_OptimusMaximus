@@ -440,3 +440,24 @@
 .terminal-empty>svg{color:#4cc9f3}
 @media(max-width:900px){.ops-connector-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.terminal-role-list>label{align-items:flex-start;flex-wrap:wrap}.terminal-role-state{margin-left:28px}}
 @media(max-width:640px){.ops-hero{align-items:flex-start;padding:17px;gap:10px}.ops-hero-mark{min-width:70px;min-height:78px;padding:8px}.ops-hero-mark svg{width:23px}.ops-hero-mark span{font-size:7px;letter-spacing:.7px}.ops-connector-grid{grid-template-columns:1fr}.terminal-command-form{flex-wrap:wrap}.terminal-command-form input{flex-basis:100%;order:1}.terminal-command-form>span{align-self:center}.terminal-command-form .primary-btn{margin-left:auto}.terminal-role-list>label{padding:10px}.ops-button-row>*{flex:1}.ops-button-row .ops-link{text-align:center}}
+
+/* War Room scenario simulator */
+.scenario-simulator{display:grid;gap:15px}
+.scenario-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.scenario-form-grid label{display:grid;gap:7px;color:var(--muted);font-size:12px;font-weight:650}
+.scenario-form-grid select{width:100%;min-width:0;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);color:var(--text);font:inherit}
+.scenario-routing-preview{padding:16px;border:1px solid rgba(79,157,224,.23);border-radius:12px;background:linear-gradient(145deg,rgba(17,36,61,.65),rgba(8,19,34,.65))}
+.scenario-routing-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.scenario-routing-heading .eyebrow{font-size:9px;letter-spacing:1.2px;color:var(--accent)}
+.scenario-routing-heading h3{margin:5px 0 0;font-size:16px;color:var(--text)}
+.scenario-owner,.scenario-sla{font-size:12px;line-height:1.6;color:var(--muted)}
+.scenario-sla{padding:10px 12px;border-left:3px solid var(--accent);border-radius:0 7px 7px 0;background:rgba(55,151,225,.07)}
+.scenario-routing-preview ol{display:grid;gap:10px;list-style:none;padding:0;margin:14px 0}
+.scenario-routing-preview li{display:grid;grid-template-columns:27px minmax(0,1fr);align-items:start;gap:10px;color:var(--muted);font-size:12px;line-height:1.6}
+.scenario-routing-preview li>span{display:grid;place-items:center;width:25px;height:25px;border:1px solid rgba(80,175,224,.25);border-radius:50%;background:rgba(36,156,209,.09);color:var(--accent);font-size:11px;font-weight:800}
+.scenario-team-list{padding-top:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text)}
+.scenario-team-list>div{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.scenario-team-list span{padding:6px 9px;border:1px solid var(--border);border-radius:20px;color:var(--muted);background:rgba(255,255,255,.025);font-size:10px}
+.scenario-warning{display:flex;align-items:flex-start;gap:9px;padding:11px 12px;border:1px solid rgba(226,173,76,.22);border-radius:9px;background:rgba(226,173,76,.055);color:var(--muted);font-size:11px;line-height:1.6}
+.scenario-warning svg{flex-shrink:0;color:#e5b45d}
+@media(max-width:640px){.scenario-form-grid{grid-template-columns:1fr}.scenario-routing-preview{padding:12px}.scenario-routing-heading h3{font-size:14px}}
