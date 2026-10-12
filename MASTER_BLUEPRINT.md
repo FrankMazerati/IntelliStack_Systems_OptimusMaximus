@@ -425,3 +425,35 @@ Expand the Super Admin workspace with endpoint/mobile-device management and netw
 - Label mock directory records as sample data. Do not show a green/live connection status or claim successful sync until a real connection test confirms it.
 - Start with read-only visibility and synchronization; only enable directory writes after a security review and end-to-end testing.
 
+## 34. Central ticket system, audit ledger, and operational history
+
+### One authoritative ticketing workspace
+- All ticket-producing modules—including help desk actions, automated monitoring, directory synchronization, integrations, endpoint/security alerts, workflow failures, and approved AI-assisted triage—must create or update records in the same central Service Desk system rather than leaving separate, unreviewable ticket lists inside each module.
+- Provide a unified ticket queue with search, filters, sorting, ownership, priority, category, source system, status, timestamps, linked company/tenant, affected users/devices/services, related incidents, and automation/AI origin.
+- The Super Admin and other authorized reviewers can open a ticket to inspect its history, edit permitted fields, reassign it, add internal notes, request more information, approve or reject proposed changes, resolve, reopen, or escalate it. Permissions must limit which fields/actions each role can use.
+- When multiple tickets are resolved, show them in the main queue and reporting views with a consistent lifecycle and resolution record. Bulk actions may be offered only with a clear preview of selected tickets, affected fields, permission checks, confirmation for consequential changes, and per-ticket outcomes.
+- Preserve the original event/triage snapshot and append later edits as new history entries. A ticket's current state can change, but the historical record of who did what and when must not be silently rewritten.
+- Automations and AI may propose classifications, summaries, assignments, or resolution steps; identify automated actions and their rule/model source. Require human review for configured sensitive actions and never allow AI to grant itself permissions or bypass approvals.
+
+### Platform-wide audit ledger
+- Build one searchable, centralized audit workspace covering ticket creation/resolution/edits, user and role changes, permission grants/revocations, directory sync, device lifecycle, integrations, exports, workflow executions, security response, tenant administration, and billing/admin operations.
+- Each event should capture, where applicable: event ID; timestamp in a consistent server-controlled time standard; actor identity and effective role; tenant/company scope; action and target object; previous and new values or a privacy-safe change summary; reason or ticket/change reference; source (user, API, scheduled job, automation, or AI); approval; outcome; and correlation/request ID.
+- Keep audit events append-only for normal application administrators. Corrections should be represented by a new event, not by overwriting the old event. Restrict audit configuration and deletion/retention controls to separately authorized roles, and record any access to or export of audit data.
+- Enforce permissions and tenant isolation for audit search, record details, downloads, and reports. Provider-level operators can see service-wide metadata and permitted aggregate views, not automatically every tenant's confidential content.
+- Provide filters, event timelines, ticket/user/device/company pivots, export controls, and retention/legal-hold policies. Protect logs from secrets and unnecessary personal data; redact credentials, tokens, and sensitive payloads.
+- Use durable server-side storage and synchronized server timestamps in production. Browser localStorage or in-memory React state is only prototype/demo persistence and is not an authoritative audit system. Define backup, integrity monitoring, retention, and recovery procedures.
+
+### Long-term operational memory and knowledge
+- Maintain searchable, permission-aware operational history across tickets, incidents, changes, decisions, runbooks, approved knowledge articles, recurring problems, and system events. Preserve links between records so an operator can reconstruct what happened and why.
+- Distinguish immutable audit evidence from editable operational notes and approved knowledge. Memory/search results must respect tenant and record permissions and must not expose private content merely because it is indexed.
+- When a ticket is resolved, record the verified resolution and offer a linked knowledge draft or recurring-issue insight, with sanitization and review before publication. Retain provenance to the originating ticket and versions of the article.
+- Define retention by record category and legal requirements; support authorized export and deletion workflows without silently deleting records under audit hold or other retention obligations.
+
+### Acceptance tests and implementation status
+- Resolve several test tickets from different modules and verify they all appear in the central Service Desk with consistent IDs, ownership, source, status, and history.
+- Edit and reassign a ticket and verify the original triage record remains intact while new audit events identify the actor, time, changed fields, reason, and outcome.
+- Verify unauthorized users cannot change restricted fields, bulk-resolve tickets, inspect sensitive audit details, or access another tenant's records by direct URL or API.
+- Verify automated and AI-originated actions are labeled, linked to the initiating rule/run, and subject to configured approvals.
+- Verify audit events persist across sessions and server restarts in the production architecture, and that tampering or unauthorized deletion is prevented or detected.
+- Existing blueprint requirements already call for ticket history, audit logging, and governance reporting; this section makes the shared ticketing and platform-wide audit/memory model explicit. These requirements are not proof that a production-grade audit backend is currently implemented.
+
