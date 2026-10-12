@@ -314,3 +314,29 @@
 .warroom-controls label:nth-child(3),.warroom-controls label:nth-child(4){grid-column:1/-1}
 .warroom-controls .builder-form-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:760px){.warroom-team-grid,.team-edit-form,.warroom-controls{grid-template-columns:1fr}.warroom-controls label:nth-child(3),.warroom-controls label:nth-child(4){grid-column:auto}.warroom-compose{align-items:stretch;flex-direction:column}.warroom-compose input,.warroom-compose select,.warroom-compose button{width:100%;max-width:none}.warroom-person{flex-wrap:wrap}.warroom-person .secondary-btn{margin-left:auto}}
+
+
+/* Dashboard management hub and expandable feature menu */
+.management-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.management-tile{display:flex;align-items:center;gap:10px;min-width:0;text-align:left;padding:12px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.018);color:#c8d7ee;transition:border-color .18s,background .18s,transform .18s}
+.management-tile:hover{border-color:rgba(0,212,255,.35);background:rgba(0,212,255,.055);transform:translateY(-1px)}
+.management-tile-icon{width:36px;height:36px;display:grid;place-items:center;flex-shrink:0;border-radius:10px;color:var(--cyan);background:rgba(0,212,255,.09);border:1px solid rgba(0,212,255,.12)}
+.management-tile-copy{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.management-tile-copy b{font-size:11px;color:#e0eaff;font-weight:650}
+.management-tile-copy small{font-size:9px;line-height:1.4;color:#8094b5}
+.more-features{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.more-features-toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:12px;border:1px solid rgba(0,212,255,.18);border-radius:9px;background:rgba(0,212,255,.035);color:#cbdaf1;text-align:left}
+.more-features-toggle>span{display:grid;grid-template-columns:22px auto;align-items:center;gap:3px 8px}
+.more-features-toggle>span>svg{grid-row:span 2;color:var(--cyan)}
+.more-features-toggle b{font-size:11px}
+.more-features-toggle small{font-size:9px;color:#8094b5}
+.more-features-toggle>svg{transition:transform .18s;color:#8fa5c7}
+.more-features-toggle>svg.chevron-open{transform:rotate(180deg)}
+.more-features-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px}
+.more-features-menu button{display:flex;align-items:center;gap:9px;min-width:0;padding:10px;border:1px solid var(--border);border-radius:8px;background:rgba(255,255,255,.015);color:#9eb4d4;text-align:left}
+.more-features-menu button:hover{border-color:rgba(0,212,255,.28);background:rgba(0,212,255,.04)}
+.more-features-menu button>svg{flex-shrink:0;color:var(--cyan)}
+.more-features-menu button>span:nth-child(2){display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.more-features-menu button b{font-size:10px;color:#d7e4f7}
+.more-features-menu button small{font-size:9px;color:#8094b5;line-height:1.35}
+@media(max-width:740px){.management-grid,.more-features-menu{grid-template-columns:1fr}.management-tile{padding:11px}.management-tile-copy small{font-size:10px}}
