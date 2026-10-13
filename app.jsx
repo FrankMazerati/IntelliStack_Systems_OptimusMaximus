@@ -54,7 +54,75 @@ const labDevices = Array.from({length:174},(_,i)=>{const owner=labUsers[i%labUse
 const services = [['Network','Operational'],['Applications','Operational'],['Database','Operational'],['Identity provider','Operational'],['Storage','Operational'],['Automation engine','Operational']];
 const activity = [['10:18 AM','Ticket INC-7842 updated','VPN connection issue'],['09:47 AM','User onboarding recorded','techcorp.example'],['09:12 AM','Backup status recorded','All configured systems'],['08:33 AM','Security scan simulated','No critical findings']];
 function Brand(){return <div className="brand"><div className="brand-mark"><Shield size={22}/><b>IS</b></div><div><div className="brand-name">INTELLISTACK <span>SYSTEMS</span></div></div></div>}
-function Login({onLogin}){const [role,setRole]=useState('Super Admin');const [email,setEmail]=useState('alex@intellistack.systems');return <div className="login-shell" style={{'--login-background':`url(${LoginImage})`}}><header className="login-header"><Brand/></header><main className="login-main"><section className="login-copy"><div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div><h1><span>One World.</span><br/><em>One Intelligent Network.</em></h1></section><section className="login-card"><div className="card-top"><span className="eyebrow">SECURE ACCESS PORTAL</span><h2>Welcome back</h2><p>Select your system role to continue.</p></div><label className="field-label">SYSTEM ROLE</label><div className="role-select-wrap"><ShieldCheck size={18}/><select value={role} onChange={e=>{setRole(e.target.value);setEmail(e.target.value==='Super Admin'?'alex@intellistack.systems':e.target.value==='Help Desk Agent'?'taylor@intellistack.systems':e.target.value==='IT Administrator'?'jamie@intellistack.systems':'morgan@intellistack.systems')}}>{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={16}/></div><label className="field-label">ACCOUNT EMAIL</label><div className="input-wrap"><Users size={17}/><input value={email} onChange={e=>setEmail(e.target.value)} aria-label="Account email"/></div><button className="primary-btn full" onClick={()=>onLogin(role)}>Enter Command Center <span>→</span></button><div className="trust-row"><ShieldCheck size={16}/> Secured. Trusted. Compliant.</div></section></main><footer className="login-footer"><span>© 2026 IntelliStack Systems</span><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>}
+function Login({onLogin}) {
+  const [accountType,setAccountType]=useState('individual');
+  const [role,setRole]=useState('Super Admin');
+  const [email,setEmail]=useState('alex@intellistack.systems');
+  const [password,setPassword]=useState('');
+  const [showPassword,setShowPassword]=useState(false);
+  const [provider,setProvider]=useState('');
+  const [notice,setNotice]=useState('');
+  const accountEmails={
+    'Super Admin':'alex@intellistack.systems',
+    'Help Desk Agent':'taylor@intellistack.systems',
+    'IT Administrator':'jamie@intellistack.systems',
+    'Governance & Compliance':'morgan@intellistack.systems',
+    'Security Agent':'riley@intellistack.systems',
+    'Network Operations':'casey@intellistack.systems'
+  };
+  const providers=[
+    {name:'Microsoft 365',detail:'Work or school',mark:'▦'},
+    {name:'Google Workspace',detail:'Business account',mark:'G'},
+    {name:'Apple',detail:'Apple Account',mark:'●'},
+    {name:'GitHub',detail:'Developer access',mark:'⌘'},
+    {name:'SAML / SSO',detail:'Enterprise identity',mark:'◎'},
+    {name:'More providers',detail:'Choose another method',mark:'•••'}
+  ];
+  const submitLogin=(event)=>{
+    event.preventDefault();
+    if(!email.trim()||!password){setNotice('Enter your account email and password to continue.');return;}
+    setNotice('Sign-in interface is ready. Connect Supabase Auth or your identity provider to validate credentials.');
+  };
+  const chooseProvider=(name)=>{
+    setProvider(name);
+    setNotice(name==='More providers'
+      ? 'Additional methods can be enabled when their identity-provider configuration is added.'
+      : name+' selected. Configure this provider in the authentication backend to complete sign-in.');
+  };
+  return <div className="login-shell login-shell-v2" style={{'--login-background':`url(${LoginImage})`}}>
+    <header className="login-header login-header-v2"><Brand/><div className="login-header-status"><span className="pulse"/> GLOBAL IT COMMAND CENTER</div></header>
+    <main className="login-main login-main-v2">
+      <section className="login-copy login-copy-v2">
+        <div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div>
+        <h1><span>One World.</span><br/><em>One Intelligent Network.</em></h1>
+        <p className="login-v2-subtitle">Technology. Security. People. A safer tomorrow.</p>
+        <div className="login-v2-capabilities"><span><ShieldCheck size={16}/> Secure operations</span><span><Globe2 size={16}/> Global connectivity</span><span><Activity size={16}/> Always-on response</span></div>
+      </section>
+      <section className="login-card login-card-v2">
+        <div className="card-top login-card-heading"><span className="eyebrow">SECURE ACCESS PORTAL</span><h2>Welcome back</h2><p>Sign in to your IntelliStack Systems account.</p></div>
+        <div className="login-account-switch" role="group" aria-label="Account type">
+          <button type="button" className={accountType==='individual'?'active individual':'individual'} onClick={()=>{setAccountType('individual');setNotice('');}}> <Users size={17}/><span><b>Individual</b><small>Personal account</small></span></button>
+          <button type="button" className={accountType==='business'?'active business':'business'} onClick={()=>{setAccountType('business');setNotice('');}}> <Building2 size={17}/><span><b>Business</b><small>Organization account</small></span></button>
+        </div>
+        <form className="login-v2-form" onSubmit={submitLogin}>
+          <label className="field-label" htmlFor="login-role">ADMIN & TEAM ACCOUNT</label>
+          <div className="role-select-wrap"><ShieldCheck size={18}/><select id="login-role" value={role} onChange={event=>{setRole(event.target.value);setEmail(accountEmails[event.target.value]||'');setNotice('');}}>{roles.map(item=><option key={item} value={item}>{item==='Super Admin'?'Global Admin / Super Admin':item}</option>)}</select><ChevronDown size={16}/></div>
+          <label className="field-label" htmlFor="login-email">{accountType==='business'?'BUSINESS EMAIL':'ACCOUNT EMAIL'}</label>
+          <div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={event=>setEmail(event.target.value)} required/></div>
+          <label className="field-label" htmlFor="login-password">PASSWORD</label>
+          <div className="input-wrap login-password-wrap"><LockKeyhole size={17}/><input id="login-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={event=>setPassword(event.target.value)} required/><button className="password-toggle" type="button" onClick={()=>setShowPassword(value=>!value)}>{showPassword?'Hide':'Show'}</button></div>
+          <div className="login-form-options"><label><input type="checkbox"/> Remember me</label><button type="button" onClick={()=>setNotice('Password recovery will be available after Supabase Auth is connected.')}>Forgot password?</button></div>
+          <button className="primary-btn full login-submit" type="submit">Sign in securely <span>→</span></button>
+          <div className="login-or-divider"><span/> <b>OR CONTINUE WITH</b> <span/></div>
+          <div className="login-provider-grid">{providers.map(item=><button type="button" key={item.name} className={'login-provider '+(provider===item.name?'selected':'')} onClick={()=>chooseProvider(item.name)}><span className={'login-provider-mark '+item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}>{item.mark}</span><span><b>{item.name}</b><small>{item.detail}</small></span></button>)}</div>
+          {notice&&<div className="login-auth-notice" role="status"><ShieldCheck size={15}/><span>{notice}</span></div>}
+          <p className="login-auth-footnote"><LockKeyhole size={13}/> Credentials are not validated until an authentication backend is connected.</p>
+        </form>
+      </section>
+    </main>
+    <footer className="login-footer login-footer-v2"><span>© 2026 IntelliStack Systems</span><span><ShieldCheck size={13}/> Secure access <i/> Privacy <i/> Support</span><span><b>ONE WORLD.</b> ONE INTELLIGENT NETWORK.</span></footer>
+  </div>;
+}
 function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const content=<><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={18}/></span></div><div className="metric-value">{value}</div><div className={'metric-trend '+(positive?'good':'warn')}>{positive?<ArrowDownRight size={14}/>:<ArrowUpRight size={14}/>} {trend}</div>{onClick&&<span className="metric-drill">Explore details <span>↗</span></span>}</>;return onClick?<button type="button" className="metric-card metric-clickable" onClick={onClick} aria-label={label+': '+value+'. Explore details'}>{content}</button>:<div className="metric-card">{content}</div>}
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
