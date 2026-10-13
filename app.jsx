@@ -5,7 +5,15 @@ import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
 import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
-const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance'];
+const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
+const rolePermissions = {
+  'Super Admin': new Set(screenDefs.map(s=>s.id)),
+  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status']),
+  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations']),
+  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status']),
+  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit']),
+  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status'])
+};
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
   {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
@@ -443,12 +451,21 @@ function App(){
   const [globalSearch,setGlobalSearch]=useState('');
   const [floatingAssistant,setFloatingAssistant]=useState(null);
   const currentRole=session||'Super Admin';
-  const roleScreens=screenDefs.filter(item=>item.group===currentRole);
+  const allowedScreens=rolePermissions[currentRole]||rolePermissions['Super Admin'];
+  const roleScreens=screenDefs;
   const currentScreen=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
-  const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);setFloatingAssistant(null);};
+  const navigate=(id)=>{
+    setActiveScreen(id);
+    setMobileNav(false);
+    setFloatingAssistant(null);
+  };
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
+    if(!allowedScreens.has(activeScreen)){
+      const locked=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
+      return <Panel title={locked.label} subtitle={locked.description}><div className="empty-state role-locked-state"><div className="service-icon"><LockKeyhole size={24}/></div><h3>Access restricted</h3><p><b>{locked.label}</b> is not included in the <b>{currentRole}</b> role.</p><p className="privacy-note">This screen remains visible for command-center inspection, but its controls are locked for this role.</p><button className="primary-btn" onClick={()=>navigate('overview')}>Return to allowed workspace →</button></div></Panel>;
+    }
     if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
@@ -469,8 +486,7 @@ function App(){
       <div className="workspace-label">WORKSPACE</div>
       <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch system role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
       <div className="nav-section-title">{currentRole.toUpperCase()}</div>
-      <nav className="side-nav">{roleScreens.map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span>{item.id==='tickets'&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}
-      {currentRole==='Super Admin'&&<><div className="nav-section-title">SERVICE OPERATIONS</div>{screenDefs.filter(item=>['tickets','endusers'].includes(item.id)).map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span></button>;})}</>}
+      <nav className="side-nav"><div className="nav-section-title">ALL WORKSPACES</div>{screenDefs.map(item=>{const Icon=item.icon;const allowed=allowedScreens.has(item.id);return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')+' '+(!allowed?'locked':'')} onClick={()=>navigate(item.id)} aria-disabled={!allowed} title={allowed?'Open '+item.label:'Locked for '+currentRole}><Icon size={17}/><span>{item.label}</span>{!allowed&&<LockKeyhole size={12} className="nav-lock"/>}{item.id==='tickets'&&allowed&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}</nav>
       </nav>
       <div className="nav-section-title assistant-nav-title">AI ASSISTANTS</div><nav className="side-nav assistant-side-nav"><button className={'nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus AI</span><small className="assistant-nav-status">READY</small></button><button className={'nav-link '+(activeScreen==='optimus'?'active':'')} onClick={()=>navigate('optimus')}><Sparkles size={17}/><span>Optimus</span><small className="assistant-nav-status">READY</small></button></nav>
       <div className="sidebar-spacer"/>
