@@ -1082,3 +1082,88 @@ body{height:100dvh;min-height:0;overflow:hidden}
   .login-footer-brand .brand-tag{font-size:6px}
   .login-footer-bottom{line-height:1.6}
 }
+
+
+/* Brand correction: restore the intended Maximus / Optimus hierarchy and show the full background composition. */
+.login-shell{
+  background-color:#050a17;
+  background-size:100% auto;
+  background-position:center top;
+  background-repeat:no-repeat;
+  background-attachment:scroll;
+}
+.login-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,1.2fr) minmax(0,1fr);
+  align-items:center;
+  gap:18px;
+  min-height:92px;
+  height:auto;
+  padding-top:12px;
+  padding-bottom:12px;
+  background:linear-gradient(90deg,rgba(3,9,24,.97),rgba(7,16,39,.95) 52%,rgba(3,10,26,.97));
+  border-bottom:1px solid rgba(25,207,255,.28);
+  backdrop-filter:blur(12px);
+}
+.login-header-center{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  min-width:0;
+  text-align:center;
+}
+.login-header-center>b{
+  display:block;
+  color:#f7fbff;
+  font-family:Orbitron,Inter,system-ui,sans-serif;
+  font-size:clamp(18px,2vw,27px);
+  font-weight:800;
+  line-height:1.2;
+  letter-spacing:1.15px;
+  white-space:nowrap;
+  text-shadow:0 2px 14px rgba(0,0,0,.45);
+}
+.login-header-center>b em{
+  color:#19cfff;
+  font-style:normal;
+  text-shadow:0 0 13px rgba(25,207,255,.22);
+}
+.login-header-center>span{
+  display:block;
+  color:#e3edf9;
+  font-family:Orbitron,Inter,system-ui,sans-serif;
+  font-size:clamp(9px,.9vw,12px);
+  font-weight:700;
+  letter-spacing:clamp(3px,.5vw,5px);
+  line-height:1.5;
+}
+.login-header-note{justify-self:end}
+.login-footer-brand p{
+  color:#f7fbff;
+  font-family:Orbitron,Inter,system-ui,sans-serif;
+  font-size:clamp(12px,1vw,15px);
+  font-weight:800;
+  line-height:1.65;
+  letter-spacing:1.15px;
+}
+.login-footer-brand p em{color:#19cfff}
+@media(max-width:760px){
+  .login-shell{background-size:100% auto;background-position:center top}
+  .login-header{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+    gap:10px;
+    min-height:78px;
+    padding:10px 12px;
+  }
+  .login-header-center{grid-column:2;grid-row:1;align-items:flex-end;text-align:right}
+  .login-header-center>b{font-size:clamp(13px,3.4vw,19px);letter-spacing:.5px}
+  .login-header-center>span{font-size:8px;letter-spacing:2.5px}
+  .login-header-note{display:none}
+  .login-header>.brand{grid-column:1;grid-row:1}
+}
+@media(max-width:420px){
+  .login-header-center>b{font-size:12px;letter-spacing:.2px}
+  .login-header-center>span{font-size:7px;letter-spacing:1.8px}
+}
