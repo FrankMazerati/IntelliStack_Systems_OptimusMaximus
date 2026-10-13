@@ -1,7 +1,7 @@
 import SuperAdminImage from './SuperAdmin.png';
 import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
-import LoginImage from './Login.png';
+import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
 import { Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const initialTickets = [
   {id:'INC-7814',title:'Collaboration tool intermittent latency',requester:'Avery Patel',team:'Applications',priority:'Medium',status:'In progress',age:'3h 10m'},
 ];
 const users = [
-  ['Alex Carter','alex@intellistack.systems','Super Admin','Active','10:24 AM'],['Jamie Smith','jamie@intellistack.systems','IT Administrator','Active','09:12 AM'],['Taylor Brooks','taylor@intellistack.systems','Help Desk Agent','Active','08:47 AM'],['Morgan Lee','morgan@intellistack.systems','Governance & Compliance','Active','07:33 AM'],['Riley Davis','riley@intellistack.systems','Help Desk Agent','Active','Yesterday'],['Casey Wilson','casey@intellistack.systems','IT Administrator','Active','Yesterday'],['Jordan Kim','jordan@intellistack.systems','Governance & Compliance','Review','Oct 9'],['Avery Patel','avery@intellistack.systems','Help Desk Agent','Active','Oct 9']
+  ['Frank Mazerati','frankmazerati@intellistack.systems','Super Admin','Active','10:24 AM'],['Jamie Smith','jamie@intellistack.systems','IT Administrator','Active','09:12 AM'],['Taylor Brooks','taylor@intellistack.systems','Help Desk Agent','Active','08:47 AM'],['Morgan Lee','morgan@intellistack.systems','Governance & Compliance','Active','07:33 AM'],['Riley Davis','riley@intellistack.systems','Help Desk Agent','Active','Yesterday'],['Casey Wilson','casey@intellistack.systems','IT Administrator','Active','Yesterday'],['Jordan Kim','jordan@intellistack.systems','Governance & Compliance','Review','Oct 9'],['Avery Patel','avery@intellistack.systems','Help Desk Agent','Active','Oct 9']
 ];
 const integrations = [ ['Microsoft 365','Identity & collaboration','Healthy','2m ago'],['ServiceNow Bridge','Ticket synchronization','Healthy','4m ago'],['Power BI','Executive analytics','Healthy','1m ago'],['Jira Service Management','Engineering queue','Degraded','6m ago'],['Slack / Teams','Incident communications','Healthy','3m ago'],['Endpoint RMM','Device inventory','Healthy','5m ago'] ];
 const initialEndUsers = [
