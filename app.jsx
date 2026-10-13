@@ -6,14 +6,7 @@ import React, { useMemo, useState } from 'react';
 import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
-const rolePermissions = {
-  'Super Admin': new Set(screenDefs.map(s=>s.id)),
-  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status']),
-  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations']),
-  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status']),
-  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit']),
-  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status'])
-};
+
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
   {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
@@ -34,6 +27,14 @@ const screenDefs = [
   {id:'governance',label:'Governance Center',group:'Governance & Compliance',icon:FileCheck2,description:'Policy reviews, audit evidence, and compliance tracking.'},
   {id:'audit',label:'Audit Log',group:'Governance & Compliance',icon:ClipboardList,description:'Traceable activity records using sample records.'},
 ];
+const rolePermissions = {
+  'Super Admin': new Set(screenDefs.map(s=>s.id)),
+  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status']),
+  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations']),
+  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status']),
+  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit']),
+  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status'])
+};
 const initialTickets = [
   {id:'INC-7842',title:'VPN connection fails after password reset',requester:'Jordan Kim',team:'Network Ops',priority:'High',status:'In progress',age:'18m'},
   {id:'INC-7839',title:'Finance app access request',requester:'Morgan Lee',team:'Identity',priority:'Medium',status:'New',age:'42m'},
