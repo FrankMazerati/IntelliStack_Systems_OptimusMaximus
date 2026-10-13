@@ -206,6 +206,26 @@ function Overview({onNavigate,tickets,endUsers,devices}){
  const quickActions=quickActionIds.map(id=>superActionCatalog.find(item=>item[0]===id)).filter(Boolean);
  const moreActions=superActionCatalog.filter(item=>!quickActionIds.includes(item[0]));
  return <>
+  <section className="global-admin-hero">
+   <div className="global-admin-hero-copy">
+    <div className="eyebrow"><span className="pulse"/> GLOBAL OVERSIGHT WITH CONTROLLED ACCESS</div>
+    <h2>ONE WORLD. ONE SYSTEM.<br/><em>ONE INTELLIGENT NETWORK.</em></h2>
+    <p>One command view for platform administration, tenant oversight, identity, security posture, global operations, and connected systems.</p>
+    <div className="global-admin-scope"><Globe2 size={15}/><span><b>Current scope</b> World-wide platform view</span><span className="scope-separator">/</span><span className="scope-demo">DEMO WORKSPACE</span></div>
+    <div className="global-admin-hero-actions"><button className="primary-btn" onClick={()=>onNavigate('globaltenants')}><Globe2 size={15}/> Open Global Tenant Command</button><button className="secondary-btn" onClick={()=>onNavigate('users')}><UserCog size={15}/> Identity & Access</button></div>
+   </div>
+   <div className="global-admin-hero-visual" aria-hidden="true">
+    <div className="global-admin-orbit orbit-a"/><div className="global-admin-orbit orbit-b"/><div className="global-admin-globe"><Globe2 size={74}/><span className="globe-scanline"/></div>
+    <span className="global-admin-node node-a"/><span className="global-admin-node node-b"/><span className="global-admin-node node-c"/>
+    <div className="global-admin-visual-label"><ShieldCheck size={14}/><span><b>CONTROLLED ACCESS</b><small>Tenant boundaries remain in force</small></span></div>
+   </div>
+   <div className="global-admin-capability-row">
+    <button onClick={()=>onNavigate('users')}><span className="global-admin-capability-icon"><Users size={18}/></span><span><b>Identity & Access</b><small>Users, roles, permissions</small></span><ArrowUpRight size={15}/></button>
+    <button onClick={()=>onNavigate('security')}><span className="global-admin-capability-icon purple"><ShieldCheck size={18}/></span><span><b>Security Posture</b><small>Controls and compliance</small></span><ArrowUpRight size={15}/></button>
+    <button onClick={()=>onNavigate('warroom')}><span className="global-admin-capability-icon blue"><Activity size={18}/></span><span><b>Global Operations</b><small>War room and response</small></span><ArrowUpRight size={15}/></button>
+    <button onClick={()=>onNavigate('integrations')}><span className="global-admin-capability-icon green"><Network size={18}/></span><span><b>Integrations</b><small>Connected-system status</small></span><ArrowUpRight size={15}/></button>
+   </div>
+  </section>
   <Panel title="Daily Build Tracker" subtitle="Project baseline: October 10, 2026 · Dates are planning estimates until validated against working acceptance tests." action={<span className="status-pill neutral">Prototype · v1.0.0</span>}>
    <div className="build-tracker-summary">
     <div className="build-tracker-stat"><small>BUILD DAY</small><strong>{Math.max(1,Math.floor((new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate())-new Date(2026,9,10))/86400000)+1)}</strong><span>Inclusive count from start date</span></div>
