@@ -96,32 +96,45 @@ function Brand(){return <div className="brand"><div className="brand-mark"><Bran
 function Login({onLogin}){
  const [role,setRole]=useState('Super Admin');
  const [email,setEmail]=useState('alex@intellistack.systems');
+ const [password,setPassword]=useState('');
+ const [showPassword,setShowPassword]=useState(false);
  const [entryPath,setEntryPath]=useState('individual');
- const [provider,setProvider]=useState('');
+ const [provider,setProvider]=useState('email');
  const [showMoreProviders,setShowMoreProviders]=useState(false);
  const [organization,setOrganization]=useState('');
  const [providerNotice,setProviderNotice]=useState('');
+ const [authNotice,setAuthNotice]=useState('');
  const pathOptions=[
-  {id:'individual',title:'Individual',subtitle:'Contractors & Employees',icon:Users},
+  {id:'individual',title:'Individual',subtitle:'Employees & Contractors',icon:Users},
   {id:'business',title:'Business',subtitle:'Employers & Organizations',icon:Building2}
  ];
  const providerOptions=[
+  {id:'email',title:'Email & Password',mark:'@',className:'email'},
   {id:'microsoft',title:'Microsoft 365',mark:'▦',className:'microsoft'},
-  {id:'entra',title:'Microsoft Entra ID',mark:'◇',className:'microsoft'},
   {id:'google',title:'Google Workspace',mark:'G',className:'google'}
  ];
  const moreProviderOptions=[
+  {id:'entra',title:'Microsoft Entra ID',mark:'◇',className:'microsoft'},
   {id:'azure',title:'Azure Active Directory',mark:'△',className:'microsoft'},
   {id:'aws',title:'Amazon Web Services',mark:'aws',className:'aws'},
   {id:'okta',title:'Okta',mark:'O',className:'okta'},
   {id:'apple',title:'Apple',mark:'●',className:'apple'},
   {id:'active-directory',title:'Active Directory',mark:'▦',className:'microsoft'},
   {id:'intune',title:'Microsoft Intune',mark:'▣',className:'microsoft'},
-  {id:'email',title:'Email and password',mark:'@',className:'email'},
   {id:'phone',title:'Phone sign-in',mark:'▯',className:'google'}
  ];
- const chooseProvider=(p)=>{setProvider(p.id);setProviderNotice(p.title+' is a preview placeholder. The live identity connection has not been configured in this environment.');};
- const choosePath=(id)=>{setEntryPath(id);setProviderNotice('');setProvider('');setEmail(id==='individual'?'alex@intellistack.systems':'admin@yourcompany.example');setRole(id==='business'?'IT Administrator':'Super Admin');};
+ const providerTitle=providerOptions.concat(moreProviderOptions).find(p=>p.id===provider)?.title||'Email & Password';
+ const chooseProvider=(p)=>{setProvider(p.id);setProviderNotice('');setAuthNotice('');};
+ const choosePath=(id)=>{setEntryPath(id);setProviderNotice('');setAuthNotice('');setProvider(id==='business'?'email':'email');setEmail(id==='individual'?'alex@intellistack.systems':'admin@yourcompany.example');setPassword('');setRole(id==='business'?'IT Administrator':'Super Admin');};
+ const submitLogin=(event)=>{
+  event.preventDefault();
+  if(entryPath==='business'&&!organization.trim()){setAuthNotice('Enter your organization name to continue.');return;}
+  if(!email.trim()||!password){setAuthNotice('Enter your email or provider ID and password to continue.');return;}
+  setAuthNotice('Preview authentication accepted. No password or credential was sent to a live identity provider in this environment.');
+  onLogin(role);
+ };
+ const showRecovery=(event)=>{event.preventDefault();setAuthNotice('Password recovery is ready in the front-end flow. Connect the identity provider to send real recovery requests.');};
+ const showHelp=(event)=>{event.preventDefault();setAuthNotice('Need help? The support flow is available here; connect your help-desk and identity services for live assistance.');};
  return <div className="login-shell" style={{'--login-background':`url(${LoginImage})`}}>
   <header className="login-header">
    <Brand/>
@@ -137,25 +150,33 @@ function Login({onLogin}){
     <div className="login-brand-values"><span><ShieldCheck size={15}/> Secured</span><span><Network size={15}/> Trusted</span><span><CheckCircle2 size={15}/> Compliant</span></div>
    </section>
    <section className="login-card login-card-redesigned">
-    <div className="card-top login-card-heading"><span className="eyebrow">INTELLISTACK SYSTEMS · ACCESS</span><h2>Choose your sign-in</h2><p>Choose your account type, then select an identity provider.</p></div>
+    <div className="card-top login-card-heading"><span className="eyebrow">INTELLISTACK SYSTEMS · ACCESS</span><h2>Choose your sign-in</h2><p>Choose Individual or Business, then enter credentials or select an identity provider.</p></div>
     <div className="login-path-list login-path-list-two">{pathOptions.map(path=>{const Icon=path.icon;return <button type="button" key={path.id} className={'login-path-option '+(entryPath===path.id?'selected '+path.id:'')} onClick={()=>choosePath(path.id)} aria-pressed={entryPath===path.id}><span className="login-path-icon"><Icon size={19}/></span><span className="login-path-copy"><b>{path.title}</b><small>{path.subtitle}</small></span><span className="login-path-check">{entryPath===path.id?'✓':'›'}</span></button>})}</div>
-    {entryPath==='business'&&<div className="login-organization"><label className="field-label" htmlFor="login-organization">YOUR ORGANIZATION</label><div className="input-wrap"><Building2 size={16}/><input id="login-organization" value={organization} onChange={e=>setOrganization(e.target.value)} placeholder="Company or organization name"/></div></div>}
+    {entryPath==='business'&&<div className="login-organization"><label className="field-label" htmlFor="login-organization">YOUR ORGANIZATION</label><div className="input-wrap"><Building2 size={16}/><input id="login-organization" value={organization} onChange={e=>setOrganization(e.target.value)} placeholder="Company or organization name" autoComplete="organization"/></div></div>}
     <div className="login-provider-layout">
      <div className="login-provider-main">
       <div className="login-section-label">SIGN IN WITH</div>
-      <div className="login-provider-list">{providerOptions.map(p=><button type="button" key={p.id} className={'login-provider-option '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span><b>{p.title}</b><small>Identity provider placeholder</small></span><span className="login-provider-arrow">›</span></button>)}</div>
+      <div className="login-provider-list">{providerOptions.map(p=><button type="button" key={p.id} className={'login-provider-option '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span><b>{p.title}</b><small>{p.id==='email'?'Built-in credential form':'Ready for provider connection'}</small></span><span className="login-provider-arrow">›</span></button>)}</div>
       <button type="button" className="login-more-providers" onClick={()=>setShowMoreProviders(v=>!v)} aria-expanded={showMoreProviders}><Plus size={14}/>{showMoreProviders?'Hide more providers':'More identity providers'}<ChevronDown size={14} className={showMoreProviders?'rotated':''}/></button>
       {showMoreProviders&&<div className="login-extra-providers">{moreProviderOptions.map(p=><button type="button" key={p.id} className={'login-extra-provider '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span>{p.title}</span></button>)}</div>}
-      {providerNotice&&<div className="login-provider-notice" role="status"><ShieldCheck size={15}/><span>{providerNotice}</span></div>}
-      <div className="login-provider-footnote">Sign-in choices are placeholders until the matching identity integration is configured.</div>
+      <form className="login-credentials" onSubmit={submitLogin} noValidate>
+       <div className="login-credentials-heading"><div><span className="login-section-label">CREDENTIALS</span><b>{providerTitle}</b></div><span className="login-preview-ready"><i/> FRONT-END READY</span></div>
+       <label className="field-label" htmlFor="login-email">{provider==='microsoft'?'MICROSOFT 365 ID':provider==='google'?'GOOGLE WORKSPACE ID':'EMAIL OR USER ID'}</label>
+       <div className="input-wrap"><Mail size={16}/><input id="login-email" type="email" inputMode="email" value={email} onChange={e=>{setEmail(e.target.value);setAuthNotice('');}} placeholder={provider==='microsoft'?'name@company.com':provider==='google'?'name@company.com':'name@company.com'} autoComplete="username"/></div>
+       <label className="field-label" htmlFor="login-password">PASSWORD</label>
+       <div className="input-wrap"><LockKeyhole size={16}/><input id="login-password" type={showPassword?'text':'password'} value={password} onChange={e=>{setPassword(e.target.value);setAuthNotice('');}} placeholder="Enter your password" autoComplete="current-password"/><button type="button" className="login-password-toggle" onClick={()=>setShowPassword(v=>!v)} aria-label={showPassword?'Hide password':'Show password'}>{showPassword?'Hide':'Show'}</button></div>
+       <div className="login-form-links"><a href="#forgot-password" onClick={showRecovery}>Forgot password?</a><a href="#login-help" onClick={showHelp}><CircleHelp size={13}/> Need help?</a></div>
+       {authNotice&&<div className="login-auth-notice" role="status"><ShieldCheck size={15}/><span>{authNotice}</span></div>}
+       <button type="submit" className="primary-btn full login-demo-btn">Sign in to preview <span>→</span></button>
+      </form>
+      {provider!=='email'&&<div className="login-provider-footnote"><ShieldCheck size={12}/> {providerTitle} is represented by a connection-ready front end. Live OAuth/SSO credentials will be handled by the configured identity backend when connected; this preview never sends these credentials to the provider.</div>}
      </div>
      <aside className="login-provider-side"><div className="login-side-shield"><ShieldCheck size={24}/></div><b>One trusted identity</b><p>Secure, role-aware access for people and organizations across the IntelliStack network.</p><div className="login-side-status"><span/> PREVIEW ENVIRONMENT</div></aside>
     </div>
     <div className="login-card-bottom">
      <label className="field-label" htmlFor="login-demo-role">PREVIEW WORKSPACE ROLE</label>
      <div className="role-select-wrap"><ShieldCheck size={16}/><select id="login-demo-role" value={role} onChange={e=>setRole(e.target.value)}>{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={15}/></div>
-     <button type="button" className="primary-btn full login-demo-btn" onClick={()=>onLogin(role)}>Enter preview workspace <span>→</span></button>
-     <div className="trust-row"><ShieldCheck size={15}/> Demo access only · no live sign-in connected</div>
+     <div className="trust-row"><ShieldCheck size={15}/> Front-end authentication shell ready · live identity backend not connected</div>
     </div>
    </section>
   </main>
