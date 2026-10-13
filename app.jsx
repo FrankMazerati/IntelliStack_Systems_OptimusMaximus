@@ -3,6 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './Login.png';
 import React, { useEffect, useMemo, useState } from 'react';
+import { supabase } from './supabase.js';
 import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, Building2, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
@@ -54,22 +55,21 @@ const labDevices = Array.from({length:174},(_,i)=>{const owner=labUsers[i%labUse
 const services = [['Network','Operational'],['Applications','Operational'],['Database','Operational'],['Identity provider','Operational'],['Storage','Operational'],['Automation engine','Operational']];
 const activity = [['10:18 AM','Ticket INC-7842 updated','VPN connection issue'],['09:47 AM','User onboarding recorded','techcorp.example'],['09:12 AM','Backup status recorded','All configured systems'],['08:33 AM','Security scan simulated','No critical findings']];
 function Brand(){return <div className="brand"><div className="brand-mark"><Shield size={22}/><b>IS</b></div><div><div className="brand-name">INTELLISTACK <span>SYSTEMS</span></div></div></div>}
+function appRoleFromProfile(profile){
+  const platformRole=String(profile?.platform_role||'').toLowerCase();
+  if(platformRole==='platform_owner'||platformRole==='platform_admin') return 'Super Admin';
+  if(platformRole==='platform_support') return 'Help Desk Agent';
+  const role=String(profile?.role||'').toLowerCase().replace(/[ -]+/g,'_');
+  const roleMap={help_desk_agent:'Help Desk Agent',help_desk:'Help Desk Agent',it_administrator:'IT Administrator',security_agent:'Security Agent',governance_compliance:'Governance & Compliance',network_operations:'Network Operations'};
+  return roleMap[role]||null;
+}
 function Login({onLogin}) {
   const [accountType,setAccountType]=useState('individual');
-  const [role,setRole]=useState('Super Admin');
-  const [email,setEmail]=useState('alex@intellistack.systems');
+  const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [provider,setProvider]=useState('');
   const [notice,setNotice]=useState('');
-  const accountEmails={
-    'Super Admin':'alex@intellistack.systems',
-    'Help Desk Agent':'taylor@intellistack.systems',
-    'IT Administrator':'jamie@intellistack.systems',
-    'Governance & Compliance':'morgan@intellistack.systems',
-    'Security Agent':'riley@intellistack.systems',
-    'Network Operations':'casey@intellistack.systems'
-  };
   const providers=[
     {name:'Microsoft 365',detail:'Work or school',mark:'▦'},
     {name:'Google Workspace',detail:'Business account',mark:'G'},
@@ -78,10 +78,20 @@ function Login({onLogin}) {
     {name:'SAML / SSO',detail:'Enterprise identity',mark:'◎'},
     {name:'More providers',detail:'Choose another method',mark:'•••'}
   ];
-  const submitLogin=(event)=>{
+  const submitLogin=async(event)=>{
     event.preventDefault();
+    setNotice('');
+    if(!supabase){setNotice('Authentication is not configured yet. Add VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to the Vercel project environment variables, then redeploy.');return;}
     if(!email.trim()||!password){setNotice('Enter your account email and password to continue.');return;}
-    setNotice('Sign-in interface is ready. Connect Supabase Auth or your identity provider to validate credentials.');
+    try{
+      const {data,error}=await supabase.auth.signInWithPassword({email:email.trim(),password});
+      if(error) throw error;
+      const {data:profile,error:profileError}=await supabase.from('profiles').select('platform_role,role,display_name,email').eq('id',data.user.id).maybeSingle();
+      if(profileError) throw new Error('Your credentials were accepted, but your account permissions could not be loaded. Check the profiles table SELECT policy for the signed-in user.');
+      const assignedRole=appRoleFromProfile(profile);
+      if(!assignedRole){await supabase.auth.signOut();setNotice('Your credentials were accepted, but this account has not been assigned an approved IntelliStack application role. Ask the platform owner to assign the role; no command-center access was granted.');return;}
+      onLogin(assignedRole);
+    }catch(error){setNotice(error?.message==='Invalid login credentials'?'Email or password is incorrect. Check the address and password created in Supabase.':(error?.message||'Sign-in failed. Check Supabase configuration and try again.'));}
   };
   const chooseProvider=(name)=>{
     setProvider(name);
@@ -105,8 +115,8 @@ function Login({onLogin}) {
           <button type="button" className={accountType==='business'?'active business':'business'} onClick={()=>{setAccountType('business');setNotice('');}}> <Building2 size={17}/><span><b>Business</b><small>Organization account</small></span></button>
         </div>
         <form className="login-v2-form" onSubmit={submitLogin}>
-          <label className="field-label" htmlFor="login-role">ADMIN & TEAM ACCOUNT</label>
-          <div className="role-select-wrap"><ShieldCheck size={18}/><select id="login-role" value={role} onChange={event=>{setRole(event.target.value);setEmail(accountEmails[event.target.value]||'');setNotice('');}}>{roles.map(item=><option key={item} value={item}>{item==='Super Admin'?'Global Admin / Super Admin':item}</option>)}</select><ChevronDown size={16}/></div>
+          <label className="field-label">ACCOUNT PERMISSIONS</label>
+          <div className="role-select-wrap"><ShieldCheck size={18}/><span>Your role is loaded from your assigned account permissions after sign-in.</span></div>
           <label className="field-label" htmlFor="login-email">{accountType==='business'?'BUSINESS EMAIL':'ACCOUNT EMAIL'}</label>
           <div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={event=>setEmail(event.target.value)} required/></div>
           <label className="field-label" htmlFor="login-password">PASSWORD</label>
@@ -116,7 +126,7 @@ function Login({onLogin}) {
           <div className="login-or-divider"><span/> <b>OR CONTINUE WITH</b> <span/></div>
           <div className="login-provider-grid">{providers.map(item=><button type="button" key={item.name} className={'login-provider '+(provider===item.name?'selected':'')} onClick={()=>chooseProvider(item.name)}><span className={'login-provider-mark '+item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}>{item.mark}</span><span><b>{item.name}</b><small>{item.detail}</small></span></button>)}</div>
           {notice&&<div className="login-auth-notice" role="status"><ShieldCheck size={15}/><span>{notice}</span></div>}
-          <p className="login-auth-footnote"><LockKeyhole size={13}/> Credentials are not validated until an authentication backend is connected.</p>
+          <p className="login-auth-footnote"><LockKeyhole size={13}/> Secure sign-in is validated by Supabase Auth. Access depends on your assigned application role.</p>
         </form>
       </section>
     </main>
@@ -698,7 +708,24 @@ function App(){
   const globalCollaborationRole=['Super Admin','Security Agent','Network Operations'].includes(currentRole);
   const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);setFloatingAssistant(null);};
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':role==='Security Agent'?'security':role==='Network Operations'?'networkops':'overview');};
-  const logout=()=>{setSession(null);setMobileNav(false);};
+  useEffect(()=>{
+    let active=true;
+    const restoreSession=async()=>{
+      if(!supabase)return;
+      try{
+        const {data:{user},error}=await supabase.auth.getUser();
+        if(error||!user||!active)return;
+        const {data:profile,error:profileError}=await supabase.from('profiles').select('platform_role,role,display_name,email').eq('id',user.id).maybeSingle();
+        const assignedRole=!profileError?appRoleFromProfile(profile):null;
+        if(active&&assignedRole) login(assignedRole);
+        else if(active) await supabase.auth.signOut();
+      }catch(error){console.error('Could not restore IntelliStack session:',error);}
+    };
+    restoreSession();
+    const {data:{subscription}}=supabase?.auth.onAuthStateChange((_event,authSession)=>{if(!authSession&&active)setSession(null);})||{data:{subscription:null}};
+    return ()=>{active=false;subscription?.unsubscribe();};
+  },[]);
+  const logout=async()=>{if(supabase) await supabase.auth.signOut();setSession(null);setMobileNav(false);};
   const renderPage=()=>{
     if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
     if(activeScreen==='globaltenants') return <GlobalTenantCommandPage/>;
@@ -722,7 +749,7 @@ function App(){
     <aside className={'sidebar '+(mobileNav?'mobile-open':'')}>
       <div className="sidebar-brand"><div className="sidebar-brand-content"><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu sidebar-close-button" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
       <div className="workspace-label">WORKSPACE</div>
-      <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch system role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
+      <div className="role-switch" aria-label="Assigned system role"><ShieldCheck size={17}/><span>{currentRole}</span></div>
       <div className="nav-section-title">{currentRole.toUpperCase()}</div>
       <nav className="side-nav">{roleScreens.map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span>{item.id==='tickets'&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}
       {currentRole==='Super Admin'&&<><div className="nav-section-title">SERVICE OPERATIONS</div>{screenDefs.filter(item=>['tickets','endusers'].includes(item.id)).map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span></button>;})}</>}
