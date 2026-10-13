@@ -141,6 +141,7 @@ function Login({onLogin}){
    <div className="login-header-center"><b>MAXIMUS <em>OPTIMUS</em></b><span>COMMAND CENTER</span></div>
    <div className="login-header-note"><span className="login-header-lock"><ShieldCheck size={14}/></span><span>SECURE ACCESS PORTAL<small>IDENTITY · WORKFORCE · OPERATIONS</small></span></div>
   </header>
+  <div className="login-world-clock"><WorldClockBar/></div>
   <main className="login-main login-main-reference">
    <section className="login-copy">
     <div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div>
