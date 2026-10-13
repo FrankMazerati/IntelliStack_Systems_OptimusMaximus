@@ -61,63 +61,75 @@ function Login({onLogin}){
  const [entryPath,setEntryPath]=useState('individual');
  const [provider,setProvider]=useState('');
  const [showMoreProviders,setShowMoreProviders]=useState(false);
+ const [organization,setOrganization]=useState('');
  const [providerNotice,setProviderNotice]=useState('');
  const pathOptions=[
-  {id:'individual',title:'Individual',subtitle:'IntelliStack Systems personnel',icon:Users},
-  {id:'contractor',title:'Contractor',subtitle:'External and temporary workforce',icon:ShieldCheck},
-  {id:'business',title:'Business',subtitle:'Organizations and employer admins',icon:Building2}
+  {id:'individual',title:'Individual',subtitle:'Contractors & Employees',icon:Users},
+  {id:'business',title:'Business',subtitle:'Employers & Organizations',icon:Building2}
  ];
  const providerOptions=[
-  {id:'microsoft',title:'Microsoft Entra ID / Microsoft 365',short:'Microsoft',mark:'M',className:'microsoft'},
-  {id:'google',title:'Google Workspace',short:'Google',mark:'G',className:'google'}
+  {id:'microsoft',title:'Microsoft 365',mark:'▦',className:'microsoft'},
+  {id:'entra',title:'Microsoft Entra ID',mark:'◇',className:'microsoft'},
+  {id:'google',title:'Google Workspace',mark:'G',className:'google'}
  ];
  const moreProviderOptions=[
-  {id:'okta',title:'Okta',short:'Okta',mark:'O',className:'okta'},
-  {id:'apple',title:'Apple',short:'Apple',mark:'A',className:'apple'},
-  {id:'github',title:'GitHub',short:'GitHub',mark:'GH',className:'github'},
-  {id:'email',title:'Email and password',short:'Email',mark:'@',className:'email'}
+  {id:'azure',title:'Azure Active Directory',mark:'△',className:'microsoft'},
+  {id:'aws',title:'Amazon Web Services',mark:'aws',className:'aws'},
+  {id:'okta',title:'Okta',mark:'O',className:'okta'},
+  {id:'apple',title:'Apple',mark:'●',className:'apple'},
+  {id:'active-directory',title:'Active Directory',mark:'▦',className:'microsoft'},
+  {id:'intune',title:'Microsoft Intune',mark:'▣',className:'microsoft'},
+  {id:'email',title:'Email and password',mark:'@',className:'email'},
+  {id:'phone',title:'Phone sign-in',mark:'▯',className:'google'}
  ];
- const chooseProvider=(p)=>{setProvider(p.id);setProviderNotice(p.title+' is shown as a sign-in placeholder. The live identity connection has not been configured in this preview.');};
- const choosePath=(id)=>{setEntryPath(id);setProviderNotice('');setProvider('');setEmail(id==='individual'?'alex@intellistack.systems':id==='contractor'?'contractor@example.com':'admin@yourcompany.example');setRole(id==='business'?'IT Administrator':id==='contractor'?'Help Desk Agent':'Super Admin');};
+ const chooseProvider=(p)=>{setProvider(p.id);setProviderNotice(p.title+' is a preview placeholder. The live identity connection has not been configured in this environment.');};
+ const choosePath=(id)=>{setEntryPath(id);setProviderNotice('');setProvider('');setEmail(id==='individual'?'alex@intellistack.systems':'admin@yourcompany.example');setRole(id==='business'?'IT Administrator':'Super Admin');};
  return <div className="login-shell" style={{'--login-background':`url(${LoginImage})`}}>
-  <header className="login-header"><Brand/><div className="login-header-note"><span className="login-header-lock"><ShieldCheck size={14}/></span><span>SECURE ACCESS PORTAL<small>IDENTITY · WORKFORCE · OPERATIONS</small></span></div></header>
-  <main className="login-main">
+  <header className="login-header">
+   <Brand/>
+   <div className="login-header-center"><b>MAXIMUS <em>OPTIMUS</em></b><span>COMMAND CENTER</span></div>
+   <div className="login-header-note"><span className="login-header-lock"><ShieldCheck size={14}/></span><span>SECURE ACCESS PORTAL<small>IDENTITY · WORKFORCE · OPERATIONS</small></span></div>
+  </header>
+  <main className="login-main login-main-reference">
    <section className="login-copy">
     <div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div>
     <h1><span>One World.</span><br/><em>One Intelligent Network.</em></h1>
-    <p className="login-lead">One secure network for people, partners, and organizations.</p>
-    <div className="login-brand-values"><span><ShieldCheck size={15}/> Identity-first access</span><span><Network size={15}/> Connected operations</span></div>
+    <p className="login-lead">Secure access for employees, contractors, and business organizations.</p>
+    <div className="login-brand-values"><span><ShieldCheck size={15}/> Secured</span><span><Network size={15}/> Trusted</span><span><CheckCircle2 size={15}/> Compliant</span></div>
    </section>
    <section className="login-card login-card-redesigned">
-    <div className="card-top login-card-heading"><span className="eyebrow">WELCOME TO INTELLISTACK</span><h2>Choose your access</h2><p>Select how you're connecting, then choose a sign-in option.</p></div>
-    <div className="login-choice-layout">
-     <div className="login-path-column">
-      <div className="login-section-label">YOUR ACCESS TYPE</div>
-      <div className="login-path-list">{pathOptions.map(path=>{const Icon=path.icon;return <button type="button" key={path.id} className={'login-path-option '+(entryPath===path.id?'selected':'')} onClick={()=>choosePath(path.id)} aria-pressed={entryPath===path.id}><span className="login-path-icon"><Icon size={17}/></span><span className="login-path-copy"><b>{path.title}</b><small>{path.subtitle}</small></span><span className="login-path-check">{entryPath===path.id?'✓':'›'}</span></button>})}</div>
-      <label className="field-label" htmlFor="login-account-email">{entryPath==='business'?'BUSINESS EMAIL':'ACCOUNT EMAIL'}</label>
-      <div className="input-wrap login-email-wrap"><Mail size={16}/><input id="login-account-email" type="email" value={email} onChange={e=>setEmail(e.target.value)} aria-label="Account email" placeholder={entryPath==='business'?'name@company.com':'name@example.com'}/></div>
-      <div className="login-role-preview"><label className="field-label" htmlFor="login-demo-role">PREVIEW WORKSPACE ROLE</label><div className="role-select-wrap"><ShieldCheck size={16}/><select id="login-demo-role" value={role} onChange={e=>setRole(e.target.value)}>{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={15}/></div><small>Demo access only — this does not authenticate your account.</small></div>
-     </div>
-     <div className="login-provider-column">
-      <div className="login-section-label">SIGN IN WITH A PROVIDER</div>
-      <div className="login-provider-list">{providerOptions.map(p=><button type="button" key={p.id} className={'login-provider-option '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span><b>{p.title}</b><small>Preview option</small></span><span className="login-provider-arrow">›</span></button>)}</div>
-      <button type="button" className="login-more-providers" onClick={()=>setShowMoreProviders(v=>!v)} aria-expanded={showMoreProviders}><Plus size={14}/>{showMoreProviders?'Hide additional options':'More sign-in options'}<ChevronDown size={14} className={showMoreProviders?'rotated':''}/></button>
+    <div className="card-top login-card-heading"><span className="eyebrow">INTELLISTACK SYSTEMS · ACCESS</span><h2>Choose your sign-in</h2><p>Choose your account type, then select an identity provider.</p></div>
+    <div className="login-path-list login-path-list-two">{pathOptions.map(path=>{const Icon=path.icon;return <button type="button" key={path.id} className={'login-path-option '+(entryPath===path.id?'selected '+path.id:'')} onClick={()=>choosePath(path.id)} aria-pressed={entryPath===path.id}><span className="login-path-icon"><Icon size={19}/></span><span className="login-path-copy"><b>{path.title}</b><small>{path.subtitle}</small></span><span className="login-path-check">{entryPath===path.id?'✓':'›'}</span></button>})}</div>
+    {entryPath==='business'&&<div className="login-organization"><label className="field-label" htmlFor="login-organization">YOUR ORGANIZATION</label><div className="input-wrap"><Building2 size={16}/><input id="login-organization" value={organization} onChange={e=>setOrganization(e.target.value)} placeholder="Company or organization name"/></div></div>}
+    <div className="login-provider-layout">
+     <div className="login-provider-main">
+      <div className="login-section-label">SIGN IN WITH</div>
+      <div className="login-provider-list">{providerOptions.map(p=><button type="button" key={p.id} className={'login-provider-option '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span><b>{p.title}</b><small>Identity provider placeholder</small></span><span className="login-provider-arrow">›</span></button>)}</div>
+      <button type="button" className="login-more-providers" onClick={()=>setShowMoreProviders(v=>!v)} aria-expanded={showMoreProviders}><Plus size={14}/>{showMoreProviders?'Hide more providers':'More identity providers'}<ChevronDown size={14} className={showMoreProviders?'rotated':''}/></button>
       {showMoreProviders&&<div className="login-extra-providers">{moreProviderOptions.map(p=><button type="button" key={p.id} className={'login-extra-provider '+(provider===p.id?'selected':'')} onClick={()=>chooseProvider(p)} aria-pressed={provider===p.id}><span className={'provider-mark '+p.className}>{p.mark}</span><span>{p.title}</span></button>)}</div>}
       {providerNotice&&<div className="login-provider-notice" role="status"><ShieldCheck size={15}/><span>{providerNotice}</span></div>}
-      <div className="login-provider-footnote">Provider buttons are placeholders until the corresponding identity integration is configured.</div>
+      <div className="login-provider-footnote">Sign-in choices are placeholders until the matching identity integration is configured.</div>
      </div>
+     <aside className="login-provider-side"><div className="login-side-shield"><ShieldCheck size={24}/></div><b>One trusted identity</b><p>Secure, role-aware access for people and organizations across the IntelliStack network.</p><div className="login-side-status"><span/> PREVIEW ENVIRONMENT</div></aside>
     </div>
-    <div className="login-card-bottom"><button type="button" className="primary-btn full login-demo-btn" onClick={()=>onLogin(role)}>Enter preview workspace <span>→</span></button><div className="trust-row"><ShieldCheck size={15}/> Preview environment · no live sign-in connected</div></div>
+    <div className="login-card-bottom">
+     <label className="field-label" htmlFor="login-demo-role">PREVIEW WORKSPACE ROLE</label>
+     <div className="role-select-wrap"><ShieldCheck size={16}/><select id="login-demo-role" value={role} onChange={e=>setRole(e.target.value)}>{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={15}/></div>
+     <button type="button" className="primary-btn full login-demo-btn" onClick={()=>onLogin(role)}>Enter preview workspace <span>→</span></button>
+     <div className="trust-row"><ShieldCheck size={15}/> Demo access only · no live sign-in connected</div>
+    </div>
    </section>
   </main>
   <footer className="login-footer login-footer-expanded">
-   <div className="login-footer-brand"><Brand/><p>ONE WORLD. ONE SYSTEM.<br/><strong>ONE INTELLIGENT NETWORK.</strong></p><small>CONNECT · AUTOMATE · EMPOWER.</small></div>
-   <nav className="login-footer-column" aria-label="Company"><h3>Company</h3><a href="#home">Home</a><a href="#about-us">About Us</a><a href="#platform-overview">Platform Overview</a></nav>
-   <nav className="login-footer-column" aria-label="Get in touch"><h3>Get in touch</h3><a href="#contact-us">Contact Us</a><a href="#sales">Sales</a><a href="#careers">Careers</a><a href="#partners">Partners</a></nav>
-   <nav className="login-footer-column" aria-label="Resources and policies"><h3>Resources &amp; Policies</h3><a href="#help-center">Help Center</a><a href="#documentation">Documentation</a><a href="#system-status">System Status</a><a href="#privacy-policy">Privacy Policy</a><a href="#terms-of-service">Terms of Service</a><a href="#cookie-policy">Cookie Policy</a></nav>
-   <div className="login-footer-bottom"><span>© 2026 IntelliStack Systems. All rights reserved.</span><span><b>ONE WORLD.</b> <em>ONE INTELLIGENT NETWORK.</em></span></div>
+   <div className="login-footer-brand"><Brand/><p>MAXIMUS <em>OPTIMUS</em><br/>COMMAND CENTER</p><small>ONE WORLD. ONE SYSTEM.<br/>ONE INTELLIGENT NETWORK.</small></div>
+   <nav className="login-footer-column" aria-label="Explore"><h3>Explore</h3><a href="#home">Home</a><a href="#about-us">About Us</a><a href="#platform-overview">Platform Overview</a><a href="#modules-features">Modules &amp; Features</a><a href="#plans-licensing">Plans &amp; Licensing</a></nav>
+   <nav className="login-footer-column" aria-label="Company"><h3>Company</h3><a href="#contact-us">Contact Us</a><a href="#sales-inquiries">Sales Inquiries</a><a href="#partners">Partners</a><a href="#careers">Careers</a><a href="#news-updates">News &amp; Updates</a></nav>
+   <nav className="login-footer-column" aria-label="Resources"><h3>Resources</h3><a href="#help-center">Help Center</a><a href="#documentation">Documentation</a><a href="#system-status">System Status</a><a href="#accessibility">Accessibility</a><a href="#security">Security</a></nav>
+   <nav className="login-footer-column" aria-label="Legal and policies"><h3>Legal &amp; Policies</h3><a href="#privacy-policy">Privacy Policy</a><a href="#terms-of-service">Terms of Service</a><a href="#cookie-policy">Cookie Policy</a><a href="#acceptable-use">Acceptable Use</a><a href="#software-license">Software License</a></nav>
+   <div className="login-footer-trust"><span><Globe2 size={15}/> Secure</span><span><ShieldCheck size={15}/> Trusted</span><span><CheckCircle2 size={15}/> Compliant</span></div>
+   <div className="login-footer-bottom"><span>© 2026 IntelliStack Systems. All rights reserved.</span><span>Secure by design · Global platform</span></div>
   </footer>
- </div>
+ </div>;
 }
 function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const content=<><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={18}/></span></div><div className="metric-value">{value}</div><div className={'metric-trend '+(positive?'good':'warn')}>{positive?<ArrowDownRight size={14}/>:<ArrowUpRight size={14}/>} {trend}</div>{onClick&&<span className="metric-drill">Explore details <span>↗</span></span>}</>;return onClick?<button type="button" className="metric-card metric-clickable" onClick={onClick} aria-label={label+': '+value+'. Explore details'}>{content}</button>:<div className="metric-card">{content}</div>}
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
