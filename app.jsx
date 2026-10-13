@@ -110,7 +110,13 @@ function Login({onLogin}){
     <div className="login-card-bottom"><button type="button" className="primary-btn full login-demo-btn" onClick={()=>onLogin(role)}>Enter preview workspace <span>→</span></button><div className="trust-row"><ShieldCheck size={15}/> Preview environment · no live sign-in connected</div></div>
    </section>
   </main>
-  <footer className="login-footer"><span>© 2026 IntelliStack Systems</span><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer>
+  <footer className="login-footer login-footer-expanded">
+   <div className="login-footer-brand"><Brand/><p>ONE WORLD. ONE SYSTEM.<br/><strong>ONE INTELLIGENT NETWORK.</strong></p><small>CONNECT · AUTOMATE · EMPOWER.</small></div>
+   <nav className="login-footer-column" aria-label="Company"><h3>Company</h3><a href="#home">Home</a><a href="#about-us">About Us</a><a href="#platform-overview">Platform Overview</a></nav>
+   <nav className="login-footer-column" aria-label="Get in touch"><h3>Get in touch</h3><a href="#contact-us">Contact Us</a><a href="#sales">Sales</a><a href="#careers">Careers</a><a href="#partners">Partners</a></nav>
+   <nav className="login-footer-column" aria-label="Resources and policies"><h3>Resources &amp; Policies</h3><a href="#help-center">Help Center</a><a href="#documentation">Documentation</a><a href="#system-status">System Status</a><a href="#privacy-policy">Privacy Policy</a><a href="#terms-of-service">Terms of Service</a><a href="#cookie-policy">Cookie Policy</a></nav>
+   <div className="login-footer-bottom"><span>© 2026 IntelliStack Systems. All rights reserved.</span><span><b>ONE WORLD.</b> <em>ONE INTELLIGENT NETWORK.</em></span></div>
+  </footer>
  </div>
 }
 function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const content=<><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={18}/></span></div><div className="metric-value">{value}</div><div className={'metric-trend '+(positive?'good':'warn')}>{positive?<ArrowDownRight size={14}/>:<ArrowUpRight size={14}/>} {trend}</div>{onClick&&<span className="metric-drill">Explore details <span>↗</span></span>}</>;return onClick?<button type="button" className="metric-card metric-clickable" onClick={onClick} aria-label={label+': '+value+'. Explore details'}>{content}</button>:<div className="metric-card">{content}</div>}
