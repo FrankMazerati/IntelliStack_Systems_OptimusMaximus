@@ -1037,3 +1037,20 @@
 /* Build 14 — visual editing access on the login screen */
 .login-theme-root{position:relative}
 .login-theme-root .theme-exit-design-mode{position:fixed;z-index:99999;top:12px;right:12px;padding:10px 14px;border:1px solid var(--cyan);border-radius:var(--theme-button-radius,9px);background:var(--panel);color:var(--text);box-shadow:0 0 18px color-mix(in srgb,var(--cyan) 24%,transparent);font-size:11px;font-weight:700;cursor:pointer}
+
+
+/* Build 15 — direct, in-context visual editor access */
+.app-shell,.login-theme-root{position:relative}
+.visual-editor-toolbar{position:sticky;top:0;z-index:10000;display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;background:rgba(7,16,34,.96);border:1px solid color-mix(in srgb,var(--cyan,#00d4ff) 48%,transparent);border-radius:0 0 12px 12px;color:#f4f8ff;box-shadow:0 8px 26px rgba(0,0,0,.24);backdrop-filter:blur(14px)}
+.visual-editor-toolbar-active{background:rgba(9,28,49,.98);border-color:var(--cyan,#00d4ff);box-shadow:0 0 0 1px color-mix(in srgb,var(--cyan,#00d4ff) 22%,transparent),0 8px 28px rgba(0,0,0,.28)}
+.visual-editor-toolbar-mark{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:color-mix(in srgb,var(--cyan,#00d4ff) 17%,#0b1728);color:var(--cyan,#00d4ff)}
+.visual-editor-toolbar-copy{display:grid;gap:3px;min-width:0;flex:1}
+.visual-editor-toolbar-copy b{font-size:10px;letter-spacing:.9px;font-weight:800}
+.visual-editor-toolbar-copy small{font-size:10px;line-height:1.4;color:#a9bbd6}
+.visual-editor-toolbar button{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:8px 12px;border:1px solid var(--cyan,#00d4ff);border-radius:8px;background:var(--cyan,#00d4ff);color:#071323;font-size:10px;font-weight:800;white-space:nowrap;cursor:pointer}
+.visual-editor-toolbar button.visual-editor-active{background:transparent;color:#fff;border-color:#ffad42}
+.app-shell .visual-editor-toolbar{margin:0 0 0;position:sticky}
+.login-theme-root .visual-editor-toolbar{position:fixed;top:8px;left:8px;right:8px;width:auto;border-radius:12px}
+.app-shell:has(.visual-editor-toolbar-active) [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important;cursor:crosshair}
+.app-shell:has(.visual-editor-toolbar-active) button,.app-shell:has(.visual-editor-toolbar-active) a,.app-shell:has(.visual-editor-toolbar-active) .world-clock-card,.app-shell:has(.visual-editor-toolbar-active) .topbar-brand-lockup,.app-shell:has(.visual-editor-toolbar-active) .workspace-secondary-heading{cursor:crosshair}
+@media(max-width:650px){.visual-editor-toolbar{gap:7px;padding:8px;min-height:48px}.visual-editor-toolbar-copy b{font-size:9px}.visual-editor-toolbar-copy small{font-size:9px}.visual-editor-toolbar button{padding:7px 9px;font-size:9px}.login-theme-root .visual-editor-toolbar{left:6px;right:6px;top:6px}.login-theme-root .login-header-v2{padding-top:56px}}
