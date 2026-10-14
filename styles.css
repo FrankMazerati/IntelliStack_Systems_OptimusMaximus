@@ -1054,3 +1054,38 @@
 .app-shell:has(.visual-editor-toolbar-active) [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important;cursor:crosshair}
 .app-shell:has(.visual-editor-toolbar-active) button,.app-shell:has(.visual-editor-toolbar-active) a,.app-shell:has(.visual-editor-toolbar-active) .world-clock-card,.app-shell:has(.visual-editor-toolbar-active) .topbar-brand-lockup,.app-shell:has(.visual-editor-toolbar-active) .workspace-secondary-heading{cursor:crosshair}
 @media(max-width:650px){.visual-editor-toolbar{gap:7px;padding:8px;min-height:48px}.visual-editor-toolbar-copy b{font-size:9px}.visual-editor-toolbar-copy small{font-size:9px}.visual-editor-toolbar button{padding:7px 9px;font-size:9px}.login-theme-root .visual-editor-toolbar{left:6px;right:6px;top:6px}.login-theme-root .login-header-v2{padding-top:56px}}
+
+
+/* Build 16: mobile viewport containment and accessible visual-editor controls */
+html,body,#root{width:100%;max-width:100%;min-width:0}
+body{overflow-x:hidden}
+.app-shell{width:100%;max-width:100vw;min-width:0;overflow-x:clip}
+.app-shell>.main-area{min-width:0;width:calc(100% - 258px);max-width:calc(100% - 258px)}
+.app-shell>.sidebar{max-width:min(258px,86vw)}
+.app-shell .page-content{min-width:0;width:100%;max-width:100%;overflow-wrap:anywhere}
+.app-shell .topbar,.app-shell .workspace-secondary-menu,.app-shell .world-clock-bar{min-width:0;max-width:100%}
+.app-shell img,.app-shell svg,.app-shell canvas{max-width:100%}
+.app-shell .visual-editor-toolbar{width:100%;max-width:100%;min-width:0;flex-wrap:wrap;position:sticky;top:0;left:auto;right:auto;overflow:visible;border-radius:0 0 12px 12px}
+.app-shell .visual-editor-toolbar-copy{flex:1 1 140px}
+.app-shell .visual-editor-toolbar button{max-width:100%;white-space:normal}
+@media(max-width:980px){
+ .app-shell>.main-area{width:100%;max-width:100%;margin-left:0}
+ .app-shell>.sidebar{width:min(258px,86vw);max-width:86vw}
+}
+@media(max-width:650px){
+ .app-shell{display:flex;flex-direction:column}
+ .app-shell .visual-editor-toolbar{position:relative;top:auto;gap:6px;padding:8px;align-items:center}
+ .app-shell .visual-editor-toolbar-copy{flex:1 1 calc(100% - 48px);min-width:0}
+ .app-shell .visual-editor-toolbar-copy small{display:block;overflow-wrap:anywhere}
+ .app-shell .visual-editor-toolbar button{flex:1 1 auto;min-height:38px;padding:8px;font-size:10px}
+ .app-shell .topbar{width:100%;max-width:100%;padding-left:10px;padding-right:10px;gap:7px}
+ .app-shell .topbar-actions{min-width:0;flex-wrap:wrap}
+ .app-shell .crumbs{min-width:0;overflow:hidden;text-overflow:ellipsis}
+ .app-shell .page-content{padding:12px 10px 22px}
+ .app-shell .world-clock-list{max-width:100%;overflow-x:auto}
+ .app-shell .app-footer{min-width:0;overflow-wrap:anywhere}
+}
+@media(orientation:landscape) and (max-height:560px){
+ .app-shell .visual-editor-toolbar{position:relative;top:auto}
+ .app-shell .sidebar{max-height:100dvh;overflow-y:auto}
+}
