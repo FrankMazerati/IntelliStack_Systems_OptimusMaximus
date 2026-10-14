@@ -1008,3 +1008,18 @@
 .login-shell-v2.pattern-diagonal{background-image:repeating-linear-gradient(135deg,transparent 0 18px,color-mix(in srgb,var(--theme-action-border) 14%,transparent) 18px 19px),var(--login-background)}
 @media(max-width:900px){.app-shell .sidebar{width:min(var(--theme-sidebar-width,268px),86vw);flex-basis:min(var(--theme-sidebar-width,268px),86vw)}.app-shell .page-content{padding:max(12px,calc(var(--theme-content-padding,28px)*.65))}}
 @media(max-width:650px){.app-shell .topbar{padding-left:10px;padding-right:10px}.app-shell .page-content{padding:12px;gap:12px}.app-shell .app-footer{padding:10px 12px;min-height:auto}.app-shell .theme-image-controls,.app-shell .theme-image-current,.app-shell .theme-extra-grid{grid-template-columns:minmax(0,1fr)}.app-shell .theme-neon-palette>div{grid-template-columns:repeat(5,minmax(18px,1fr))}}
+
+/* Build 14 — click-to-design editor controls */
+.app-shell .theme-design-mode-note{margin:12px 0;padding:11px 12px;border:1px solid var(--border);border-radius:var(--theme-button-radius,9px);background:var(--panel2);color:var(--muted);font-size:10px;line-height:1.6}
+.app-shell .theme-design-mode-note.active{border-color:var(--cyan);background:color-mix(in srgb,var(--cyan) 10%,var(--panel));color:var(--text);box-shadow:0 0 18px color-mix(in srgb,var(--cyan) 15%,transparent)}
+.app-shell .theme-selected-selector{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin:12px 0;padding:10px;border:1px solid var(--theme-action-border,var(--border));border-radius:var(--radius);background:var(--theme-action-bg,var(--panel2))}
+.app-shell .theme-selected-selector small{grid-column:1/-1;font-size:9px;color:var(--cyan);letter-spacing:.8px}
+.app-shell .theme-selected-selector code{font-size:9px;line-height:1.6;color:var(--text);overflow-wrap:anywhere}
+.app-shell .theme-selected-selector button{font-size:9px;padding:7px}
+.app-shell .theme-element-style-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.app-shell .theme-element-style-grid label{display:grid;gap:6px;font-size:10px;color:var(--muted)}
+.app-shell .theme-element-style-grid input:not([type=color]),.app-shell .theme-element-style-grid select{width:100%;min-width:0;min-height:34px;padding:7px 8px;border:1px solid var(--border);border-radius:var(--theme-button-radius,9px);background:var(--panel2);color:var(--text)}
+.app-shell .theme-element-style-grid input[type=color]{width:100%;height:34px;padding:2px;border:1px solid var(--border);border-radius:7px;background:var(--panel2)}
+.app-shell .theme-remove-element-style{margin-top:12px}
+.app-shell[style] [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important}
+@media(max-width:650px){.app-shell .theme-element-style-grid{grid-template-columns:minmax(0,1fr)}.app-shell .theme-selected-selector{grid-template-columns:minmax(0,1fr)}}
