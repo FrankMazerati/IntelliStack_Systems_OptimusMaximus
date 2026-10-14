@@ -32,3 +32,17 @@
 .is-puck-studio-foot svg{color:#00e6a8;flex-shrink:0}
 .is-puck-foot-count{margin-left:auto;color:#526987}
 @media(max-width:640px){.is-puck-studio{padding:8px}.is-puck-studio-header{padding:12px;align-items:flex-start}.is-puck-studio-brand strong{font-size:10px;letter-spacing:1.2px}.is-puck-studio-brand b{font-size:13px}.is-puck-studio-brand small{font-size:11px}.is-puck-studio-actions{width:100%}.is-puck-studio-actions button{flex:1;padding:10px 7px;font-size:11px}.is-puck-viewports{width:100%}.is-puck-viewports button{flex:1;justify-content:center}.is-puck-subtle{width:100%}.is-puck-foot-count{margin-left:0}.is-puck-editor-frame .Puck{min-height:72vh}}
+
+
+/* Expanded block studio media and precision-position controls */
+.is-puck-media-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px;margin:8px 0 14px;border:1px solid #263954;border-radius:12px;background:linear-gradient(120deg,#0c172a,#0b1020);min-width:0}
+.is-puck-media-bar>div:first-child{display:flex;flex:1 1 250px;flex-direction:column;gap:5px;min-width:0}
+.is-puck-media-bar>div:first-child strong{font-size:12px;color:#e8efff}
+.is-puck-media-bar small{font-size:11px;line-height:1.5;color:#91a2c0}
+.is-puck-upload-button{position:relative;display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:10px 14px;border:1px solid #00d4ff;border-radius:9px;background:#006e9a;color:#fff;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.is-puck-upload-button input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.is-puck-upload-button input:disabled{cursor:wait}
+.is-puck-asset-url{display:flex;flex:1 1 340px;gap:8px;min-width:0}
+.is-puck-asset-url input{flex:1;min-width:0;background:#070c19;color:#cbd8eb;border:1px solid #31445f;border-radius:8px;padding:9px;font:11px ui-monospace,monospace}
+.is-puck-asset-error{flex-basis:100%;margin:0;color:#ff9aac;font-size:12px}
+@media(max-width:680px){.is-puck-media-bar{align-items:stretch}.is-puck-upload-button{width:100%}.is-puck-asset-url{flex-basis:100%;flex-wrap:wrap}.is-puck-asset-url input{flex-basis:100%}.is-puck-asset-url button{width:100%}}
