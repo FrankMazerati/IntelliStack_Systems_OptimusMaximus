@@ -4,13 +4,14 @@ import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './Login.png';
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from './supabase.js';
-import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, Building2, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, Building2, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Palette, Paintbrush, Save, RotateCcw, Check, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
   {id:'globaltenants',label:'Global Tenant Command',group:'Super Admin',icon:Globe2,description:'Oversee mock organizations, switch tenant context, and review company-level operational summaries.'},
   {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
+  {id:'themestudio',label:'Theme Studio',group:'Super Admin',icon:Palette,description:'Design the organization-wide dashboard, borders, action boxes, buttons, text, and footer.'},
   {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
@@ -766,6 +767,52 @@ function InfrastructureAssetCommandPage(){
   </div>;
 }
 
+
+const defaultOrganizationTheme={"preset":"Deep Space","background":"#070c19","sidebar":"#080f1e","panel":"#0c1426","panelAlt":"#0f1a30","border":"#31445f","actionBox":"#10223b","actionBorder":"#28547c","accent":"#00d4ff","secondaryAccent":"#4e8cff","text":"#e8efff","muted":"#91a2c0","footer":"#080f1e","footerText":"#a9bddb","buttonBg":"#1765ad","buttonText":"#ffffff","buttonStyle":"solid","textStyle":"modern","cardRadius":15,"buttonRadius":9,"borderWidth":1};
+const themePresets={
+  'Deep Space':defaultOrganizationTheme,
+  'Ocean Command':{...defaultOrganizationTheme,preset:'Ocean Command',background:'#071522',sidebar:'#061a28',panel:'#0b2232',panelAlt:'#103044',border:'#2b596b',actionBox:'#103247',actionBorder:'#2c7187',accent:'#37e0d0',secondaryAccent:'#398fda',text:'#e9fbff',muted:'#9bbec8',footer:'#061a28',footerText:'#b7d9e1',buttonBg:'#087f8c'},
+  'Graphite':{...defaultOrganizationTheme,preset:'Graphite',background:'#111315',sidebar:'#171a1d',panel:'#1d2125',panelAlt:'#252a30',border:'#454c54',actionBox:'#282f36',actionBorder:'#58636d',accent:'#c6d3df',secondaryAccent:'#7e9db7',text:'#f0f3f6',muted:'#a5afb8',footer:'#171a1d',footerText:'#c3ccd4',buttonBg:'#3e596f'},
+  'Light Operations':{...defaultOrganizationTheme,preset:'Light Operations',background:'#edf3f9',sidebar:'#e0eaf4',panel:'#ffffff',panelAlt:'#f5f8fc',border:'#b7c9dc',actionBox:'#e4effa',actionBorder:'#8fb3d8',accent:'#176bb0',secondaryAccent:'#4d83c5',text:'#172d46',muted:'#536a82',footer:'#dfe9f4',footerText:'#294661',buttonBg:'#176bb0',buttonText:'#ffffff'}
+};
+function ThemeStudioPage({theme,setTheme,onSave,onReset,saving,notice}){
+  const update=(key,value)=>setTheme(current=>({...current,[key]:value}));
+  const applyPreset=name=>setTheme({...themePresets[name],buttonStyle:theme.buttonStyle,textStyle:theme.textStyle,cardRadius:theme.cardRadius,buttonRadius:theme.buttonRadius,borderWidth:theme.borderWidth});
+  const colors=[
+    ['background','Dashboard background'],['sidebar','Sidebar / navigation'],['panel','Content boxes / panels'],['panelAlt','Secondary box surfaces'],['border','Box and panel borders'],['actionBox','Action boxes'],['actionBorder','Action box borders'],['accent','Primary accent / icons'],['secondaryAccent','Secondary accent'],['text','Main text'],['muted','Secondary text'],['footer','Footer background'],['footerText','Footer text'],['buttonBg','Button background'],['buttonText','Button text']
+  ];
+  const colorField=(key,label)=><label className="theme-color-field" key={key}><span>{label}</span><input type="color" value={theme[key]||'#000000'} onChange={e=>update(key,e.target.value)} aria-label={label}/><code>{theme[key]}</code></label>;
+  return <div className="theme-studio">
+    <div className="theme-studio-intro"><div><span className="eyebrow"><Palette size={14}/> ORGANIZATION BRAND CONTROL</span><h2>Theme Studio</h2><p>Design the shared IntelliStack command center. Changes preview immediately; save to publish the theme for authenticated users.</p></div><span className="theme-admin-badge"><ShieldCheck size={15}/> Platform administrator</span></div>
+    <div className="theme-studio-toolbar"><label>Starting theme<select value={theme.preset||'Deep Space'} onChange={e=>applyPreset(e.target.value)}>{Object.keys(themePresets).map(name=><option key={name}>{name}</option>)}</select></label><div className="theme-studio-actions"><button type="button" className="secondary-btn" onClick={onReset}><RotateCcw size={15}/> Reset default</button><button type="button" className="primary-btn" onClick={onSave} disabled={saving}>{saving?<RefreshCw size={15} className="spin"/>:<Save size={15}/>} {saving?'Saving…':'Save organization theme'}</button></div></div>
+    {notice&&<div className={'theme-notice '+(notice.toLowerCase().includes('could not')||notice.toLowerCase().includes('failed')?'error':'')} role="status">{notice}</div>}
+    <div className="theme-studio-grid">
+      <div className="theme-control-column">
+        <section className="panel theme-control-panel"><div className="panel-head"><div><h3><Paintbrush size={16}/> Colors and surfaces</h3><p>Set individual colors for each interface layer.</p></div></div><div className="theme-color-grid">{colors.map(([key,label])=>colorField(key,label))}</div></section>
+        <section className="panel theme-control-panel"><div className="panel-head"><div><h3><SlidersHorizontal size={16}/> Borders, buttons, and typography</h3><p>Fine-tune the shape and visual weight of interface elements.</p></div></div>
+          <div className="theme-settings-grid">
+            <label>Button style<select value={theme.buttonStyle} onChange={e=>update('buttonStyle',e.target.value)}><option value="solid">Solid fill</option><option value="outline">Outlined</option><option value="soft">Soft / tinted</option></select></label>
+            <label>Text style<select value={theme.textStyle} onChange={e=>update('textStyle',e.target.value)}><option value="modern">Modern / clean</option><option value="technical">Technical / squared</option><option value="classic">Classic / readable</option></select></label>
+            <label>Card corner radius <strong>{theme.cardRadius}px</strong><input type="range" min="0" max="28" value={theme.cardRadius} onChange={e=>update('cardRadius',Number(e.target.value))}/></label>
+            <label>Button corner radius <strong>{theme.buttonRadius}px</strong><input type="range" min="0" max="24" value={theme.buttonRadius} onChange={e=>update('buttonRadius',Number(e.target.value))}/></label>
+            <label>Border thickness <strong>{theme.borderWidth}px</strong><input type="range" min="0" max="4" value={theme.borderWidth} onChange={e=>update('borderWidth',Number(e.target.value))}/></label>
+          </div>
+        </section>
+      </div>
+      <div className="theme-preview-column"><section className="panel theme-preview-panel"><div className="panel-head"><div><h3><Eye size={16}/> Live preview</h3><p>Preview updates as you design.</p></div><span className="status-pill good"><span/> Live</span></div>
+        <div className="theme-preview-frame" style={{background:theme.background,color:theme.text,borderColor:theme.border,borderRadius:theme.cardRadius+'px'}}>
+          <div className="theme-preview-top" style={{background:theme.sidebar,borderColor:theme.border}}><span className="theme-preview-logo" style={{color:theme.accent,borderColor:theme.actionBorder}}><Shield size={18}/><b>IS</b></span><span><b>INTELLISTACK</b><small>SYSTEMS COMMAND</small></span><span className="theme-preview-menu">•••</span></div>
+          <div className="theme-preview-body"><small className="theme-preview-eyebrow" style={{color:theme.accent}}>GLOBAL OPERATIONS / OVERVIEW</small><h3 style={{fontFamily:theme.textStyle==='technical'?'monospace':theme.textStyle==='classic'?'Georgia,serif':'Inter, sans-serif'}}>Command Dashboard</h3><p style={{color:theme.muted}}>Unified visibility across your enterprise operations.</p>
+            <div className="theme-preview-cards"><div style={{background:theme.panel,borderColor:theme.border,borderRadius:theme.cardRadius+'px'}}><small style={{color:theme.muted}}>ACTIVE SYSTEMS</small><b style={{color:theme.text}}>128</b><span style={{color:theme.accent}}>Operational</span></div><div style={{background:theme.actionBox,borderColor:theme.actionBorder,borderRadius:theme.cardRadius+'px'}}><small style={{color:theme.muted}}>ACTION REQUIRED</small><b style={{color:theme.text}}>04</b><span style={{color:theme.secondaryAccent}}>Review queue</span></div></div>
+            <div className="theme-preview-actions"><button type="button" style={{background:theme.buttonStyle==='outline'?'transparent':theme.buttonStyle==='soft'?theme.actionBox:theme.buttonBg,color:theme.buttonStyle==='outline'?theme.accent:theme.buttonText,borderColor:theme.buttonStyle==='outline'?theme.accent:theme.actionBorder,borderRadius:theme.buttonRadius+'px'}}>Primary action</button><button type="button" style={{background:'transparent',color:theme.text,borderColor:theme.border,borderRadius:theme.buttonRadius+'px'}}>Secondary</button></div>
+          </div><div className="theme-preview-footer" style={{background:theme.footer,color:theme.footerText,borderColor:theme.border}}><span>ONE WORLD.</span><span>ONE INTELLIGENT NETWORK.</span></div>
+        </div><div className="theme-preview-footnote"><Check size={14}/> Live preview is local until you save the organization theme.</div></section>
+        <section className="panel theme-control-panel"><div className="panel-head"><div><h3>Quick design tips</h3><p>Keep your command center readable and consistent.</p></div></div><ul className="theme-tips"><li>Use strong contrast between text and background colors.</li><li>Reserve accent colors for selected navigation, links, and key status cues.</li><li>Use action-box borders to make important tasks easy to spot.</li><li>Test the result on both narrow portrait screens and wide displays.</li></ul></section>
+      </div>
+    </div>
+  </div>;
+}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -778,9 +825,16 @@ function App(){
   const [activeTopMenu,setActiveTopMenu]=useState(null);
   const [workspaceMenuOpen,setWorkspaceMenuOpen]=useState(false);
   const [accountEmail,setAccountEmail]=useState('');
+  const [organizationTheme,setOrganizationTheme]=useState(defaultOrganizationTheme);
+  const [themeSaving,setThemeSaving]=useState(false);
+  const [themeNotice,setThemeNotice]=useState('');
   const currentRole=session||'Super Admin';
+  const themeStyle={'--bg':organizationTheme.background,'--panel':organizationTheme.panel,'--panel2':organizationTheme.panelAlt,'--border':organizationTheme.border,'--text':organizationTheme.text,'--muted':organizationTheme.muted,'--cyan':organizationTheme.accent,'--blue':organizationTheme.secondaryAccent,'--radius':organizationTheme.cardRadius+'px','--theme-sidebar':organizationTheme.sidebar,'--theme-action-bg':organizationTheme.actionBox,'--theme-action-border':organizationTheme.actionBorder,'--theme-footer-bg':organizationTheme.footer,'--theme-footer-text':organizationTheme.footerText,'--theme-button-bg':organizationTheme.buttonBg,'--theme-button-text':organizationTheme.buttonText,'--theme-button-radius':organizationTheme.buttonRadius+'px','--theme-border-width':organizationTheme.borderWidth+'px','--theme-font-family':organizationTheme.textStyle==='technical'?'ui-monospace, SFMono-Regular, monospace':organizationTheme.textStyle==='classic':'Georgia, serif':'Inter, system-ui, sans-serif'};
   const roleScreens=currentRole==='Super Admin'?screenDefs:screenDefs.filter(item=>item.group===currentRole||(item.accessRoles||[]).includes(currentRole));
   const currentScreen=activeScreen==='profile'?{label:'My Profile & Preferences',description:'Review your signed-in workspace identity and account preferences.'}:(screenDefs.find(item=>item.id===activeScreen)||screenDefs[0]);
+  useEffect(()=>{let active=true;const loadTheme=async()=>{if(!supabase||!session)return;try{const {data,error}=await supabase.from('organization_theme_settings').select('theme').eq('id','organization').maybeSingle();if(!error&&active&&data?.theme)setOrganizationTheme({...defaultOrganizationTheme,...data.theme});}catch(error){console.error('Could not load organization theme:',error);}};loadTheme();return()=>{active=false;};},[session]);
+  const saveOrganizationTheme=async()=>{setThemeSaving(true);setThemeNotice('');try{if(!supabase)throw new Error('The organization theme database is not connected.');const {data:{user},error:userError}=await supabase.auth.getUser();if(userError||!user)throw new Error('Sign in with your platform administrator account before saving.');const {error}=await supabase.from('organization_theme_settings').upsert({id:'organization',theme:organizationTheme,updated_by:user.id,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;setThemeNotice('Organization theme saved. Authenticated users will receive this shared theme when they load the workspace.');}catch(error){setThemeNotice(error?.message||'Could not save the organization theme. Confirm your platform administrator role and database permissions.');}finally{setThemeSaving(false);}};
+  const resetOrganizationTheme=()=>{setOrganizationTheme(defaultOrganizationTheme);setThemeNotice('Default theme restored in the preview. Save organization theme to publish the reset.');};
   const globalCollaborationRole=['Super Admin','Security Agent','Network Operations'].includes(currentRole);
   const navigate=(id)=>{setActiveScreen(id);setMobileNav(false);setFloatingAssistant(null);};
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':role==='Security Agent'?'security':role==='Network Operations'?'networkops':'overview');};
@@ -808,6 +862,7 @@ function App(){
     if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
     if(activeScreen==='globaltenants') return <GlobalTenantCommandPage/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
+    if(activeScreen==='themestudio') return <ThemeStudioPage theme={organizationTheme} setTheme={setOrganizationTheme} onSave={saveOrganizationTheme} onReset={resetOrganizationTheme} saving={themeSaving} notice={themeNotice}/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
     if(activeScreen==='maximus') return <AssistantPage assistant="maximus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
@@ -824,7 +879,7 @@ function App(){
     return <Panel title={currentScreen.label} subtitle={currentScreen.description}><div className="empty-state"><div className="service-icon"><currentScreen.icon size={24}/></div><h3>{currentScreen.label}</h3><p>This section is represented in the command-center navigation, but its full workflow has not been implemented in this build yet.</p><p className="privacy-note">Preview workspace · no live services or production systems are connected.</p><button className="primary-btn" onClick={()=>navigate(currentRole==='Help Desk Agent'?'tickets':'overview')}>Return to {currentRole==='Help Desk Agent'?'Service Desk':'Command Center'} →</button></div></Panel>;
   };
   if(!session) return <Login onLogin={login}/>;
-  return <div className="app-shell">
+  return <div className="app-shell" style={themeStyle}>
     <aside className={'sidebar '+(mobileNav?'mobile-open':'')}>
       <div className="sidebar-brand"><div className="sidebar-brand-content"><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu sidebar-close-button" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
       <div className="workspace-label">WORKSPACE</div>
