@@ -542,3 +542,48 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .login-refresh-footer{background:rgba(255,255,255,.92);border-color:#dbe4ef}
 .login-refresh-footer>span{color:#52657d}
 @media(max-width:740px){.login-refresh{background:#edf4fb}.login-refresh-header{background:#fff}.login-refresh-card{background:#fff}}
+
+
+/* Build 09.1 — accessible login field contrast and autofill fixes */
+.login-refresh-card .login-refresh-form .role-select-wrap,
+.login-refresh-card .login-refresh-form .input-wrap{
+  background:#ffffff !important;
+  border:1px solid #b8cbe0 !important;
+  color:#536b86 !important;
+}
+.login-refresh-card .login-refresh-form .role-select-wrap:focus-within,
+.login-refresh-card .login-refresh-form .input-wrap:focus-within{
+  border-color:#2463eb !important;
+  box-shadow:0 0 0 3px rgba(36,99,235,.12);
+}
+.login-refresh-card .login-refresh-form .role-select-wrap select,
+.login-refresh-card .login-refresh-form .input-wrap input,
+.login-refresh-card .login-refresh-form .input-wrap input[type="text"],
+.login-refresh-card .login-refresh-form .input-wrap input[type="email"],
+.login-refresh-card .login-refresh-form .input-wrap input[type="password"]{
+  color:#172b45 !important;
+  -webkit-text-fill-color:#172b45 !important;
+  caret-color:#2463eb !important;
+  opacity:1 !important;
+}
+.login-refresh-card .login-refresh-form .input-wrap input::placeholder{
+  color:#71839a !important;
+  -webkit-text-fill-color:#71839a !important;
+  opacity:1 !important;
+}
+.login-refresh-card .login-refresh-form .input-wrap input:-webkit-autofill,
+.login-refresh-card .login-refresh-form .input-wrap input:-webkit-autofill:hover,
+.login-refresh-card .login-refresh-form .input-wrap input:-webkit-autofill:focus{
+  -webkit-text-fill-color:#172b45 !important;
+  box-shadow:0 0 0 1000px #ffffff inset !important;
+  caret-color:#2463eb !important;
+}
+.login-refresh-card .login-refresh-form .login-show-password,
+.login-refresh-card .login-refresh-form button[aria-label*="password"],
+.login-refresh-card .login-refresh-form button[aria-label*="Password"]{
+  color:#2463eb !important;
+}
+.login-refresh-card .login-refresh-form input:disabled{
+  color:#64748b !important;
+  -webkit-text-fill-color:#64748b !important;
+}
