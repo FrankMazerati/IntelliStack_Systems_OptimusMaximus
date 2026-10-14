@@ -46,3 +46,18 @@
 .is-puck-asset-url input{flex:1;min-width:0;background:#070c19;color:#cbd8eb;border:1px solid #31445f;border-radius:8px;padding:9px;font:11px ui-monospace,monospace}
 .is-puck-asset-error{flex-basis:100%;margin:0;color:#ff9aac;font-size:12px}
 @media(max-width:680px){.is-puck-media-bar{align-items:stretch}.is-puck-upload-button{width:100%}.is-puck-asset-url{flex-basis:100%;flex-wrap:wrap}.is-puck-asset-url input{flex-basis:100%}.is-puck-asset-url button{width:100%}}
+
+/* Professional, touch-first editor dock pinned above the live application */
+.visual-editor-toolbar{position:sticky;top:0;z-index:10000;width:100%;display:flex;flex-direction:column;gap:0;padding:0!important;margin:0 0 12px!important;border:1px solid #284761!important;border-radius:0 0 14px 14px!important;background:linear-gradient(115deg,#07111f 0%,#10253c 52%,#07111f 100%)!important;color:#edf7ff!important;box-shadow:0 8px 28px #0007!important;overflow:hidden}
+.visual-editor-toolbar-main{display:flex;align-items:center;gap:12px;padding:12px clamp(10px,2vw,22px);min-width:0}
+.visual-editor-toolbar-mark{width:40px!important;height:40px!important;flex:0 0 40px;display:grid;place-items:center;border:1px solid #00c7f4;border-radius:11px;background:#00c7f414;color:#00d4ff!important}
+.visual-editor-toolbar-copy{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+.visual-editor-toolbar-copy b{font-size:12px;letter-spacing:1.25px;font-weight:850;color:#f4f9ff}
+.visual-editor-toolbar-copy small{font-size:11px;line-height:1.45;color:#9db4cd;white-space:normal}
+.visual-editor-toolbar-options{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.visual-editor-toolbar-options button{min-height:42px!important;padding:9px 14px!important;border-radius:9px!important;font-size:11px!important;font-weight:750!important;touch-action:manipulation}
+.visual-editor-point-down{display:flex;align-items:center;justify-content:center;gap:12px;padding:9px 14px;background:linear-gradient(90deg,#062337,#0a3046,#062337);border-top:1px solid #00b8e633;color:#bdeeff;font-size:11px;text-align:center;line-height:1.45}
+.visual-editor-point-down svg{flex:0 0 auto;color:#00d4ff;animation:isStudioPoint 1.6s ease-in-out infinite}
+.visual-editor-toolbar-active{border-color:#00b8e6!important}
+@keyframes isStudioPoint{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+@media(max-width:680px){.visual-editor-toolbar-main{align-items:flex-start;gap:9px;padding:10px}.visual-editor-toolbar-mark{width:34px!important;height:34px!important;flex-basis:34px}.visual-editor-toolbar-copy b{font-size:10px;letter-spacing:.8px}.visual-editor-toolbar-copy small{font-size:10px}.visual-editor-toolbar-options{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.visual-editor-toolbar-options button{width:100%;min-width:0;white-space:normal}.visual-editor-point-down{font-size:10px;padding:9px 8px;gap:5px}.visual-editor-point-down svg{width:15px}}
