@@ -1115,3 +1115,10 @@ body{overflow-x:hidden}
  .theme-studio-top-dock-actions button{width:100%;font-size:11px;padding:8px 6px}
  .theme-section-buttons{grid-template-columns:minmax(0,1fr)}
 }
+
+
+/* Build 17: universal touch drag affordance for selected interface components */
+.app-shell[data-design-dragging="true"]{cursor:grabbing}
+.app-shell .visual-edit-selected,.app-shell .visual-editor-selected{outline:2px dashed var(--cyan,#00d4ff)!important;outline-offset:3px;cursor:grab}
+.app-shell [style*="touch-action: none"]{touch-action:none}
+.app-shell .visual-editor-toolbar-copy small{max-width:100%;line-height:1.4}
