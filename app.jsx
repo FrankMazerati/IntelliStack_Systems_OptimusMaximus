@@ -70,7 +70,8 @@ function appRoleFromProfile(profile){
 }
 function Login({onLogin,theme=defaultOrganizationTheme}) {
   const [accountType,setAccountType]=useState('individual');
-  const [email,setEmail]=useState('');
+  const [email,setEmail]=useState(()=>{try{return localStorage.getItem('intellistack-remembered-login-email')||'';}catch{return '';}});
+  const [rememberEmail,setRememberEmail]=useState(()=>{try{return Boolean(localStorage.getItem('intellistack-remembered-login-email'));}catch{return false;}});
   const [password,setPassword]=useState('');
   const [showPassword,setShowPassword]=useState(false);
   const [provider,setProvider]=useState('');
@@ -123,10 +124,10 @@ function Login({onLogin,theme=defaultOrganizationTheme}) {
           <label className="field-label">ACCOUNT PERMISSIONS</label>
           <div className="role-select-wrap"><ShieldCheck size={18}/><span>Your role is loaded from your assigned account permissions after sign-in.</span></div>
           <label className="field-label" htmlFor="login-email">{accountType==='business'?'BUSINESS EMAIL':'ACCOUNT EMAIL'}</label>
-          <div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={event=>setEmail(event.target.value)} required/></div>
+          <div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={event=>{const nextEmail=event.target.value;setEmail(nextEmail);if(rememberEmail){try{if(nextEmail.trim())localStorage.setItem('intellistack-remembered-login-email',nextEmail.trim());else localStorage.removeItem('intellistack-remembered-login-email');}catch{}}}} required/></div>
           <label className="field-label" htmlFor="login-password">PASSWORD</label>
           <div className="input-wrap login-password-wrap"><LockKeyhole size={17}/><input id="login-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={event=>setPassword(event.target.value)} required/><button className="password-toggle" type="button" onClick={()=>setShowPassword(value=>!value)}>{showPassword?'Hide':'Show'}</button></div>
-          <div className="login-form-options"><label><input type="checkbox"/> Remember me</label><button type="button" onClick={()=>setNotice('Password recovery will be available after Supabase Auth is connected.')}>Forgot password?</button></div>
+          <div className="login-form-options"><label><input type="checkbox" checked={rememberEmail} onChange={event=>{const checked=event.target.checked;setRememberEmail(checked);try{if(checked){if(email.trim())localStorage.setItem('intellistack-remembered-login-email',email.trim());}else localStorage.removeItem('intellistack-remembered-login-email');}catch{}}}/> Remember my email on this device</label><button type="button" onClick={()=>setNotice('Password recovery will be available after Supabase Auth is connected.')}>Forgot password?</button></div>
           <button className="primary-btn full login-submit" type="submit">Sign in securely <span>→</span></button>
           <div className="login-or-divider"><span/> <b>OR CONTINUE WITH</b> <span/></div>
           <div className="login-provider-grid">{providers.map(item=><button type="button" key={item.name} className={'login-provider '+(provider===item.name?'selected':'')} onClick={()=>chooseProvider(item.name)}><span className={'login-provider-mark '+item.name.toLowerCase().replace(/[^a-z0-9]+/g,'-')}>{item.mark}</span><span><b>{item.name}</b><small>{item.detail}</small></span></button>)}</div>
