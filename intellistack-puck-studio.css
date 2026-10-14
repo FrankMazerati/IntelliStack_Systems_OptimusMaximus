@@ -1,0 +1,34 @@
+.is-puck-studio{min-height:100vh;background:#070c19;color:#e8efff;padding:clamp(10px,2vw,24px);box-sizing:border-box;overflow-x:hidden;font-family:Inter,system-ui,sans-serif}
+.is-puck-studio *{box-sizing:border-box}
+.is-puck-studio-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 18px;border:1px solid #263954;border-radius:14px;background:linear-gradient(120deg,#0c172a,#0b1020 65%,#10213a);box-shadow:0 12px 35px #0005}
+.is-puck-studio-brand{display:flex;align-items:center;gap:13px;min-width:0}
+.is-puck-shield{width:46px;height:48px;flex:0 0 46px;display:grid;place-items:center;color:#00d4ff;font-weight:900;border:2px solid #00d4ff;clip-path:polygon(50% 0,94% 17%,84% 72%,50% 100%,16% 72%,6% 17%);filter:drop-shadow(0 0 8px #00d4ff55)}
+.is-puck-studio-brand div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.is-puck-studio-brand strong{font-size:11px;letter-spacing:2px;color:#00d4ff}
+.is-puck-studio-brand b{font-size:16px;letter-spacing:.8px}
+.is-puck-studio-brand small{font-size:12px;color:#91a2c0;line-height:1.5}
+.is-puck-studio-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.is-puck-studio button{font:inherit;cursor:pointer}
+.is-puck-quiet,.is-puck-publish{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:800;border:1px solid #31445f;color:#e8efff;background:#101a2d}
+.is-puck-publish{background:#006e9a;border-color:#00d4ff;color:white}
+.is-puck-publish:disabled{opacity:.55;cursor:wait}
+.is-puck-studio-subbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 3px}
+.is-puck-studio-subbar>div:first-child{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:#a9bddb}
+.is-puck-studio-subbar>div:first-child>svg{color:#00d4ff}
+.is-puck-studio-subbar b{font-size:10px;padding:4px 7px;border:1px solid #28547c;border-radius:20px;color:#00d4ff}
+.is-puck-subtle{color:#7287a7;font-size:11px}
+.is-puck-viewports{display:flex;gap:4px;padding:4px;border:1px solid #263954;background:#0b1221;border-radius:10px}
+.is-puck-viewports button{display:flex;align-items:center;gap:6px;padding:7px 9px;border:1px solid transparent;border-radius:7px;background:transparent;color:#91a2c0;font-size:11px}
+.is-puck-viewports button.active{background:#102b43;border-color:#176b91;color:#e8efff}
+.is-puck-notice,.is-puck-feedback{display:flex;gap:9px;align-items:flex-start;padding:11px 13px;margin:0 0 12px;border:1px solid #263954;background:#0b1424;color:#91a2c0;border-radius:9px;font-size:11px;line-height:1.55}
+.is-puck-notice svg{flex:0 0 auto;color:#00d4ff;margin-top:1px}
+.is-puck-feedback{color:#b8f6d9;border-color:#226b55}
+.is-puck-editor-frame{width:100%;min-width:0;border:1px solid #263954;border-radius:12px;overflow:hidden;background:#f7f8fa;color:#111;--is-puck-viewport:100%}
+.is-puck-editor-frame .Puck{min-width:0}
+.is-puck-editor-frame.is-puck-tablet{--is-puck-viewport:820px}
+.is-puck-editor-frame.is-puck-mobile{--is-puck-viewport:390px}
+.is-puck-editor-frame .Puck-iframe{max-width:100%}
+.is-puck-studio-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 3px 2px;color:#91a2c0;font-size:11px}
+.is-puck-studio-foot svg{color:#00e6a8;flex-shrink:0}
+.is-puck-foot-count{margin-left:auto;color:#526987}
+@media(max-width:640px){.is-puck-studio{padding:8px}.is-puck-studio-header{padding:12px;align-items:flex-start}.is-puck-studio-brand strong{font-size:10px;letter-spacing:1.2px}.is-puck-studio-brand b{font-size:13px}.is-puck-studio-brand small{font-size:11px}.is-puck-studio-actions{width:100%}.is-puck-studio-actions button{flex:1;padding:10px 7px;font-size:11px}.is-puck-viewports{width:100%}.is-puck-viewports button{flex:1;justify-content:center}.is-puck-subtle{width:100%}.is-puck-foot-count{margin-left:0}.is-puck-editor-frame .Puck{min-height:72vh}}
