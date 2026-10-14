@@ -1033,3 +1033,7 @@
 .app-shell [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important;cursor:crosshair}
 .app-shell [data-theme-edit-selected="true"]::selection{background:var(--cyan);color:var(--bg)}
 @media(max-width:650px){.app-shell .theme-content-edit-actions{display:grid;grid-template-columns:minmax(0,1fr)}}
+
+/* Build 14 — visual editing access on the login screen */
+.login-theme-root{position:relative}
+.login-theme-root .theme-exit-design-mode{position:fixed;z-index:99999;top:12px;right:12px;padding:10px 14px;border:1px solid var(--cyan);border-radius:var(--theme-button-radius,9px);background:var(--panel);color:var(--text);box-shadow:0 0 18px color-mix(in srgb,var(--cyan) 24%,transparent);font-size:11px;font-weight:700;cursor:pointer}
