@@ -61,3 +61,19 @@
 .visual-editor-toolbar-active{border-color:#00b8e6!important}
 @keyframes isStudioPoint{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
 @media(max-width:680px){.visual-editor-toolbar-main{align-items:flex-start;gap:9px;padding:10px}.visual-editor-toolbar-mark{width:34px!important;height:34px!important;flex-basis:34px}.visual-editor-toolbar-copy b{font-size:10px;letter-spacing:.8px}.visual-editor-toolbar-copy small{font-size:10px}.visual-editor-toolbar-options{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.visual-editor-toolbar-options button{width:100%;min-width:0;white-space:normal}.visual-editor-point-down{font-size:10px;padding:9px 8px;gap:5px}.visual-editor-point-down svg{width:15px}}
+
+/* Editable slogan library */
+.is-puck-slogan-library{margin:12px 0 16px;padding:15px;border:1px solid #263954;border-radius:14px;background:linear-gradient(120deg,#0c172a,#0b1020 65%,#10213a);color:#e8efff;min-width:0}
+.is-puck-library-title{display:flex;align-items:center;gap:10px;color:#00d4ff}
+.is-puck-library-title>div{display:flex;flex-direction:column;gap:4px}
+.is-puck-library-title strong{font-size:13px;color:#f0f7ff}
+.is-puck-library-title small{font-size:11px;color:#91a2c0;line-height:1.45}
+.is-puck-slogan-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.is-puck-slogan-list button,.is-puck-custom-slogan button{display:flex;align-items:center;gap:7px;min-height:42px;padding:9px 12px;border:1px solid #31445f;border-radius:9px;background:#101a2d;color:#dceaff;font-size:11px;text-align:left;touch-action:manipulation;cursor:pointer}
+.is-puck-slogan-list button span{color:#00d4ff;font-weight:900}
+.is-puck-slogan-list button:hover{border-color:#00d4ff;background:#10243a}
+.is-puck-custom-slogan{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.is-puck-custom-slogan input{flex:1 1 220px;min-width:0;min-height:42px;padding:9px 12px;border:1px solid #31445f;border-radius:9px;background:#080f1e;color:#e8efff;font:inherit;font-size:12px}
+.is-puck-custom-slogan button{background:#006e9a;border-color:#00d4ff;color:#fff}
+.is-puck-custom-slogan button:disabled{opacity:.5}
+@media(max-width:520px){.is-puck-slogan-library{padding:11px}.is-puck-slogan-list button{width:100%;min-height:44px}}
