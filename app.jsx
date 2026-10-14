@@ -6,6 +6,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from './supabase.js';
 import IntelliStackPuckStudio from './intellistack-puck-studio.jsx';
 import './intellistack-puck-studio.css';
+import MaximusOptimusWorkspace from './maximus-optimus-workspace.jsx';
+import './maximus-optimus-workspace.css';
 import { Image as ImageIcon, Upload, ArrowLeft, Layers, ChevronRight, Newspaper, TrendingUp, Terminal, Radio, Cable, Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, Building2, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Palette, Paintbrush, Save, RotateCcw, Check, Eye, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
@@ -23,7 +25,6 @@ const screenDefs = [
   {id:'endusers',label:'End User Directory',group:'Help Desk Agent',icon:Users,description:'Look up fictional employees, assigned devices, and ticket history.'},
   {id:'knowledge',label:'Knowledge Vault',group:'Help Desk Agent',icon:BookOpen,description:'Runbooks and support articles for consistent resolutions.'},
   {id:'maximus',label:'Maximus AI Assistant',group:'Super Admin',icon:Bot,description:'Interactive operations assistant with a built-in support and troubleshooting knowledge base.'},
-  {id:'optimus',label:'Optimus Command Assistant',group:'Super Admin',icon:Sparkles,description:'Interactive Super Admin assistant for users, devices, security, audit, and integrations.'},
   {id:'status',label:'System Status',group:'Help Desk Agent',icon:Activity,description:'Service health and incident signals at a glance.'},
   {id:'networkops',label:'Network Operations Center',group:'Super Admin',accessRoles:['IT Administrator','Governance & Compliance','Network Operations'],icon:Radio,description:'Network health, packet analysis, monitoring vendors, and incident handoff.'},
   {id:'intelligence',label:'Intelligence Briefing',group:'Super Admin',accessRoles:['Security Agent','Network Operations'],icon:Newspaper,description:'Technology, cybersecurity, market news, and video sources in one workspace.'},
@@ -968,8 +969,7 @@ function App(){
     if(activeScreen==='themestudio') return <IntelliStackPuckStudio theme={organizationTheme} setTheme={setOrganizationTheme} onSave={saveOrganizationTheme} saving={themeSaving} notice={themeNotice} onExit={()=>navigate('overview')}/>
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
-    if(activeScreen==='maximus') return <AssistantPage assistant="maximus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
-    if(activeScreen==='optimus') return <AssistantPage assistant="optimus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
+    if(activeScreen==='maximus') return <MaximusOptimusWorkspace onNavigate={navigate}/>;
     if(activeScreen==='integrations') return <IntegrationsPage/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
@@ -995,9 +995,9 @@ function App(){
       <nav className="side-nav">{roleScreens.map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span>{item.id==='tickets'&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}
       {currentRole==='Super Admin'&&<><div className="nav-section-title">SERVICE OPERATIONS</div>{screenDefs.filter(item=>['tickets','endusers'].includes(item.id)).map(item=>{const Icon=item.icon;return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')} onClick={()=>navigate(item.id)}><Icon size={17}/><span>{item.label}</span></button>;})}</>}
       </nav>
-      <div className="nav-section-title assistant-nav-title">AI ASSISTANTS</div><nav className="side-nav assistant-side-nav"><button className={'nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus AI</span><small className="assistant-nav-status">READY</small></button><button className={'nav-link '+(activeScreen==='optimus'?'active':'')} onClick={()=>navigate('optimus')}><Sparkles size={17}/><span>Optimus</span><small className="assistant-nav-status">READY</small></button></nav>
+      <div className="nav-section-title assistant-nav-title">AI PARTNER</div><nav className="side-nav assistant-side-nav"><button className={'nav-link maximus-nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus Optimus</span><small className="assistant-nav-status">WORKSPACE</small></button></nav>
       <div className="sidebar-spacer"/>
-      <div className="ai-shortcuts"><button onClick={()=>navigate('maximus')}><span className="ai-mini blue"><Bot size={16}/></span><span><b>Maximus AI</b><small>Operations assistant · ready</small></span><ChevronDown size={14}/></button><button onClick={()=>navigate('optimus')}><span className="ai-mini purple"><Sparkles size={16}/></span><span><b>Optimus</b><small>Command assistant · ready</small></span><ChevronDown size={14}/></button></div>
+      <div className="ai-shortcuts"><button onClick={()=>navigate('maximus')} className="maximus-shortcut"><span className="ai-mini blue"><Bot size={16}/></span><span><b>Maximus Optimus</b><small>AI development partner</small></span><ChevronDown size={14}/></button></div>
       <div className="sidebar-bottom"><div className="sidebar-status"><span className="green-dot"/> Preview workspace <span className="version">v1.0</span></div><button type="button" className="sidebar-logout" onClick={logout}><LogOut size={15}/><span>Log out</span></button></div>
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
