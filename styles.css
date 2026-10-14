@@ -1089,3 +1089,29 @@ body{overflow-x:hidden}
  .app-shell .visual-editor-toolbar{position:relative;top:auto}
  .app-shell .sidebar{max-height:100dvh;overflow-y:auto}
 }
+
+
+
+/* Build 16: Theme Studio stays at the top and always offers a clear exit */
+.theme-studio{min-width:0;max-width:100%;overflow:visible}
+.theme-studio-top-dock{position:sticky;top:0;z-index:1200;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:12px 14px;background:rgba(5,13,29,.98);border:1px solid var(--cyan,#00d4ff);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.3);backdrop-filter:blur(16px);color:#f4f8ff}
+.theme-studio-top-dock-title{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 220px;color:var(--cyan,#00d4ff)}
+.theme-studio-top-dock-title div{display:grid;gap:3px;min-width:0}
+.theme-studio-top-dock-title b{font-size:12px;letter-spacing:.7px}
+.theme-studio-top-dock-title small{font-size:11px;color:#b8c8df;line-height:1.4}
+.theme-studio-top-dock-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.theme-studio-top-dock-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:9px 12px;white-space:normal}
+.theme-section-navigator{margin:0 0 16px;scroll-margin-top:90px}
+.theme-section-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.theme-section-buttons button{display:flex;align-items:center;gap:10px;min-width:0;min-height:46px;padding:9px 11px;text-align:left;border:1px solid var(--border,#31445f);border-radius:10px;background:var(--panelAlt,#0f1a30);color:var(--text,#e8f2ff);cursor:pointer}
+.theme-section-buttons button>span{display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:8px;background:var(--actionBox,#10223b);border:1px solid var(--actionBorder,#28547c);color:var(--accent,#00d4ff);font-size:11px;font-weight:900}
+.theme-section-buttons button>b{flex:1;min-width:0;font-size:12px;overflow-wrap:anywhere}
+.theme-section-buttons button>svg{flex:0 0 auto;color:var(--accent,#00d4ff)}
+.theme-section-buttons button.selected{border-color:var(--accent,#00d4ff);box-shadow:0 0 0 1px var(--accent,#00d4ff),0 0 16px color-mix(in srgb,var(--accent,#00d4ff) 18%,transparent)}
+@media(max-width:650px){
+ .theme-studio-top-dock{position:sticky;top:0;gap:9px;padding:10px;border-radius:0 0 12px 12px}
+ .theme-studio-top-dock-title{flex-basis:100%}
+ .theme-studio-top-dock-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+ .theme-studio-top-dock-actions button{width:100%;font-size:11px;padding:8px 6px}
+ .theme-section-buttons{grid-template-columns:minmax(0,1fr)}
+}
