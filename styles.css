@@ -1023,3 +1023,13 @@
 .app-shell .theme-remove-element-style{margin-top:12px}
 .app-shell[style] [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important}
 @media(max-width:650px){.app-shell .theme-element-style-grid{grid-template-columns:minmax(0,1fr)}.app-shell .theme-selected-selector{grid-template-columns:minmax(0,1fr)}}
+
+/* Build 14 — content editing controls */
+.app-shell .theme-content-edit-field{display:grid;gap:8px;margin:12px 0;color:var(--muted);font-size:11px}
+.app-shell .theme-content-edit-field textarea{width:100%;min-height:82px;resize:vertical;padding:11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel2);color:var(--text);font:inherit;line-height:1.6}
+.app-shell .theme-content-edit-actions{display:flex;flex-wrap:wrap;gap:8px}
+.app-shell .theme-content-edit-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:8px 11px;font-size:10px}
+.app-shell .theme-design-mode-note.active~*{scroll-margin-top:16px}
+.app-shell [data-theme-edit-selected="true"]{outline:2px dashed var(--cyan)!important;outline-offset:3px!important;cursor:crosshair}
+.app-shell [data-theme-edit-selected="true"]::selection{background:var(--cyan);color:var(--bg)}
+@media(max-width:650px){.app-shell .theme-content-edit-actions{display:grid;grid-template-columns:minmax(0,1fr)}}
