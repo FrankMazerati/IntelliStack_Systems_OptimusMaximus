@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Puck } from '@puckeditor/core';
 import '@puckeditor/core/puck.css';
-import { ArrowLeft, CheckCircle2, Layers3, Monitor, Save, ShieldCheck, Smartphone, Tablet } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Layers3, Monitor, Save, ShieldCheck, Smartphone, Tablet, Type } from 'lucide-react';
 
 const color = label => ({ type: 'text', label: label + ' (hex)' });
 const number = label => ({ type: 'number', label });
