@@ -138,3 +138,20 @@ Keep the first release narrow: CSV-based users/departments/assets import plus on
 - Current app navigation describes Remote Support as simulated; inspect and validate the existing page before extending it.
 - Real sessions require an integrated provider/agent, authenticated technician identity, target-device and tenant authorization, user awareness/consent as required, short-lived session grants, encryption, timeout/revocation, controlled privilege/file transfer, and auditable session lifecycle events.
 - Release acceptance requires a real test session on an approved test device, proof that denied access is denied, and proof that session termination revokes access.
+
+
+## Browser favorites migration
+
+- Provide a user-initiated import flow for browser bookmark exports (HTML and explicitly supported JSON formats), with local parsing, preview, selective import, duplicate handling, and clear error states.
+- Only accept safe HTTP/HTTPS bookmark URLs; do not automatically open imported URLs.
+- Do not import passwords, cookies, session tokens, browsing history, or extensions as part of bookmark migration.
+- Preserve bookmark titles, URLs, and folder hierarchy where the selected import format supports it. Explain unsupported metadata before import.
+- The initial prototype can map known IntelliStack page bookmarks to in-app Favorites and export selected bookmarks as HTML. External bookmark synchronization and durable cross-device profile storage require backend implementation.
+
+## Secure browser option
+
+- Treat secure browsing as a separate product capability, not an ordinary web page toggle. Initial recommendation is to integrate a supported enterprise browser or manage an existing browser with enterprise policies.
+- Requirements include SSO/MFA and conditional access, extension allowlists, phishing/malware protections, safe downloads, data-loss controls, encryption, policy assignment, version rollout/rollback, telemetry, privacy controls, and patch/vulnerability management.
+- Decide explicitly between (A) managed existing browser, (B) supported secure-browser vendor integration, or (C) a custom maintained browser distribution. Option C is a separate product/security program with a maintained browser engine, sandboxing, signed releases, patch SLAs, deployment, incident response, and independent review.
+- Do not claim secure browser enforcement until policy is deployed to managed endpoints and tested. Bookmark import is not browser isolation, malware protection, or policy enforcement.
+- Readiness acceptance: bookmark import tests across supported formats; invalid/malicious URL rejection; duplicate and folder handling; user-profile persistence; cross-tenant access denial; secure browser policy tests; and documented support/rollback.
