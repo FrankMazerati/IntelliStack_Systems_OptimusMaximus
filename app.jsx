@@ -7,7 +7,40 @@ import { IntelliChatPage, IntelliStackIdentityPage, DepartmentWorkspacePage } fr
 import { KnowledgeBasePage } from './knowledge-base.jsx';
 import { Video, Mail, Send, Inbox, Archive, Star, Reply, Paperclip, UserPlus, ListChecks, Activity, Building2, MessagesSquare, Link2, Eye, KeyRound, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, Headset, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
-const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
+const roles = [
+ 'Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance',
+ 'IT Director / Systems Engineer','Network Administrator / Network Engineer',
+ 'Device Management Administrator','Security Operations Analyst',
+ 'Identity & Access Administrator','Integration Administrator',
+ 'Automation / Workflow Administrator','Auditor / Compliance Reviewer',
+ 'Service Desk Manager','Asset / Inventory Manager','Executive / CEO','Finance / CFO',
+ 'HR Administrator','Department Manager','Standard Employee',
+ 'Contractor / Temporary Worker','Vendor / Business Partner','Customer / Marketplace User'
+];
+const roleDescriptions = {
+ 'Super Admin':'Platform-wide administration; tightly restricted privileged access.',
+ 'Help Desk Agent':'Ticket intake, triage, assignment, and resolution in assigned queues.',
+ 'IT Administrator':'Technical administration of permitted users, devices, infrastructure, and integrations.',
+ 'Governance & Compliance':'Policy oversight, audit review, risk, and compliance evidence.',
+ 'IT Director / Systems Engineer':'Scoped technical oversight and systems engineering.',
+ 'Network Administrator / Network Engineer':'Network health, telemetry, and approved network configuration.',
+ 'Device Management Administrator':'Endpoint inventory, device policies, and controlled update operations.',
+ 'Security Operations Analyst':'Security alert triage, investigations, and incident coordination.',
+ 'Identity & Access Administrator':'Identity lifecycle, MFA/SSO configuration, and access assignments.',
+ 'Integration Administrator':'Connected applications, integration health, and secure configuration.',
+ 'Automation / Workflow Administrator':'Workflow design, testing, publishing, and execution controls.',
+ 'Auditor / Compliance Reviewer':'Read-only compliance review and permitted audit evidence access.',
+ 'Service Desk Manager':'Service desk queues, escalations, and team performance.',
+ 'Asset / Inventory Manager':'Asset inventory and lifecycle administration.',
+ 'Executive / CEO':'Executive workspace and explicitly approved enterprise reports.',
+ 'Finance / CFO':'Finance workspace and explicitly granted finance capabilities.',
+ 'HR Administrator':'Workforce administration within HR data boundaries.',
+ 'Department Manager':'Team workspace, requests, and delegated approvals within assigned scope.',
+ 'Standard Employee':'Personal workspace and standard employee applications.',
+ 'Contractor / Temporary Worker':'Time-bound access to assigned workspaces and resources.',
+ 'Vendor / Business Partner':'Explicitly authorized external collaboration and resources.',
+ 'Customer / Marketplace User':'Customer-facing or marketplace capabilities explicitly assigned.'
+};
 
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Command Center',icon:LayoutDashboard,description:'Executive overview of people, services, security, work, and connected business applications.'},
@@ -353,7 +386,7 @@ function UsersPage(){
  </form>}</div>}
  </Panel>
  <div className="content-grid two-col" id="group-management"><Panel title="Groups and memberships" subtitle="Create reusable groups, then assign users to them"><form className="table-tools" onSubmit={addGroup}><div className="search-box"><Users size={16}/><input value={groupDraft} onChange={e=>setGroupDraft(e.target.value)} placeholder="New group name…" aria-label="New group name"/></div><button className="primary-btn" type="submit"><Plus size={15}/> Add group</button></form><div className="builder-registry">{groups.map(g=><div className="builder-item" key={g}><div className="builder-item-icon"><Users size={17}/></div><div className="builder-item-main"><div className="builder-item-title"><b>{g}</b><span className="status-pill">{records.filter(u=>(u.groups||[]).includes(g)).length} members</span></div><p>Group membership controls can be assigned from each user's Edit account panel.</p></div></div>)}</div></Panel>
- <Panel title="Role permissions" subtitle="Review elevated access before assigning roles">{roles.map((r,i)=><div className="permission-row" key={r}><span className={'permission-icon p'+i}><ShieldCheck size={17}/></span><div><b>{r}</b><p>{['Full platform administration and settings','Service desk, knowledge, limited admin','Infrastructure, integrations, operations','Audit, security, policy, reporting'][i]}</p></div><span className="permission-count">{[12,8,10,9][i]} permissions</span></div>)}</Panel></div>
+ <Panel title="Role catalog" subtitle="System roles, specialist roles, and workforce access profiles. Job title and department do not grant permissions by themselves.">{roles.map((r,i)=><div className="permission-row" key={r}><span className={'permission-icon p'+(i%6)}><ShieldCheck size={17}/></span><div><b>{r}</b><p>{roleDescriptions[r]}</p></div><span className="permission-count">{i===0?'Privileged':i<4?'Core role':i<14?'Specialist':'Access profile'}</span></div>)}</Panel></div>
  {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
  <p className="privacy-note">Prototype limitation: these account, group, and role changes are local to this browser. Production identity and policy administration must use authenticated backend APIs with server-enforced permissions and audit logging.</p>
  </>;
