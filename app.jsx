@@ -2,38 +2,173 @@ import SuperAdminImage from './SuperAdmin.png';
 import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
-import React, { useMemo, useState } from 'react';
-import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { IntelliChatPage, IntelliStackIdentityPage, DepartmentWorkspacePage } from './enterprise-experience.jsx';
+import { KnowledgeBasePage } from './knowledge-base.jsx';
+import { Video, Mail, Send, Inbox, Archive, Star, Reply, Paperclip, UserPlus, ListChecks, Activity, Building2, MessagesSquare, Link2, Eye, KeyRound, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, Headset, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
-const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
+const roles = [
+ 'Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance',
+ 'IT Director / Systems Engineer','Network Administrator / Network Engineer',
+ 'Device Management Administrator','Security Operations Analyst',
+ 'Identity & Access Administrator','Integration Administrator',
+ 'Automation / Workflow Administrator','Auditor / Compliance Reviewer',
+ 'Service Desk Manager','Asset / Inventory Manager','Executive / CEO','Finance / CFO',
+ 'HR Administrator','Department Manager','Standard Employee',
+ 'Contractor / Temporary Worker','Vendor / Business Partner','Customer / Marketplace User'
+];
+const roleDescriptions = {
+ 'Super Admin':'Platform-wide administration; tightly restricted privileged access.',
+ 'Help Desk Agent':'Ticket intake, triage, assignment, and resolution in assigned queues.',
+ 'IT Administrator':'Technical administration of permitted users, devices, infrastructure, and integrations.',
+ 'Governance & Compliance':'Policy oversight, audit review, risk, and compliance evidence.',
+ 'IT Director / Systems Engineer':'Scoped technical oversight and systems engineering.',
+ 'Network Administrator / Network Engineer':'Network health, telemetry, and approved network configuration.',
+ 'Device Management Administrator':'Endpoint inventory, device policies, and controlled update operations.',
+ 'Security Operations Analyst':'Security alert triage, investigations, and incident coordination.',
+ 'Identity & Access Administrator':'Identity lifecycle, MFA/SSO configuration, and access assignments.',
+ 'Integration Administrator':'Connected applications, integration health, and secure configuration.',
+ 'Automation / Workflow Administrator':'Workflow design, testing, publishing, and execution controls.',
+ 'Auditor / Compliance Reviewer':'Read-only compliance review and permitted audit evidence access.',
+ 'Service Desk Manager':'Service desk queues, escalations, and team performance.',
+ 'Asset / Inventory Manager':'Asset inventory and lifecycle administration.',
+ 'Executive / CEO':'Executive workspace and explicitly approved enterprise reports.',
+ 'Finance / CFO':'Finance workspace and explicitly granted finance capabilities.',
+ 'HR Administrator':'Workforce administration within HR data boundaries.',
+ 'Department Manager':'Team workspace, requests, and delegated approvals within assigned scope.',
+ 'Standard Employee':'Personal workspace and standard employee applications.',
+ 'Contractor / Temporary Worker':'Time-bound access to assigned workspaces and resources.',
+ 'Vendor / Business Partner':'Explicitly authorized external collaboration and resources.',
+ 'Customer / Marketplace User':'Customer-facing or marketplace capabilities explicitly assigned.'
+};
 
 const screenDefs = [
-  {id:'overview',label:'Dashboard',group:'Super Admin',icon:LayoutDashboard,description:'Your workspace at a glance, with direct access to key actions.'},
-  {id:'builder',label:'Platform Builder',group:'Super Admin',icon:Workflow,description:'Register custom modules, pages, workflows, and connected applications.'},
-  {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
-  {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
-  {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
-  {id:'security',label:'Security & Compliance',group:'Super Admin',icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
-  {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
-  {id:'tickets',label:'Service Desk',group:'Help Desk Agent',icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
-  {id:'endusers',label:'End User Directory',group:'Help Desk Agent',icon:Users,description:'Look up fictional employees, assigned devices, and ticket history.'},
-  {id:'knowledge',label:'Knowledge Vault',group:'Help Desk Agent',icon:BookOpen,description:'Runbooks and support articles for consistent resolutions.'},
-  {id:'maximus',label:'Maximus AI Assistant',group:'Super Admin',icon:Bot,description:'Interactive operations assistant with a built-in support and troubleshooting knowledge base.'},
-  {id:'optimus',label:'Optimus Command Assistant',group:'Super Admin',icon:Sparkles,description:'Interactive Super Admin assistant for users, devices, security, audit, and integrations.'},
-  {id:'status',label:'System Status',group:'Help Desk Agent',icon:Activity,description:'Service health and incident signals at a glance.'},
-  {id:'infrastructure',label:'Infrastructure',group:'IT Administrator',icon:MonitorCog,description:'Assets, capacity, and operational maintenance.'},
-  {id:'remote',label:'Remote Support',group:'IT Administrator',icon:MonitorCog,description:'Review end-user devices and launch a simulated remote-support session.'},
-  {id:'automation',label:'Automation Workflows',group:'IT Administrator',icon:Workflow,description:'Review workflow runs and operational automations.'},
-  {id:'governance',label:'Governance Center',group:'Governance & Compliance',icon:FileCheck2,description:'Policy reviews, audit evidence, and compliance tracking.'},
-  {id:'audit',label:'Audit Log',group:'Governance & Compliance',icon:ClipboardList,description:'Traceable activity records using sample records.'},
+  {id:'overview',label:'Dashboard',group:'Command Center',icon:LayoutDashboard,description:'Executive overview of people, services, security, work, and connected business applications.'},
+  {id:'profile',label:'My Profile & Workspace',group:'System Administration',icon:UserCog,description:'Personal profile, appearance, favorites, quick actions, and recent pages.'},
+  {id:'secure-browser',label:'Browser Workspace',group:'Identity & Access',icon:Globe2,description:'Launch websites, manage browser favorites, and plan Chrome/Edge enterprise governance.'},
+  {id:'servicedesk',label:'Service Desk',group:'Service Operations',icon:Headset,description:'Service catalog, request intake, triage queues, knowledge, SLAs, and support-team operations.'},
+  {id:'knowledge',label:'Knowledge Base',group:'Service Operations',icon:BookOpen,description:'Searchable onboarding, system navigation, security awareness, spam filtering, phishing prevention, and administrator guidance.'},
+  {id:'tickets',label:'Tickets',group:'Service Operations',icon:Ticket,description:'Create, assign, prioritize, escalate, resolve, and audit incidents and service requests.'},
+  {id:'users',label:'Users & Role Management',group:'Administration',icon:Users,description:'Manage identities, teams, role assignments, permissions, and access reviews.'},
+  {id:'devices',label:'Users & Devices',group:'Administration',icon:MonitorCog,description:'Manage users, endpoints, peripherals, ownership, inventory, and device health.'},
+  {id:'endusers',label:'End User Directory',group:'Administration',icon:Users,description:'Employee directory, organization details, device assignments, and linked service history.'},
+  {id:'email',label:'Email Center',group:'Collaboration',icon:Mail,description:'Unified email workspace for inboxes, drafts, folders, shared mailboxes, and correspondence.'},
+  {id:'intellichat',label:'IntelliChat',group:'Communication & Collaboration',icon:MessagesSquare,description:'First-party enterprise messaging, direct messages, group chats, department channels, and incident rooms.'},
+  {id:'intellistackid',label:'IntelliStack ID',group:'Identity & Access',icon:KeyRound,description:'Unified enterprise identity, organization memberships, role assignments, and sign-in security.'},
+  {id:'intellilink',label:'IntelliLink',group:'IntelliSphere Suite',icon:Link2,description:'Connected service directory, integration health, and governed data connections.'},
+  {id:'intellivision',label:'IntelliVision',group:'IntelliSphere Suite',icon:Eye,description:'Enterprise visibility workspace for service health, trends, alerts, and cross-system insights.'},
+  {id:'dept-executive',label:'Executive Leadership & Corporate Strategy',group:'Enterprise Departments',icon:Building2,description:'Corporate strategy, board support, enterprise performance, and continuity.'},
+  {id:'dept-finance',label:'Finance, Accounting & Treasury',group:'Enterprise Departments',icon:Database,description:'Budgets, accounting, treasury, tax, forecasting, and reporting.'},
+  {id:'dept-hr',label:'Human Resources & Workforce',group:'Enterprise Departments',icon:Users,description:'Recruiting, onboarding, employee services, and workforce planning.'},
+  {id:'dept-it',label:'Information Technology & Infrastructure',group:'Enterprise Departments',icon:Server,description:'IT operations, identities, endpoints, cloud, and network.'},
+  {id:'dept-security',label:'Cybersecurity, Risk & Compliance',group:'Enterprise Departments',icon:ShieldCheck,description:'Security operations, risk, audit, and compliance controls.'},
+  {id:'dept-operations',label:'Business Operations & Service Delivery',group:'Enterprise Departments',icon:Workflow,description:'Business processes, quality, resources, and operational continuity.'},
+  {id:'dept-sales',label:'Sales, Marketing & Communications',group:'Enterprise Departments',icon:Globe2,description:'Sales pipeline, CRM, campaigns, brand, and communications.'},
+  {id:'dept-legal',label:'Legal, Privacy & Corporate Affairs',group:'Enterprise Departments',icon:FileCheck2,description:'Contracts, privacy, legal matters, and regulatory obligations.'},
+  {id:'dept-procurement',label:'Procurement, Vendors & Supply Chain',group:'Enterprise Departments',icon:Building2,description:'Purchasing, suppliers, vendor risk, purchase orders, and renewals.'},
+  {id:'dept-engineering',label:'Product, Engineering & Innovation',group:'Enterprise Departments',icon:Workflow,description:'Product roadmaps, engineering, quality, releases, and R&D.'},
+  {id:'dept-customer',label:'Customer Experience & Customer Success',group:'Enterprise Departments',icon:Users,description:'Customer support, feedback, service quality, and retention.'},
+  {id:'dept-facilities',label:'Facilities, Physical Security & Workplace',group:'Enterprise Departments',icon:Building2,description:'Facilities, physical access, maintenance, and workplace safety.'},
+  {id:'dept-projects',label:'Project, Program & Portfolio Management',group:'Enterprise Departments',icon:ClipboardList,description:'Projects, milestones, dependencies, risks, and portfolio reporting.'},
+  {id:'dept-data',label:'Data, Analytics & Business Intelligence',group:'Enterprise Departments',icon:Activity,description:'Dashboards, data governance, analytics, and forecasting.'},
+  {id:'dept-learning',label:'Learning & Development',group:'Enterprise Departments',icon:BookOpen,description:'Training, certifications, skills, and career development.'},
+  {id:'dept-manufacturing',label:'Manufacturing & Production',group:'Enterprise Departments',icon:Cpu,description:'Production planning, plant operations, and manufacturing quality.'},
+  {id:'dept-logistics',label:'Logistics & Distribution',group:'Enterprise Departments',icon:HardDrive,description:'Warehousing, shipping, routing, and distribution.'},
+  {id:'dept-regional',label:'International & Regional Operations',group:'Enterprise Departments',icon:Globe2,description:'Country operations, localization, and regional coordination.'},
+  {id:'dept-ehs',label:'Environmental Health & Safety',group:'Enterprise Departments',icon:Shield,description:'Safety programs, inspections, and corrective actions.'},
+  {id:'dept-investor',label:'Investor Relations',group:'Enterprise Departments',icon:Building2,description:'Investor communications, earnings, and shareholder reporting.'},
+  {id:'dept-research',label:'Research & Laboratory Operations',group:'Enterprise Departments',icon:Database,description:'Research programs, lab assets, and controlled workflows.'},
+  {id:'dept-franchise',label:'Franchise & Partner Management',group:'Enterprise Departments',icon:Users,description:'Partner onboarding, agreements, compliance, and performance.'},
+  {id:'calendar',label:'Global Calendar',group:'Collaboration',icon:CalendarDays,description:'Organization-wide schedules for meetings, maintenance, deadlines, and incident coverage.'},
+  {id:'meetings',label:'Meetings & Teams',group:'Collaboration',icon:Video,description:'Team spaces, meeting scheduling, invitations, agendas, attendance, and action tracking.'},
+  {id:'integrations',label:'System Integrations',group:'Platform & Governance',icon:Network,description:'Connect identity, productivity, ticketing, cloud, data, and operations systems.'},
+  {id:'builder',label:'Platform Builder',group:'Platform & Governance',icon:Workflow,description:'Design modules, pages, navigation, forms, data views, and business workflows.'},
+  {id:'security',label:'Security & Compliance',group:'Platform & Governance',icon:ShieldCheck,description:'Identity posture, policies, audit evidence, access reviews, and compliance controls.'},
+  {id:'noc',label:'Network Operations Center',group:'Operations Centers',icon:Network,description:'Network topology, availability, performance signals, maintenance, and incident coordination.'},
+  {id:'soc',label:'Security Operations Center',group:'Operations Centers',icon:Shield,description:'Security alerts, triage, threat investigations, response playbooks, and evidence tracking.'},
+  {id:'warroom',label:'War & Breakout Rooms',group:'Operations Centers',icon:Activity,description:'Incident command, emergency response teams, breakout rooms, decision logs, and follow-ups.'},
+  {id:'news',label:'News Monitoring',group:'IntelliSphere Suite',icon:Globe2,description:'Curated IT, cybersecurity, business, market, and organization news monitoring by role.'},
+  {id:'intellispheresuite',label:'IntelliSphere',group:'IntelliSphere Suite',icon:Globe2,description:'Connected business application suite for workforce, productivity, finance, and collaboration.'},
+  {id:'intellistaff',label:'IntelliStaff',group:'IntelliSphere Suite',icon:Users,description:'Staffing operations, talent pools, assignments, onboarding, time, and workforce coverage.'},
+  {id:'intelliwork',label:'IntelliWork',group:'IntelliSphere Suite',icon:ClipboardList,description:'Work management, tasks, projects, approvals, service requests, and cross-team execution.'},
+  {id:'intellihire',label:'IntelliHire',group:'IntelliSphere Suite',icon:UserCog,description:'Recruiting pipeline, job requisitions, candidates, interviews, offers, and onboarding handoffs.'},
+  {id:'intellipay',label:'IntelliPay',group:'IntelliSphere Suite',icon:Database,description:'Payroll and payment operations workspace for earnings, approvals, reconciliation, and reporting.'},
+  {id:'intellitax',label:'IntelliTax',group:'IntelliSphere Suite',icon:FileCheck2,description:'Tax document organization, preparation checklists, review workflows, deadlines, and compliance reporting.'},
+  {id:'intelliword',label:'IntelliWord',group:'IntelliSphere Suite',icon:FileText,description:'Document authoring, templates, collaboration, version history, and approval workflows.'},
+  {id:'intellidrive',label:'IntelliDrive',group:'IntelliSphere Suite',icon:HardDrive,description:'Organize business files, folders, sharing permissions, version history, and retention.'},
+  {id:'intelliforms',label:'IntelliForms',group:'IntelliSphere Suite',icon:ClipboardList,description:'Build forms, surveys, intake workflows, approvals, and structured data collection.'},
+  {id:'intelliexcel',label:'IntelliSheets',group:'IntelliSphere Suite',icon:Database,description:'Spreadsheet workspace for tables, formulas, analysis, data imports, charts, and reporting.'},
+  {id:'intellislides',label:'IntelliSlides',group:'IntelliSphere Suite',icon:FileText,description:'Presentation authoring, slide libraries, themes, speaker notes, and executive briefings.'},
+  {id:'intellistudio',label:'IntelliStudio',group:'IntelliSphere Suite',icon:SlidersHorizontal,description:'Visual page and workspace builder for reusable blocks, themes, layouts, and responsive previews.'},
+  {id:'marketplace',label:'Contractor / Worker / Business Marketplace',group:'Marketplace',icon:Building2,description:'Marketplace for businesses, contractors, workers, job opportunities, engagements, and service offers.'},
+  {id:'knowledge',label:'Knowledge Vault',group:'Service Operations',icon:BookOpen,description:'Runbooks, standard operating procedures, and searchable support articles.'},
+  {id:'status',label:'System Status',group:'Operations Centers',icon:Activity,description:'Service health, incident signals, planned maintenance, and status communication.'},
+  {id:'infrastructure',label:'Infrastructure',group:'Operations Centers',icon:Server,description:'Infrastructure assets, capacity, maintenance windows, and operational changes.'},
+  {id:'remote',label:'Remote Support',group:'Service Operations',icon:MonitorCog,description:'Review device diagnostics and launch a simulated remote-support session.'},
+  {id:'automation',label:'Automation Workflows',group:'Platform & Governance',icon:Workflow,description:'Workflow templates, approvals, scheduled jobs, run history, and exception handling.'},
+  {id:'governance',label:'Governance Center',group:'Platform & Governance',icon:FileCheck2,description:'Policy reviews, control owners, compliance evidence, and remediation tracking.'},
+  {id:'audit',label:'Audit Log',group:'Platform & Governance',icon:ClipboardList,description:'Traceable activity records, changes, administrative actions, and review history.'},
+  {id:'maximus',label:'Maximus AI Assistant',group:'AI Assistants',icon:Bot,description:'Operations assistant for troubleshooting, platform guidance, and support knowledge.'},
+  {id:'optimus',label:'Optimus Command Assistant',group:'AI Assistants',icon:Sparkles,description:'Command assistant for users, devices, security, audit, and integration workflows.'},
 ];
+
+// Reorganized around the 12 command-center navigation areas requested for the platform.
+// Existing pages remain available as nested links within the closest operational center.
+const navGroupOrder = [
+  'Command Dashboard',
+  'Identity & User Management',
+  'Device & Asset Management',
+  'Service Desk',
+  'Remote Support',
+  'Integrations Center',
+  'Automation Center',
+  'Governance & Compliance',
+  'Security Operations',
+  'Maximus AI & Optimus',
+  'Analytics & Reporting',
+  'System Administration',
+  'Communication & Collaboration',
+  'IntelliSphere Applications',
+  'Enterprise Departments',
+  'Marketplace'
+];
+const navGroupByScreen = {
+  overview: 'Command Dashboard',
+  users: 'Identity & User Management', endusers: 'Identity & User Management', intellistackid: 'Identity & User Management',
+  devices: 'Device & Asset Management', infrastructure: 'Device & Asset Management',
+  servicedesk: 'Service Desk', tickets: 'Service Desk', knowledge: 'Service Desk',
+  remote: 'Remote Support',
+  integrations: 'Integrations Center', intellilink: 'Integrations Center',
+  automation: 'Automation Center', builder: 'Automation Center',
+  governance: 'Governance & Compliance', security: 'Governance & Compliance', audit: 'Governance & Compliance',
+  soc: 'Security Operations', noc: 'Security Operations', status: 'Security Operations', warroom: 'Security Operations',
+  maximus: 'Maximus AI & Optimus', optimus: 'Maximus AI & Optimus',
+  intellivision: 'Analytics & Reporting', news: 'Analytics & Reporting',
+  calendar: 'System Administration', meetings: 'System Administration', email: 'System Administration',
+  intellichat: 'Communication & Collaboration',
+  intellispheresuite: 'IntelliSphere Applications', intellistaff: 'IntelliSphere Applications', intelliwork: 'IntelliSphere Applications',
+  intellihire: 'IntelliSphere Applications', intellipay: 'IntelliSphere Applications', intellitax: 'IntelliSphere Applications',
+  intelliword: 'IntelliSphere Applications', intellidrive: 'IntelliSphere Applications', intelliforms: 'IntelliSphere Applications',
+  intelliexcel: 'IntelliSphere Applications', intellislides: 'IntelliSphere Applications', intellistudio: 'IntelliSphere Applications',
+  marketplace: 'Marketplace'
+};
+screenDefs.forEach(item => {
+  if (navGroupByScreen[item.id]) item.group = navGroupByScreen[item.id];
+  if (item.id === 'overview') item.label = 'Command Dashboard';
+  if (item.id === 'devices') item.label = 'Device & Asset Management';
+  if (item.id === 'users') item.label = 'Identity & User Management';
+  if (item.id === 'integrations') item.label = 'Integrations Center';
+  if (item.id === 'automation') item.label = 'Automation Center';
+  if (item.id === 'governance') item.label = 'Governance & Compliance';
+  if (item.id === 'soc') item.label = 'Security Operations';
+});
 const rolePermissions = {
   'Super Admin': new Set(screenDefs.map(s=>s.id)),
-  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status']),
-  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations']),
-  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status']),
-  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit']),
-  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status'])
+  'Help Desk Agent': new Set(['overview','servicedesk','tickets','endusers','knowledge','status','calendar','meetings','email','news','intelliwork']),
+  'IT Administrator': new Set(['overview','servicedesk','tickets','infrastructure','remote','automation','status','devices','users','integrations','calendar','meetings','email','news','noc','intellistudio','intelliwork']),
+  'Governance & Compliance': new Set(['overview','users','security','governance','audit','integrations','status','calendar','meetings','email','news','intellipay','intelliword']),
+  'Security Agent': new Set(['overview','servicedesk','tickets','security','soc','warroom','integrations','status','audit','calendar','meetings','email','news']),
+  'Network Operations': new Set(['overview','servicedesk','tickets','infrastructure','remote','integrations','noc','warroom','status','calendar','meetings','email','news'])
 };
 const initialTickets = [
   {id:'INC-7842',title:'VPN connection fails after password reset',requester:'Jordan Kim',team:'Network Ops',priority:'High',status:'In progress',age:'18m'},
@@ -62,49 +197,187 @@ function Brand(){return <div className="brand"><div className="brand-mark"><Shie
 function Login({onLogin}){
  const [audience,setAudience]=useState('staff');
  const [role,setRole]=useState('Super Admin');
- const [email,setEmail]=useState('');
+ const [email,setEmail]=useState(()=>{try{return localStorage.getItem('intellistack.rememberedEmail')||'';}catch{return '';}});
  const [password,setPassword]=useState('');
  const [showPassword,setShowPassword]=useState(false);
  const [authMethod,setAuthMethod]=useState('email');
- const [module,setModule]=useState('Command Center');
  const [message,setMessage]=useState('');
+ const [rememberEmail,setRememberEmail]=useState(()=>{try{return Boolean(localStorage.getItem('intellistack.rememberedEmail'));}catch{return false;}});
  const staffRoles=['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
- const audienceRoles={staff:staffRoles,employee:['Employee','Help Desk Agent'],employer:['Employer','IT Administrator']};
- const roleEmails={'Super Admin':'','Help Desk Agent':'','IT Administrator':'','Governance & Compliance':'','Security Agent':'','Network Operations':'','Employee':'','Employer':''};
- const normalizedEmail = email.trim().toLowerCase();
- const isDemoAdmin = audience==='staff' && role==='Super Admin' && normalizedEmail==='admin@intellistack.info';
- const modules=['Command Center','IntelliStaff','IntelliWork','IntelliHire','IntelliPay','Service Desk','War Room & Emergency Response','Network Operations','Security & Compliance','Governance Center','Users & Devices','System Integrations','Microsoft 365','Google Workspace','Entra ID','Okta / SAML SSO','GitHub','Apple','Other identity provider'];
- const methods=[{id:'email',name:'Email & password',mark:'@'},{id:'microsoft',name:'Microsoft 365',mark:'▦'},{id:'entra',name:'Microsoft Entra ID',mark:'◈'},{id:'google',name:'Google Workspace',mark:'G'},{id:'okta',name:'Okta / SAML SSO',mark:'◎'},{id:'github',name:'GitHub',mark:'⌘'},{id:'apple',name:'Apple',mark:'●'},{id:'other',name:'Other provider',mark:'•••'}];
- const changeAudience=(value)=>{setAudience(value);setRole((audienceRoles[value]||staffRoles)[0]);setMessage('');};
- const submit=(event)=>{event.preventDefault();if(!email.trim()){setMessage('Enter your work or account email to continue.');return;}if(isDemoAdmin){setPassword('');setMessage('Entering Super Admin demo preview…');onLogin('Super Admin');return;}if(authMethod==='email'&&!password){setMessage('Enter your password to continue.');return;}if(authMethod!=='email'){setMessage(methods.find(x=>x.id===authMethod)?.name+' is selected. Its identity provider must be configured before it can authenticate users.');return;}setMessage('This prototype does not yet validate credentials. Connect Supabase Auth and server-side role permissions before enabling real sign-in.');};
- return <div className="login-shell login-refresh" style={{'--login-background':`url(${LoginImage})`}}>
-  <div className="login-backdrop" aria-hidden="true"/>
-  <header className="login-header login-refresh-header"><Brand/><div className="login-header-caption"><span className="pulse"/> GLOBAL IT COMMAND CENTER</div></header>
-  <main className="login-main login-refresh-main">
-   <section className="login-copy login-refresh-copy"><div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div><h1><span>One World.</span><br/><em>One Intelligent Network.</em></h1><p className="login-refresh-lead">One secure gateway for your people, businesses, teams, and connected systems.</p><div className="login-refresh-highlights"><span><ShieldCheck size={15}/> Security-first access</span><span><Globe2 size={15}/> Global operations</span><span><Activity size={15}/> Connected workspaces</span></div></section>
-   <section className="login-card login-refresh-card"><div className="card-top"><span className="eyebrow">SECURE ACCESS PORTAL</span><h2>Welcome back</h2><p>Choose your account type and sign-in method.</p></div>
-    <div className="login-audience-tabs" role="group" aria-label="Account type"><button type="button" className={audience==='staff'?'active':''} onClick={()=>changeAudience('staff')}><ShieldCheck size={16}/><span><b>IntelliStaff</b><small>Team & operations</small></span></button><button type="button" className={audience==='employee'?'active':''} onClick={()=>changeAudience('employee')}><Users size={16}/><span><b>Employee</b><small>Staff access</small></span></button><button type="button" className={audience==='employer'?'active':''} onClick={()=>changeAudience('employer')}><Building2 size={16}/><span><b>Employer</b><small>Business access</small></span></button></div>
-    <form onSubmit={submit} noValidate className="login-refresh-form">
-     <label className="field-label" htmlFor="login-module">WORKSPACE / CONNECTED MODULE</label><div className="role-select-wrap"><Workflow size={17}/><select id="login-module" value={module} onChange={e=>setModule(e.target.value)}>{modules.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div>
-     <label className="field-label" htmlFor="login-role">{audience==='staff'?'INTELLISTAFF ROLE':audience==='employee'?'EMPLOYEE ACCESS ROLE':'EMPLOYER ACCESS ROLE'}</label><div className="role-select-wrap"><ShieldCheck size={17}/><select id="login-role" value={role} onChange={e=>{setRole(e.target.value);setMessage('');}}>{(audienceRoles[audience]||staffRoles).map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div>
-     <label className="field-label" htmlFor="login-email">WORK OR ACCOUNT EMAIL</label><div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="admin@intellistack.info" value={email} onChange={e=>{setEmail(e.target.value);setMessage('');}} required/></div>
-     {authMethod==='email'&&<>{isDemoAdmin?<div className="login-demo-notice"><ShieldCheck size={15}/><span><b>Demo preview access</b><small>Password not required for demo.</small></span></div>:<><label className="field-label" htmlFor="login-password">PASSWORD</label><div className="input-wrap login-refresh-password"><LockKeyhole size={17}/><input id="login-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required={!isDemoAdmin} aria-required={!isDemoAdmin}/><button type="button" className="login-show-password" onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div><div className="login-refresh-options"><label><input type="checkbox"/> Remember me</label><button type="button" onClick={()=>setMessage('Password reset becomes available after Supabase Auth is connected.')}>Forgot password?</button></div></>}</>}
-     <label className="field-label" htmlFor="login-method">SIGN-IN METHOD</label><div className="role-select-wrap login-method-select"><LockKeyhole size={17}/><select id="login-method" value={authMethod} onChange={e=>{setAuthMethod(e.target.value);setMessage('');}}>{methods.map(x=><option value={x.id} key={x.id}>{x.name}</option>)}</select><ChevronDown size={15}/></div>
-     <div className="login-provider-grid" aria-label="Quick sign-in method selection">{methods.filter(x=>x.id!=='email').map(x=><button type="button" key={x.id} className={authMethod===x.id?'selected':''} onClick={()=>{setAuthMethod(x.id);setMessage('');}}><span className={'login-provider-icon provider-'+x.id}>{x.mark}</span><span>{x.name}</span></button>)}</div>
-     <button className="primary-btn full login-refresh-submit" type="submit">{isDemoAdmin?'Enter Super Admin Demo':authMethod==='email'?'Continue securely':'Continue with '+(methods.find(x=>x.id===authMethod)?.name||'provider')} <span>→</span></button>
-     {message&&<div className="login-refresh-message" role="status"><ShieldCheck size={15}/><span>{message}</span></div>}
-     <div className="trust-row"><ShieldCheck size={15}/> Secure · Trusted · Compliant</div><p className="login-refresh-note">{isDemoAdmin?'Demo preview only — no password or Supabase authentication is used for this test account.':'Provider buttons are prepared for integration; they do not authenticate until the corresponding identity service is configured.'}</p>
+ const audienceRoles={staff:staffRoles,employee:['Employee'],employer:['Employer']};
+ const methods=[
+  {id:'microsoft',name:'Microsoft 365',mark:'▦'},
+  {id:'entra',name:'Microsoft Entra ID',mark:'◈'},
+  {id:'google',name:'Google Workspace',mark:'G'},
+  {id:'github',name:'GitHub',mark:'⌘'},
+  {id:'okta',name:'Okta / SAML',mark:'◎'},
+  {id:'other',name:'Other provider',mark:'•••'}
+ ];
+ const changeAudience=(value)=>{setAudience(value);setRole((audienceRoles[value]||staffRoles)[0]);setMessage('');setPassword('');};
+ const chooseProvider=(id)=>{setAuthMethod(id);setMessage((methods.find(x=>x.id===id)?.name||'Provider')+' sign-in is not connected yet. No credentials were sent.');};
+ const submit=(event)=>{event.preventDefault();setMessage('Real authentication is not connected in this preview. Use “Explore UI preview” to inspect the sample workspace. No credentials were validated or transmitted.');};
+ const enterPreview=()=>{try{if(rememberEmail&&email.trim())localStorage.setItem('intellistack.rememberedEmail',email.trim());else localStorage.removeItem('intellistack.rememberedEmail');}catch{};setPassword('');onLogin(audience==='staff'?role:audience==='employer'?'Employer':'Employee');};
+ return <div className="login-v2" style={{'--login-background':`url(${LoginImage})`}}>
+  <div className="login-v2-scrim" aria-hidden="true"/>
+  <header className="login-v2-header">
+   <Brand/>
+   <div className="login-v2-header-right"><span className="login-v2-live-dot"/><span>GLOBAL OPERATIONS COMMAND CENTER</span><span className="login-v2-header-divider"/><span className="login-v2-secure"><ShieldCheck size={14}/> SECURE ACCESS</span></div>
+  </header>
+  <main className="login-v2-main">
+   <section className="login-v2-story">
+    <div className="login-v2-eyebrow"><span/> INTELLISTACK SYSTEMS · GLOBAL OPERATIONS</div>
+    <h1>One world.<br/><em>One system.</em><br/><strong>One intelligent network.</strong></h1>
+    <p className="login-v2-lead">One connected command environment for your people, support teams, security operations, and business systems.</p>
+    <div className="login-v2-feature-list">
+     <div><span className="login-v2-feature-icon"><ShieldCheck size={17}/></span><span><b>Security by design</b><small>Role-aware access and accountable operations</small></span></div>
+     <div><span className="login-v2-feature-icon"><Globe2 size={17}/></span><span><b>One global view</b><small>People, services, and work in one ecosystem</small></span></div>
+     <div><span className="login-v2-feature-icon"><Activity size={17}/></span><span><b>Connected operations</b><small>Support, response, and visibility in one place</small></span></div>
+    </div>
+    <div className="login-v2-brand-line"><span className="login-v2-brand-line-mark"><Shield size={25}/><b>IS</b></span><span><b>INTELLISTACK SYSTEMS</b><small>MAXIMUS OPTIMUS COMMAND CENTER</small></span></div>
+   </section>
+   <section className="login-v2-card" aria-label="Sign in to IntelliStack">
+    <div className="login-v2-card-head"><div><span className="login-v2-kicker">WELCOME TO YOUR WORKSPACE</span><h2>Sign in to continue</h2><p>Choose your access path to get started.</p></div><div className="login-v2-lock"><LockKeyhole size={19}/></div></div>
+    <div className="login-v2-access-stack">
+     <button type="button" className={'login-v2-access login-v2-access-staff '+(audience==='staff'?'selected':'')} onClick={()=>changeAudience('staff')} aria-pressed={audience==='staff'}>
+      <span className="login-v2-access-icon"><ShieldCheck size={20}/></span><span className="login-v2-access-copy"><b>IntelliStack Staff</b><small>Help Desk · IT · Security · Operations</small></span><span className="login-v2-access-arrow">→</span>
+     </button>
+     <div className="login-v2-business-access">
+      <div className="login-v2-business-heading"><span className="login-v2-business-icon"><Building2 size={18}/></span><span><b>Business & employee access</b><small>Choose the right workspace</small></span></div>
+      <div className="login-v2-audience-switch" role="group" aria-label="Business account type">
+       <button type="button" className={audience==='employer'?'active':''} onClick={()=>changeAudience('employer')} aria-pressed={audience==='employer'}><Building2 size={15}/> Employer</button>
+       <button type="button" className={audience==='employee'?'active':''} onClick={()=>changeAudience('employee')} aria-pressed={audience==='employee'}><Users size={15}/> Employee</button>
+      </div>
+     </div>
+    </div>
+    <form className="login-v2-form" onSubmit={submit} noValidate>
+     <div className="login-v2-form-context"><span className="login-v2-context-mark">{audience==='staff'?<ShieldCheck size={15}/>:audience==='employer'?<Building2 size={15}/>:<Users size={15}/>}</span><span><b>{audience==='staff'?'Staff sign-in':audience==='employer'?'Employer sign-in':'Employee sign-in'}</b><small>{audience==='staff'?'Authorized IntelliStack team members':audience==='employer'?'Organization and employer workspace':'Employee and end-user workspace'}</small></span></div>
+     {audience==='staff'&&<><label className="login-v2-label" htmlFor="login-v2-role">TEAM ROLE</label><div className="login-v2-input"><ShieldCheck size={16}/><select id="login-v2-role" value={role} onChange={e=>{setRole(e.target.value);setMessage('');}}>{staffRoles.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div></>}
+     <label className="login-v2-label" htmlFor="login-v2-email">EMAIL ADDRESS</label>
+     <div className="login-v2-input"><Users size={16}/><input id="login-v2-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={e=>{setEmail(e.target.value);setMessage('');}}/></div>
+     <label className="login-v2-label" htmlFor="login-v2-password">PASSWORD</label>
+     <div className="login-v2-input"><LockKeyhole size={16}/><input id="login-v2-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>{setPassword(e.target.value);setMessage('');}}/><button type="button" className="login-v2-show" onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div>
+     <div className="login-v2-form-options"><label><input type="checkbox" checked={rememberEmail} onChange={e=>setRememberEmail(e.target.checked)}/> Remember email on this device</label><button type="button" onClick={()=>setMessage('Password recovery will be enabled after a real identity provider is connected.')}>Forgot password?</button></div>
+     <button type="submit" className="login-v2-submit">Continue securely <span>→</span></button>
+     {message&&<div className="login-v2-message" role="status"><CircleHelp size={16}/><span>{message}</span></div>}
     </form>
+    <div className="login-v2-connect">
+     <div className="login-v2-connect-heading"><span>CONNECT WITH YOUR BUSINESS TOOLS</span><i/></div>
+     <p>Use your organization’s identity provider when configured.</p>
+     <div className="login-v2-providers">{methods.slice(0,4).map(x=><button type="button" key={x.id} onClick={()=>chooseProvider(x.id)} className={authMethod===x.id?'chosen':''}><span className={'login-v2-provider-mark login-v2-provider-'+x.id}>{x.mark}</span><span>{x.name}</span></button>)}</div>
+     <div className="login-v2-provider-more"><label htmlFor="login-v2-more">More sign-in providers</label><div className="login-v2-input"><Network size={15}/><select id="login-v2-more" value={authMethod} onChange={e=>chooseProvider(e.target.value)}><option value="email">Choose a provider…</option>{methods.slice(4).map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select><ChevronDown size={15}/></div></div>
+    </div>
+    <div className="login-v2-demo"><div><span className="login-v2-demo-dot"/><span><b>Interactive preview</b><small>Sample workspace · no production systems connected</small></span></div><button type="button" onClick={enterPreview}>Explore UI preview <span>↗</span></button></div>
+    <div className="login-v2-trust"><ShieldCheck size={14}/> Secure · Trusted · Compliant <span>•</span> Preview environment</div>
    </section>
   </main>
-  <footer className="login-footer login-refresh-footer"><span>© 2026 IntelliStack Systems</span><span><b>ONE WORLD.</b> ONE INTELLIGENT NETWORK.</span><span>Privacy · Support · Secure access</span></footer>
+  <footer className="login-v2-footer"><div>© 2026 IntelliStack Systems</div><div className="login-v2-footer-slogan">ONE WORLD. <span>ONE SYSTEM.</span> ONE INTELLIGENT NETWORK.</div><nav aria-label="Footer"><a href="#home" onClick={e=>e.preventDefault()}>Home</a><a href="#about" onClick={e=>e.preventDefault()}>About</a><a href="#privacy" onClick={e=>e.preventDefault()}>Privacy</a><a href="#support" onClick={e=>e.preventDefault()}>Support</a></nav></footer>
  </div>;
 }
 function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const content=<><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={18}/></span></div><div className="metric-value">{value}</div><div className={'metric-trend '+(positive?'good':'warn')}>{positive?<ArrowDownRight size={14}/>:<ArrowUpRight size={14}/>} {trend}</div>{onClick&&<span className="metric-drill">Explore details <span>↗</span></span>}</>;return onClick?<button type="button" className="metric-card metric-clickable" onClick={onClick} aria-label={label+': '+value+'. Explore details'}>{content}</button>:<div className="metric-card">{content}</div>}
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
-function Overview({onNavigate,tickets,endUsers,devices}){
+
+const readinessDefaults = [
+ {id:'architecture',area:'Product design & architecture',title:'Architecture, module inventory, and data/API contracts',status:'In progress',priority:'P0',detail:'Source-of-truth architecture, module ownership, tenant boundaries, data classification, and decision records.'},
+ {id:'build-ci',area:'Implementation maturity',title:'Automated build and pull-request CI',status:'Designed',priority:'P0',detail:'CI workflow has been added; run it and verify a successful build before marking complete.'},
+ {id:'auth',area:'Production security & reliability',title:'Real authentication and server-enforced authorization',status:'Not started',priority:'P0',detail:'Remove reliance on client-selected role for real authorization. Enforce tenant and permission checks in API/database.'},
+ {id:'database',area:'Implementation maturity',title:'Durable multi-tenant backend persistence',status:'In progress',priority:'P0',detail:'Schema foundation exists; database deployment, API wiring, tenant isolation, and integration tests still require proof.'},
+ {id:'security-tests',area:'Production security & reliability',title:'RLS, role boundary, and cross-tenant negative tests',status:'Not started',priority:'P0',detail:'Test denied access as well as allowed access in an isolated test environment.'},
+ {id:'audit',area:'Production security & reliability',title:'Security audit events, secret management, and session controls',status:'Not started',priority:'P0',detail:'Secure server-side secrets, credential rotation, session revocation, and redacted logs.'},
+ {id:'connector-framework',area:'Migration & connectors',title:'Reusable connector framework and live connection health',status:'Designed',priority:'P1',detail:'Provider catalog exists in the prototype; live OAuth/API adapters, secure credentials, health checks, and durable sync jobs are not verified.'},
+ {id:'browser-favorites',area:'Migration & connectors',title:'Import browser bookmarks and preserve user favorites',status:'In progress',priority:'P1',detail:'Local HTML/JSON bookmark parsing and preview added. Server-side profile sync, policy, and cross-device migration are not implemented.'},
+ {id:'secure-browser',area:'Production security & reliability',title:'Select and implement a secure browser strategy',status:'In progress',priority:'P1',detail:'Browser Workspace now launches HTTP/HTTPS URLs in a new tab and links to Chrome/Edge product information. This uses the device default browser; enterprise browser management, embedded browsing, and policy enforcement are not implemented.'},
+ {id:'chrome-edge-management',area:'Migration & connectors',title:'Chrome and Edge enterprise management integration',status:'Designed',priority:'P1',detail:'Integration plan documented. Vendor tenant authorization, supported management API adapters, real connection tests, policy state, and desktop/mobile validation remain outstanding.'},
+ {id:'onedrive',area:'Migration & connectors',title:'Microsoft OneDrive migration and backup capability',status:'Designed',priority:'P1',detail:'Admin runbook added. Real drive access, file/metadata/permission mapping, resumable transfer, reconciliation, and separately tested backup/restore are not verified.'},
+ {id:'crowdstrike',area:'Security operations & connectors',title:'CrowdStrike Falcon security integration',status:'Designed',priority:'P1',detail:'Admin runbook added. Real Falcon API authorization, supported detections/inventory, alert deduplication, monitoring, and any response actions require implementation and tests.'},
+ {id:'remote-support',area:'Remote support & operations',title:'Verify and productionize remote user/device support',status:'In progress',priority:'P1',detail:'Current navigation describes a simulated session. Verify existing code, then integrate a real provider/agent, consent, tenant authorization, session revocation, and audit logging.'},
+ {id:'sharepoint',area:'Migration & connectors',title:'Microsoft SharePoint connector',status:'Designed',priority:'P1',detail:'Admin documentation added. Real tenant authorization, site/library scopes, ACL policy, file sync, and reconciliation still need implementation and tests.'},
+ {id:'migration',area:'Migration & connectors',title:'Migration Center with dry run, mapping, and reconciliation',status:'Designed',priority:'P1',detail:'Runbook and engineering specification added; durable job execution and a supported source adapter remain to be implemented.'},
+ {id:'csv-import',area:'Migration & connectors',title:'Safe CSV users/departments/assets import',status:'Not started',priority:'P1',detail:'Start with validation, duplicate detection, dry run, approval, staged batches, and record-level results.'},
+ {id:'knowledge',area:'Product design & architecture',title:'Admin and customer migration knowledge base',status:'Implemented',priority:'P1',detail:'Starter articles added for migration, connector operations, SharePoint, and recovery. Review, versioning, and organization-specific publication controls remain.'},
+ {id:'e2e',area:'Implementation maturity',title:'End-to-end tests for core workflows',status:'Not started',priority:'P1',detail:'Test tickets, user/access administration, connectors, migration, and critical error paths.'},
+ {id:'observability',area:'Production security & reliability',title:'Monitoring, SLOs, alerts, backups, and restore drills',status:'Not started',priority:'P1',detail:'Add operational telemetry, runbooks, backup/restore proof, incident ownership, and disaster recovery tests.'},
+ {id:'pilot',area:'Production security & reliability',title:'Customer pilot and independent security review',status:'Not started',priority:'P2',detail:'Use explicit acceptance criteria, load/recovery testing, penetration testing, and a real customer-approved pilot.'}
+];
+function ReadinessTracker(){
+ const [items,setItems]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.readinessTracker')||'null');return Array.isArray(saved)?[...readinessDefaults.map(d=>({...d,...saved.find(x=>x.id===d.id)})),...saved.filter(x=>!readinessDefaults.some(d=>d.id===x.id))]:readinessDefaults}catch{return readinessDefaults}});
+ const [filter,setFilter]=useState('All');
+ const [expanded,setExpanded]=useState('Migration & connectors');
+ useEffect(()=>{try{localStorage.setItem('intellistack.readinessTracker',JSON.stringify(items))}catch{}},[items]);
+ const statuses=['Not started','Designed','In progress','Implemented','Tested','Connected','Verified'];
+ const groups=[...new Set(items.map(x=>x.area))];
+ const done=items.filter(x=>['Tested','Connected','Verified'].includes(x.status)).length;
+ const move=(id,direction)=>setItems(old=>{const index=old.findIndex(x=>x.id===id);const next=index+direction;if(index<0||next<0||next>=old.length)return old;const copy=[...old];[copy[index],copy[next]]=[copy[next],copy[index]];return copy});
+ const update=(id,patch)=>setItems(old=>old.map(x=>x.id===id?{...x,...patch}:x));
+ const reset=()=>{setItems(readinessDefaults);try{localStorage.removeItem('intellistack.readinessTracker')}catch{}};
+ return <section className="panel readiness-tracker"><div className="panel-head"><div><h3>Enterprise Readiness Tracker</h3><p>Your ordered checklist for what is designed, in progress, implemented, tested, and connected.</p></div><span className="readiness-count">{done}/{items.length} verified states</span></div>
+ <div className="readiness-warning"><ShieldCheck size={16}/><span><b>Super Admin workspace · prototype storage.</b> Checklist edits save in this browser only. The current demo login is not real identity security, so this is not yet a secure private record or shared team tracker.</span></div>
+ <div className="readiness-summary"><div><b>{items.filter(x=>x.status==='Not started').length}</b><span>Not started</span></div><div><b>{items.filter(x=>x.status==='Designed').length}</b><span>Designed</span></div><div><b>{items.filter(x=>x.status==='In progress').length}</b><span>In progress</span></div><div><b>{items.filter(x=>['Implemented','Tested','Connected','Verified'].includes(x.status)).length}</b><span>Built or verified</span></div></div>
+ <div className="readiness-controls"><label>Show <select value={filter} onChange={e=>setFilter(e.target.value)}><option>All</option>{statuses.map(st=><option key={st}>{st}</option>)}</select></label><button className="secondary-btn" onClick={reset}>Reset checklist</button></div>
+ <div className="readiness-groups">{groups.map(group=>{const rows=items.filter(x=>x.area===group&&(filter==='All'||x.status===filter));if(!rows.length)return null;return <div className="readiness-group" key={group}><button className="readiness-group-toggle" onClick={()=>setExpanded(expanded===group?'':group)} aria-expanded={expanded===group}><span><b>{group}</b><small>{rows.length} visible items · {items.filter(x=>x.area===group&&['Tested','Connected','Verified'].includes(x.status)).length} verified</small></span><ChevronDown size={16} className={expanded===group?'expanded':''}/></button>{expanded===group&&rows.map(item=><div className="readiness-item" key={item.id}><div className="readiness-item-main"><div><span className={'readiness-priority '+item.priority.toLowerCase()}>{item.priority}</span><b>{item.title}</b><p>{item.detail}</p></div><label className="readiness-status">Status<select value={item.status} onChange={e=>update(item.id,{status:e.target.value})}>{statuses.map(st=><option key={st}>{st}</option>)}</select></label></div><div className="readiness-item-actions"><button onClick={()=>move(item.id,-1)} aria-label={'Move '+item.title+' up'}>↑ Move up</button><button onClick={()=>move(item.id,1)} aria-label={'Move '+item.title+' down'}>↓ Move down</button></div></div>)}</div>})}</div>
+ <p className="readiness-footnote">Rule: “Connected” means a real connection test succeeded; “Tested” means documented tests passed; “Verified” requires operational evidence. Do not mark a feature complete based on a mock screen or a migration file alone.</p>
+ </section>;
+}
+
+
+function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}){
+ const [address,setAddress]=useState('https://www.google.com');
+ const [launchMessage,setLaunchMessage]=useState('');
+ const [embeddedUrl,setEmbeddedUrl]=useState('');
+ const launchWebsite=()=>{let target;try{target=new URL(address.trim());}catch{setLaunchMessage('Enter a complete website address, such as https://www.example.com.');return;}if(!['http:','https:'].includes(target.protocol)){setLaunchMessage('For safety, only HTTP and HTTPS website addresses are supported.');return;}try{window.open(target.href,'_blank','noopener,noreferrer');setLaunchMessage('Requested '+target.href+' in a new browser tab. Your browser may block pop-ups; if nothing opens, allow pop-ups for IntelliStack. The browser used is controlled by your device and browser settings.');}catch{setLaunchMessage('The browser could not open this link. Try opening the website directly in your browser.');}};
+ const [fileName,setFileName]=useState('');
+ const [bookmarks,setBookmarks]=useState([]);
+ const [selected,setSelected]=useState({});
+ const [message,setMessage]=useState('');
+ const [error,setError]=useState('');
+ const [source,setSource]=useState('Browser bookmark export');
+ const safeDecode=(value)=>value.replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+ const parseBookmarks=(raw,name)=>{
+  const found=[];
+  try{
+   const parsed=JSON.parse(raw);
+   const walk=(node,folder='')=>{if(!node)return;if(Array.isArray(node)){node.forEach(n=>walk(n,folder));return;}const nextFolder=node.type==='folder'?(folder?folder+' / ':'')+(node.name||'Folder'):folder;if(node.type==='url'&&node.url)found.push({title:node.name||node.url,url:node.url,folder});if(node.url&&node.name&&!node.type)found.push({title:node.name,url:node.url,folder});if(node.children)walk(node.children,nextFolder);};
+   walk(parsed.roots||parsed); 
+  }catch{
+   const anchors=raw.match(/<A\b[^>]*>.*?<\/A>/gis)||[];
+   for(const anchor of anchors){const href=anchor.match(/HREF\s*=\s*["']([^"']+)["']/i)?.[1];const title=safeDecode(anchor.replace(/<[^>]+>/g,'').trim());if(href&&title)found.push({title,url:safeDecode(href),folder:''});}
+  }
+  const unique=new Map();
+  found.forEach((b)=>{try{const u=new URL(b.url);if(!['http:','https:'].includes(u.protocol))return;const key=u.href;if(!unique.has(key))unique.set(key,{...b,url:u.href,id:key});}catch{}});
+  return [...unique.values()];
+ };
+ const importFile=async(file)=>{
+  setError('');setMessage('');setBookmarks([]);setSelected({});if(!file)return;
+  if(file.size>5*1024*1024){setError('Please choose a bookmark export smaller than 5 MB.');return;}
+  try{const raw=await file.text();const parsed=parseBookmarks(raw,file.name);if(!parsed.length){setError('No valid HTTP/HTTPS bookmarks were found. Export bookmarks as HTML or a supported browser bookmarks JSON file, then try again.');return;}setFileName(file.name);setBookmarks(parsed);setSelected(Object.fromEntries(parsed.map(b=>[b.id,true])));setMessage('Parsed locally. Nothing has been imported yet. Review the selection below.');}
+  catch{setError('The file could not be read. Please export bookmarks again and retry.');}
+ };
+ const chosen=bookmarks.filter(b=>selected[b.id]);
+ const importSelected=()=>{
+  const target=new Set(favorites);
+  chosen.forEach(b=>{const found=screenDefs.find(s=>s.label.toLowerCase()===b.title.toLowerCase()||s.id===b.title.toLowerCase());if(found)target.add(found.id);});
+  setFavorites([...target]);
+  const unmatched=chosen.filter(b=>!screenDefs.some(s=>s.label.toLowerCase()===b.title.toLowerCase()||s.id===b.title.toLowerCase()));
+  setMessage(chosen.length+' bookmarks reviewed. '+(chosen.length-unmatched.length)+' matched existing IntelliStack pages and were added to Favorites; '+unmatched.length+' external bookmarks remain available to export or map in a future browser-bookmark workspace.');
+ };
+ const exportSelected=()=>{const html='<!DOCTYPE NETSCAPE-Bookmark-file-1><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"><TITLE>IntelliStack Browser Bookmarks</TITLE><H1>Bookmarks</H1><DL><p>'+chosen.map(b=>'<DT><A HREF="'+b.url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+b.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</A>').join('')+'</DL><p>';const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const anchor=document.createElement('a');anchor.href=url;anchor.download='intellistack-bookmarks.html';anchor.click();URL.revokeObjectURL(url);setMessage('Exported '+chosen.length+' selected bookmarks as an HTML bookmark file.');};
+ return <div className="workspace-stack"><Panel title="Browser Workspace" subtitle="A central entry point for Chrome, Edge, and web access across desktop and mobile.">
+  <div className="browser-launch-workspace"><div className="browser-launch-heading"><div><span className="eyebrow">WEB ACCESS</span><h3>Open a website</h3><p>Use this workspace to launch a real website in a new browser tab on this device.</p></div><Globe2 size={28}/></div><form className="browser-address-form" onSubmit={e=>{e.preventDefault();launchWebsite();}}><label htmlFor="browser-address">Website address</label><div><input id="browser-address" type="url" inputMode="url" autoComplete="url" placeholder="https://www.example.com" value={address} onChange={e=>setAddress(e.target.value)} required/><button className="primary-btn" type="submit"><ArrowUpRight size={16}/> Open website ↗</button><button className="secondary-btn" type="button" onClick={()=>{let target;try{target=new URL(address.trim());}catch{setLaunchMessage('Enter a complete website address, such as https://www.example.com.');return;}if(!['http:','https:'].includes(target.protocol)){setLaunchMessage('Only HTTP and HTTPS website addresses are supported.');return;}setEmbeddedUrl(target.href);setLaunchMessage('Trying to display the website below. Some sites block embedding; use Open website if it does not load.');}}>Preview in workspace</button></div></form>{launchMessage&&<p className="browser-message">{launchMessage}</p>}{embeddedUrl&&<div style={{marginTop:12,border:'1px solid var(--border, #cbd5e1)',borderRadius:12,overflow:'hidden'}}><div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:8,padding:10,flexWrap:'wrap'}}><b style={{overflowWrap:'anywhere'}}>{embeddedUrl}</b><button className="secondary-btn" type="button" onClick={()=>window.open(embeddedUrl,'_blank','noopener,noreferrer')}>Open separately ↗</button><button className="secondary-btn" type="button" onClick={()=>setEmbeddedUrl('')}>Close preview</button></div><iframe title="Website preview" src={embeddedUrl} referrerPolicy="no-referrer" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style={{display:'block',width:'100%',height:'min(65vh,700px)',minHeight:300,border:0,background:'#fff'}} /></div>}<div className="browser-provider-actions"><button className="secondary-btn" onClick={()=>window.open('https://www.google.com/chrome/','_blank','noopener,noreferrer')}><Globe2 size={16}/> Chrome download / information</button><button className="secondary-btn" onClick={()=>window.open('https://www.microsoft.com/edge','_blank','noopener,noreferrer')}><Globe2 size={16}/> Edge download / information</button></div><p className="privacy-note">Important: this opens a normal browser tab using the device’s browser/default-link settings. A website cannot reliably force the installed Chrome or Edge application to launch, embed the full browser engine, or confirm which browser opened. On mobile, behavior depends on the OS and installed apps.</p></div>
+  <div className="browser-security-banner"><div className="browser-security-icon"><Globe2 size={24}/></div><div><h3>One governed workspace for browser access</h3><p>Import bookmarks from common browser exports, organize IntelliStack favorites, and define the security controls required for managed browsing. The website launcher is functional, but this screen does not embed Chrome/Edge or enforce endpoint browser policies.</p></div></div>
+  <div className="browser-feature-grid"><article><ShieldCheck size={20}/><b>Secure browsing</b><p>Plan identity, phishing protection, managed extensions, downloads, data-loss controls, and audit policies.</p></article><article><Bookmark size={20}/><b>Bookmark portability</b><p>Parse exported bookmarks locally, preview HTTP/HTTPS entries, and select what to keep.</p></article><article><LockKeyhole size={20}/><b>Policy-managed access</b><p>Connect a supported enterprise browser or endpoint policy system rather than relying on a web-page toggle.</p></article></div>
+  <div className="browser-import-section"><h3>Import browser favorites</h3><p>Export bookmarks from Chrome, Edge, Firefox, or Safari, then select the exported HTML file. JSON bookmark files are also accepted where the structure is supported.</p><label className="browser-file-picker"> <Upload size={17}/> Choose bookmark export <input type="file" accept=".html,.htm,.json,text/html,application/json" onChange={e=>importFile(e.target.files?.[0])}/></label>{fileName&&<p className="privacy-note">Selected file: {fileName}</p>}
+   {error&&<div className="browser-message error">{error}</div>}{message&&<div className="browser-message">{message}</div>}
+   {bookmarks.length>0&&<><div className="browser-import-toolbar"><b>{chosen.length} of {bookmarks.length} selected</b><button className="secondary-btn" onClick={()=>setSelected(Object.fromEntries(bookmarks.map(b=>[b.id,true])))}>Select all</button><button className="secondary-btn" onClick={()=>setSelected({})}>Clear selection</button></div><div className="browser-bookmark-list">{bookmarks.map(b=><label key={b.id} className="browser-bookmark"><input type="checkbox" checked={!!selected[b.id]} onChange={e=>setSelected(old=>({...old,[b.id]:e.target.checked}))}/><span><b>{b.title}</b><small>{b.url}</small></span></label>)}</div><div className="browser-import-actions"><button className="primary-btn" onClick={importSelected} disabled={!chosen.length}>Add matching IntelliStack pages to Favorites</button><button className="secondary-btn" onClick={exportSelected} disabled={!chosen.length}>Export selected bookmarks</button></div><p className="privacy-note">For safety, this prototype imports bookmark URLs only. It does not import passwords, cookies, browsing history, extensions, or active browser sessions. External URLs are not automatically opened.</p></>}
+  </div>
+ </Panel>
+ <Panel title="Secure browser implementation checklist" subtitle="Requirements before this becomes a production secure-browser capability">
+  <div className="secure-browser-requirements"><div><b>Identity and access</b><span>SSO/MFA, conditional access, session controls, managed-device policy.</span></div><div><b>Threat protection</b><span>Phishing/malware reputation, safe download controls, isolation strategy, extension allowlist.</span></div><div><b>Data protection</b><span>Clipboard/download/upload restrictions, DLP integration, encryption, retention, and privacy disclosures.</span></div><div><b>Administration</b><span>Policy assignment by organization/group/device, version rollout, rollback, health monitoring, and audit trail.</span></div><div><b>Integration decision</b><span>Choose whether to manage an existing enterprise browser, integrate a supported secure-browser vendor, or build a separately maintained browser product. A secure browser engine is not safely implemented as a normal React page.</span></div></div>
+  <p className="privacy-note">Recommended starting point: managed browser policies or a supported enterprise secure-browser integration. A custom browser based on a maintained Chromium distribution is a separate engineering and security program.</p>
+ </Panel></div>;
+}
+
+function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
@@ -115,6 +388,34 @@ function Overview({onNavigate,tickets,endUsers,devices}){
    <button className="secondary-btn" onClick={()=>onNavigate('integrations')}><Network size={16}/> Add integration</button>
    <button className="secondary-btn" onClick={()=>onNavigate('security')}><ShieldCheck size={16}/> Security settings</button>
   </div></div>
+  <section className="panel dashboard-launchpad"><div className="panel-head"><div><h3>Browser Workspace</h3><p>One central entry point for Chrome, Edge, and website access on desktop and mobile.</p></div><button className="secondary-btn" onClick={()=>onNavigate('secure-browser')}>Open workspace ↗</button></div><div className="launchpad-grid"><button className="launchpad-tile" onClick={()=>onNavigate('secure-browser')}><b>Browser Workspace</b><small>Open sites, preview compatible pages, and manage favorites</small></button><button className="launchpad-tile" onClick={()=>window.open('https://www.google.com/','_blank','noopener,noreferrer')}><b>Launch web search ↗</b><small>Opens in the device’s current/default browser</small></button></div></section>
+  <section className="panel dashboard-launchpad"><div className="panel-head"><div><h3>IntelliSphere Stack & Communications</h3><p>Your business applications, chat, email, and everyday workspaces in one place.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Customize</button></div><div className="launchpad-grid">
+   {[
+    ['IntelliStaff','intellistaff','Workforce'],
+    ['IntelliWork','intelliwork','Tasks & projects'],
+    ['IntelliHire','intellihire','Recruiting'],
+    ['IntelliPay','intellipay','Payroll & payments'],
+    ['IntelliTax','intellitax','Tax workspace'],
+    ['IntelliWord','intelliword','Documents'],
+    ['IntelliDrive','intellidrive','Files & sharing'],
+    ['IntelliForms','intelliforms','Forms'],
+    ['IntelliSheets','intelliexcel','Spreadsheets'],
+    ['IntelliSlides','intellislides','Presentations'],
+    ['IntelliStudio','intellistudio','App & workspace studio'],
+    ['IntelliChat','intellichat','Enterprise messaging'],
+    ['Email Center','email','Inbox & correspondence'],
+    ['Global Calendar','calendar','Schedules'],
+    ['Meetings & Teams','meetings','Meetings & teams'],
+    ['Knowledge Base','knowledge','Help & runbooks'],
+    ['IntelliStack ID','intellistackid','Identity & access'],
+    ['IntelliLink','intellilink','Integrations'],
+    ['IntelliVision','intellivision','Enterprise visibility'],
+    ['Browser Workspace','secure-browser','Open websites · Chrome / Edge'],
+    ['Service Desk','servicedesk','Support center']
+   ].map(([label,id,description])=><button className="launchpad-tile" key={id} onClick={()=>onNavigate(id)}><b>{label}</b><small>{description}</small></button>)}
+  </div></section>
+  {quickActions.length>0&&<section className="panel dashboard-quick-actions"><div className="panel-head"><div><h3>My Quick Actions</h3><p>Your personal shortcuts.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Edit actions</button></div><div className="quick-actions-row">{quickActions.map(id=>{const item=screenDefs.find(x=>x.id===id);return item?<button key={id} onClick={()=>onNavigate(id)}>{item.label} →</button>:null})}</div></section>}
+  {currentRole==='Super Admin'&&<ReadinessTracker/>}
   <div className="metrics-grid">
    <Metric icon={Users} label="Active lab users" value={labUsers.length} trend="Manage users and roles" onClick={()=>onNavigate('users')}/>
    <Metric icon={Ticket} label="Open tickets" value={openTickets} trend="Review and update tickets" onClick={()=>onNavigate('tickets')}/>
@@ -189,68 +490,161 @@ function UsersPage(){
  </form>}</div>}
  </Panel>
  <div className="content-grid two-col" id="group-management"><Panel title="Groups and memberships" subtitle="Create reusable groups, then assign users to them"><form className="table-tools" onSubmit={addGroup}><div className="search-box"><Users size={16}/><input value={groupDraft} onChange={e=>setGroupDraft(e.target.value)} placeholder="New group name…" aria-label="New group name"/></div><button className="primary-btn" type="submit"><Plus size={15}/> Add group</button></form><div className="builder-registry">{groups.map(g=><div className="builder-item" key={g}><div className="builder-item-icon"><Users size={17}/></div><div className="builder-item-main"><div className="builder-item-title"><b>{g}</b><span className="status-pill">{records.filter(u=>(u.groups||[]).includes(g)).length} members</span></div><p>Group membership controls can be assigned from each user's Edit account panel.</p></div></div>)}</div></Panel>
- <Panel title="Role permissions" subtitle="Review elevated access before assigning roles">{roles.map((r,i)=><div className="permission-row" key={r}><span className={'permission-icon p'+i}><ShieldCheck size={17}/></span><div><b>{r}</b><p>{['Full platform administration and settings','Service desk, knowledge, limited admin','Infrastructure, integrations, operations','Audit, security, policy, reporting'][i]}</p></div><span className="permission-count">{[12,8,10,9][i]} permissions</span></div>)}</Panel></div>
+ <Panel title="Role catalog" subtitle="System roles, specialist roles, and workforce access profiles. Job title and department do not grant permissions by themselves.">{roles.map((r,i)=><div className="permission-row" key={r}><span className={'permission-icon p'+(i%6)}><ShieldCheck size={17}/></span><div><b>{r}</b><p>{roleDescriptions[r]}</p></div><span className="permission-count">{i===0?'Privileged':i<4?'Core role':i<14?'Specialist':'Access profile'}</span></div>)}</Panel></div>
  {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
  <p className="privacy-note">Prototype limitation: these account, group, and role changes are local to this browser. Production identity and policy administration must use authenticated backend APIs with server-enforced permissions and audit logging.</p>
  </>;
 }
-function IntegrationsPage(){
- const [connectors,setConnectors]=useState([]);
+const connectorCatalog = [
+ {category:'Core platform & cloud',providers:['Supabase','Vercel','GitHub','GitLab','Bitbucket','Cloudflare','AWS','Microsoft Azure','Google Cloud Platform','DigitalOcean','Netlify','Render','Railway','Fly.io','Docker Hub','Kubernetes','Terraform Cloud']},
+ {category:'Identity & access',providers:['Microsoft Entra ID (Azure Active Directory)','On-premises Active Directory (AD DS)','Microsoft Entra Connect Sync','Microsoft Entra Cloud Sync','Microsoft 365','Google Workspace','Okta','Auth0','Ping Identity','OneLogin','Keycloak','Duo Security','JumpCloud','CyberArk','1Password','Bitwarden','LastPass','Keeper Security']},
+ {category:'IT service management',providers:['ServiceNow','Jira Service Management','Jira Software','Confluence','Freshservice','Freshdesk','Zendesk','ManageEngine ServiceDesk Plus','BMC Helix','Ivanti Neurons','TOPdesk','HaloITSM','Linear','ClickUp','Asana','Monday.com']},
+ {category:'Security & threat intelligence',providers:['CrowdStrike Falcon','Microsoft Defender','Microsoft Sentinel','Splunk','Elastic Security','Palo Alto Networks Cortex XDR','Wiz','Snyk','Tenable','Qualys','Rapid7 InsightVM','Recorded Future','VirusTotal','AbuseIPDB','Shodan','GreyNoise','Cloudflare Zero Trust','Proofpoint','Mimecast','KnowBe4']},
+ {category:'Monitoring & infrastructure',providers:['Datadog','New Relic','Dynatrace','Grafana Cloud','Prometheus','PagerDuty','Opsgenie','Better Stack','Sentry','Honeycomb','SolarWinds','Zabbix','PRTG Network Monitor','Nagios','UptimeRobot','Statuspage','Auvik','LogicMonitor']},
+ {category:'Endpoint & device management',providers:['Microsoft Intune','Microsoft Configuration Manager','Jamf Pro','Kandji','Mosyle','NinjaOne','N-able','ConnectWise Automate','Atera','Action1','Tanium','Lansweeper','FleetDM','ManageEngine Endpoint Central','Google Admin Console']},
+ {category:'Communication & collaboration',providers:['Microsoft Teams','Microsoft Outlook (Exchange Online)','Slack','Zoom','Google Meet','Discord','Webex','Twilio','SendGrid','Mailchimp','Intercom','Pendo','Miro','Figma','Notion','Airtable']},
+ {category:'Data, analytics & storage',providers:['PostgreSQL','MySQL','MongoDB Atlas','Redis Cloud','Snowflake','Databricks','BigQuery','Amazon Redshift','Power BI','Tableau','Looker','Metabase','Supabase Storage','Amazon S3','Azure Blob Storage','Google Cloud Storage','OneDrive','SharePoint','Google Drive','Dropbox','Box']},
+ {category:'CRM, HR & finance',providers:['Salesforce','HubSpot','Dynamics 365','Zoho CRM','Pipedrive','Workday','BambooHR','Rippling','Gusto','ADP','Paychex','QuickBooks Online','Xero','Stripe','Chargebee','SAP','Oracle NetSuite','Sage Intacct']},
+ {category:'Automation & developer tools',providers:['Zapier','Make','n8n','Workato','Power Automate','GitHub Actions','Jenkins','CircleCI','Buildkite','LaunchDarkly','PostHog','Segment','Algolia','Elastic Cloud','OpenAI API','Anthropic API','Hugging Face','Replicate']}
+];
+const connectorDescriptions = {
+ 'Supabase':'Database, authentication, storage, and edge functions for IntelliStack.',
+ 'Vercel':'Deployments, projects, domains, and runtime visibility.',
+ 'GitHub':'Repositories, pull requests, issues, and build workflows.',
+ 'Microsoft Entra ID (Azure Active Directory)':'Microsoft Entra ID, formerly Azure Active Directory: cloud identity, SSO, and directory integration.',
+ 'On-premises Active Directory (AD DS)':'On-premises Windows domain directory, users, groups, computers, and Group Policy; requires a secure network-side connector or agent.',
+ 'Microsoft Entra Connect Sync':'Hybrid identity synchronization between on-premises Active Directory and Microsoft Entra ID; requires tenant-side setup.',
+ 'Microsoft Entra Cloud Sync':'Cloud-managed hybrid identity synchronization for supported on-premises Active Directory scenarios.',
+ 'Microsoft Teams':'Team chat, channels, meetings, and collaboration using Microsoft Graph / organizational authorization.',
+ 'Microsoft Outlook (Exchange Online)':'Microsoft 365 email and calendar integration through Exchange Online and Microsoft Graph authorization.',
+ 'Microsoft 365':'Microsoft collaboration and productivity services.',
+ 'Google Workspace':'Google identity, directory, mail, and collaboration.',
+ 'ServiceNow':'IT service management and incident/ticket workflows.',
+ 'Jira Service Management':'Service requests, incidents, and service queues.',
+ 'Cloudflare':'DNS, edge security, and network configuration.',
+ 'AWS':'Cloud resources, monitoring, and deployment services.'
+};
+function connectorAuth(provider){
+ if(/OpenAI API|Anthropic API|Hugging Face|Replicate/.test(provider)) return 'API key (server-side secret required)';
+ if(/PostgreSQL|MySQL|MongoDB|Redis|Snowflake|Databricks|BigQuery|Redshift/.test(provider)) return 'Database credentials (server-side only)';
+ if(/Webhook|Twilio|SendGrid|Stripe|QuickBooks|Xero/.test(provider)) return 'OAuth 2.0 or scoped API token';
+ if(/Microsoft|Google Workspace|Google Cloud|GitHub|GitLab|Bitbucket|Slack|Zoom|Salesforce|HubSpot|Notion|Figma|Dropbox|Box|OneDrive|SharePoint|Asana|ClickUp|Monday|Linear|Airtable|Vercel|Supabase|Cloudflare|Okta|Auth0|Atlassian|ServiceNow/.test(provider)) return 'OAuth 2.0 / provider authorization';
+ return 'Provider-specific secure authorization';
+}
+
+const calendarSeedEvents=()=>{
+ const now=new Date();
+ const dayOffset=(n,h=10)=>{const d=new Date(now);d.setDate(d.getDate()+n);d.setHours(h,0,0,0);return d.toISOString();};
+ return [
+  {id:'CAL-001',title:'Service desk SLA review',start:dayOffset(0,11),end:dayOffset(0,12),category:'Service Desk',source:'IntelliStack',notes:'Review open incidents and approaching response targets.'},
+  {id:'CAL-002',title:'Operations stand-up',start:dayOffset(1,9),end:dayOffset(1,9),category:'Meeting',source:'IntelliStack',notes:'Daily cross-functional operations check-in.'},
+  {id:'CAL-003',title:'Security controls review',start:dayOffset(2,14),end:dayOffset(2,15),category:'Security',source:'IntelliStack',notes:'Review access, policy status, and audit follow-ups.'},
+  {id:'CAL-004',title:'Infrastructure maintenance window',start:dayOffset(4,20),end:dayOffset(4,22),category:'Maintenance',source:'IntelliStack',notes:'Sample schedule only; confirm approvals before operational use.'}
+ ];
+};
+function CalendarPage(){
+ const [events,setEvents]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.globalCalendar')||'null');return Array.isArray(saved)?saved:calendarSeedEvents()}catch{return calendarSeedEvents()}});
+ const [view,setView]=useState('Month');
+ const [cursor,setCursor]=useState(()=>{const d=new Date();d.setDate(1);d.setHours(0,0,0,0);return d;});
+ const [selectedDay,setSelectedDay]=useState(()=>{const d=new Date();d.setHours(0,0,0,0);return d;});
  const [showForm,setShowForm]=useState(false);
- const [name,setName]=useState('');
- const [provider,setProvider]=useState('REST API');
- const [endpoint,setEndpoint]=useState('');
- const [auth,setAuth]=useState('No authentication');
- const [testing,setTesting]=useState(null);
  const [notice,setNotice]=useState('');
- const [events,setEvents]=useState([]);
- function addConnector(e){
-  e.preventDefault();
-  let parsed;
-  try{parsed=new URL(endpoint.trim());if(!['https:','http:'].includes(parsed.protocol))throw new Error('protocol');}
-  catch{setNotice('Enter a valid HTTP or HTTPS endpoint. Use HTTPS for real services.');return;}
-  const item={id:Date.now(),name:name.trim(),provider,endpoint:parsed.href,auth,status:'Not tested',lastCheck:'Never'};
-  setConnectors(prev=>[item,...prev]);
-  setEvents(prev=>[{id:item.id,time:new Date().toLocaleString(),name:item.name,result:'Configuration saved',detail:'Saved in this page session only. No sync has run.'},...prev]);
-  setName('');setEndpoint('');setProvider('REST API');setAuth('No authentication');setShowForm(false);
-  setNotice('Endpoint added to this browser session. Select Test endpoint to check reachability.');
- }
- async function testConnector(item){
-  setTesting(item.id);setNotice('');
-  let status='Unreachable',detail='';
-  try{
-   const response=await fetch(item.endpoint,{method:'GET',mode:'cors',headers:{Accept:'application/json'}});
-   status=response.ok?'Reachable':'Endpoint responded';
-   detail='HTTP '+response.status+' '+response.statusText+'. Reachability only; no authenticated sync was performed.';
-  }catch(error){detail='No readable browser response. The endpoint may require authentication, be offline, or block cross-origin requests (CORS). A server-side connector is needed for protected APIs.';}
-  const time=new Date().toLocaleString();
-  setConnectors(prev=>prev.map(c=>c.id===item.id?{...c,status,lastCheck:time}:c));
-  setEvents(prev=>[{id:Date.now(),time,name:item.name,result:status,detail},...prev]);
-  setTesting(null);setNotice(item.name+': '+status+'. '+detail);
- }
- function removeConnector(id){
-  const item=connectors.find(c=>c.id===id);
-  setConnectors(prev=>prev.filter(c=>c.id!==id));
-  setEvents(prev=>[{id:Date.now(),time:new Date().toLocaleString(),name:item?.name||'Connector',result:'Removed',detail:'Removed from this browser session.'},...prev]);
- }
- return <>
-  <div className="page-action-row"><div><h2>Your connections</h2><p>Configure endpoints you own. No sample connector records are loaded.</p></div><button className="primary-btn" onClick={()=>setShowForm(v=>!v)}><Plus size={16}/>{showForm?'Cancel':'Add connector'}</button></div>
-  {notice&&<div className="inline-success"><Activity size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
-  {showForm&&<Panel title="Add an API endpoint" subtitle="Register an endpoint and test browser-level reachability."><form className="connector-form" onSubmit={addConnector}>
-   <div className="connector-fields">
-    <label>Connection name<input required minLength={2} placeholder="e.g. My test API" value={name} onChange={e=>setName(e.target.value)}/></label>
-    <label>Provider type<select value={provider} onChange={e=>setProvider(e.target.value)}><option>REST API</option><option>Microsoft Graph</option><option>ServiceNow</option><option>Jira Service Management</option><option>Custom webhook</option><option>Other API</option></select></label>
-    <label className="connector-wide">Health endpoint or API base URL<input required type="url" placeholder="https://api.example.com/health" value={endpoint} onChange={e=>setEndpoint(e.target.value)}/></label>
-    <label>Authentication plan<select value={auth} onChange={e=>setAuth(e.target.value)}><option>No authentication</option><option>OAuth 2.0 — backend required</option><option>API key — backend required</option><option>Bearer token — backend required</option></select></label>
-   </div>
-   <div className="connector-security-note"><LockKeyhole size={17}/><span><b>Protect your credentials.</b> Do not enter API keys or passwords here. This static website has no secure backend; authentication selections are planning notes only. A backend connector service must hold secrets and perform protected API calls.</span></div>
-   <div className="connector-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><Plus size={15}/> Save endpoint</button></div>
+ const [draft,setDraft]=useState(()=>{const start=new Date();start.setMinutes(0,0,0);start.setHours(start.getHours()+1);const end=new Date(start);end.setHours(end.getHours()+1);return {title:'',date:start.toISOString().slice(0,10),time:start.toTimeString().slice(0,5),endTime:end.toTimeString().slice(0,5),category:'Meeting',source:'IntelliStack',notes:''};});
+ const persist=(next)=>{setEvents(next);try{localStorage.setItem('intellistack.globalCalendar',JSON.stringify(next));}catch{}};
+ const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+ const fmt=(value,opts={month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})=>new Date(value).toLocaleString(undefined,opts);
+ const sorted=[...events].sort((a,b)=>new Date(a.start)-new Date(b.start));
+ const selectedEvents=sorted.filter(e=>sameDay(new Date(e.start),selectedDay));
+ const monthStart=new Date(cursor.getFullYear(),cursor.getMonth(),1);
+ const gridStart=new Date(monthStart);gridStart.setDate(1-monthStart.getDay());
+ const days=Array.from({length:42},(_,i)=>{const d=new Date(gridStart);d.setDate(gridStart.getDate()+i);return d;});
+ const move=(step)=>{const next=new Date(cursor);if(view==='Month')next.setMonth(next.getMonth()+step);else next.setDate(next.getDate()+step*(view==='Week'?7:1));setCursor(next);setSelectedDay(new Date(next.getFullYear(),next.getMonth(),next.getDate()));};
+ const submit=(e)=>{e.preventDefault();if(!draft.title.trim())return;const start=new Date(draft.date+'T'+draft.time);const end=new Date(draft.date+'T'+draft.endTime);if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<start){setNotice('Check the event date and time range.');return;}const item={id:'CAL-'+Date.now(),title:draft.title.trim(),start:start.toISOString(),end:end.toISOString(),category:draft.category,source:draft.source,notes:draft.notes.trim()};persist([...events,item]);setSelectedDay(new Date(start.getFullYear(),start.getMonth(),start.getDate()));setCursor(new Date(start.getFullYear(),start.getMonth(),1));setShowForm(false);setNotice('Event added to the shared calendar on this device.');};
+ const remove=(id)=>{persist(events.filter(e=>e.id!==id));setNotice('Event removed from this browser calendar.');};
+ const openNew=()=>{const d=new Date(selectedDay);d.setHours(10,0,0,0);const end=new Date(d);end.setHours(11);setDraft({title:'',date:d.toISOString().slice(0,10),time:'10:00',endTime:'11:00',category:'Meeting',source:'IntelliStack',notes:''});setShowForm(true);};
+ return <div className="calendar-page">
+  <div className="calendar-intro"><div><div className="calendar-eyebrow"><CalendarDays size={15}/> SHARED SCHEDULING</div><h2>Global Calendar</h2><p>One calendar experience for meetings, tickets, maintenance, security reviews, and War Room coverage.</p></div><button className="primary-btn" onClick={openNew}><Plus size={16}/> New event</button></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="calendar-connection-strip"><div className="calendar-connection-icon"><CalendarDays size={19}/></div><div><b>Outlook & Teams ready for planned integration</b><small>Events you create here are local to this browser for now. Microsoft calendar sync and Teams meeting links are not connected yet.</small></div><span className="calendar-local-badge">LOCAL PREVIEW</span></div>
+  {showForm&&<Panel title="Create calendar event" subtitle="Add a shared IntelliStack schedule item"><form className="calendar-event-form" onSubmit={submit}>
+   <label>Event title<input required maxLength={120} value={draft.title} onChange={e=>setDraft({...draft,title:e.target.value})} placeholder="e.g. Teams operations meeting"/></label>
+   <label>Date<input required type="date" value={draft.date} onChange={e=>setDraft({...draft,date:e.target.value})}/></label>
+   <label>Start time<input required type="time" value={draft.time} onChange={e=>setDraft({...draft,time:e.target.value})}/></label>
+   <label>End time<input required type="time" value={draft.endTime} onChange={e=>setDraft({...draft,endTime:e.target.value})}/></label>
+   <label>Category<select value={draft.category} onChange={e=>setDraft({...draft,category:e.target.value})}>{['Meeting','Service Desk','Maintenance','Security','War Room','Training','Personal','Other'].map(v=><option key={v}>{v}</option>)}</select></label>
+   <label>Calendar source<select value={draft.source} onChange={e=>setDraft({...draft,source:e.target.value})}>{['IntelliStack','Outlook','Microsoft Teams','Service Desk','War Room'].map(v=><option key={v}>{v}</option>)}</select></label>
+   <label className="calendar-notes-field">Notes<textarea rows={3} value={draft.notes} onChange={e=>setDraft({...draft,notes:e.target.value})} placeholder="Agenda, incident reference, location, or preparation notes"/></label>
+   <div className="calendar-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><CheckCircle2 size={15}/> Save event</button></div>
   </form></Panel>}
-  {connectors.length===0?<Panel title="No connectors configured" subtitle="Start with a public health endpoint or an API you control."><div className="connector-empty"><span className="integration-icon"><Network size={26}/></span><h3>Connect your first service</h3><p>Enter your endpoint to save it for this session and test whether your browser can reach it. No credentials are sent or stored.</p><button className="primary-btn" onClick={()=>setShowForm(true)}><Plus size={15}/> Add connector</button></div></Panel>:<div className="integration-grid">{connectors.map(item=><Panel key={item.id} title={item.name} subtitle={item.provider}><div className="integration-top"><StatusPill kind={item.status==='Reachable'?'good':item.status==='Not tested'?'neutral':'warn'}>{item.status}</StatusPill></div><p className="connector-url">{item.endpoint}</p><p className="connector-auth">Auth plan: {item.auth}</p><div className="integration-bottom"><span>Last test: {item.lastCheck}</span><button className="text-btn" disabled={testing===item.id} onClick={()=>testConnector(item)}>{testing===item.id?'Testing…':'Test endpoint ↗'}</button></div><div className="connector-card-actions"><button className="secondary-btn small" onClick={()=>removeConnector(item.id)}>Remove</button></div></Panel>)}</div>}
-  <div className="content-grid two-col"><Panel title="Connection activity" subtitle="Results from actions you performed"><div className="activity-list">{events.length?events.map(event=><div className="activity-row" key={event.id}><span className="activity-mark"><Activity size={16}/></span><div><b>{event.name} · {event.result}</b><p>{event.detail}</p></div><time>{event.time}</time></div>):<div className="connector-empty compact"><h3>No activity yet</h3><p>When you add or test a connector, the result will appear here.</p></div>}</div></Panel><Panel title="What is needed for real sync?" subtitle="The next step beyond endpoint testing"><div className="check-item"><LockKeyhole/><div><b>Backend credential vault</b><p>Keep API keys, OAuth secrets, and tokens on the server, never in the browser.</p></div></div><div className="check-item"><ShieldCheck/><div><b>Provider-specific adapter</b><p>Implement authorized API calls, scopes, pagination, mapping, retries, and rate-limit handling.</p></div></div><div className="check-item"><Zap/><div><b>Sync jobs and audit trail</b><p>Run controlled jobs on the server and record what changed, when, and with what result.</p></div></div></Panel></div>
-  <p className="privacy-note">Connector definitions and test results are held in memory for this browser session and disappear on refresh. This page does not yet perform business-data synchronization.</p>
+  <div className="calendar-layout">
+   <Panel title="Schedule" subtitle="Choose a date to inspect its events">
+    <div className="calendar-toolbar"><div className="calendar-month-nav"><button className="secondary-btn small" onClick={()=>move(-1)} aria-label="Previous period"><ChevronLeft size={15}/></button><b>{cursor.toLocaleString(undefined,view==='Month'?{month:'long',year:'numeric'}:view==='Week'?{month:'short',day:'numeric',year:'numeric'}:{month:'long',day:'numeric',year:'numeric'})}</b><button className="secondary-btn small" onClick={()=>move(1)} aria-label="Next period"><ChevronRight size={15}/></button></div><div className="calendar-view-switch">{['Month','Week','Day','Agenda'].map(v=><button key={v} className={view===v?'active':''} onClick={()=>setView(v)}>{v}</button>)}</div></div>
+    {view==='Month'&&<div className="calendar-month-grid"><div className="calendar-weekdays">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><span key={d}>{d}</span>)}</div><div className="calendar-days">{days.map((d,i)=>{const dayEvents=sorted.filter(e=>sameDay(new Date(e.start),d));return <button type="button" key={d.toISOString()} className={'calendar-day '+(d.getMonth()!==cursor.getMonth()?'outside ':'')+(sameDay(d,selectedDay)?'selected':'')+(sameDay(d,new Date())?' today':'')} onClick={()=>{setSelectedDay(d);setCursor(new Date(d.getFullYear(),d.getMonth(),1));}}><span>{d.getDate()}</span>{dayEvents.slice(0,2).map(ev=><i key={ev.id} title={ev.title}>{ev.title}</i>)}{dayEvents.length>2&&<small>+{dayEvents.length-2} more</small>}</button>})}</div></div>}
+    {view!=='Month'&&<div className="calendar-agenda-view">{(view==='Day'?[selectedDay]:view==='Week'?Array.from({length:7},(_,i)=>{const d=new Date(selectedDay);d.setDate(d.getDate()-d.getDay()+i);return d;}):sorted.map(e=>new Date(e.start)).filter((d,i,arr)=>arr.findIndex(x=>sameDay(x,d))===i)).map(d=><button type="button" key={d.toISOString()} className={'calendar-agenda-day '+(sameDay(d,selectedDay)?'selected':'')} onClick={()=>setSelectedDay(d)}><span>{d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</span><b>{sorted.filter(e=>sameDay(new Date(e.start),d)).length} events</b></button>)}</div>}
+   </Panel>
+   <Panel title={selectedDay.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})} subtitle={selectedEvents.length+' scheduled '+(selectedEvents.length===1?'item':'items')}>
+    <div className="calendar-event-list">{selectedEvents.map(ev=><div className="calendar-event-card" key={ev.id}><div className={'calendar-event-color color-'+ev.category.toLowerCase().replace(/[^a-z]/g,'')}/><div className="calendar-event-main"><div className="calendar-event-top"><b>{ev.title}</b><span>{ev.category}</span></div><small><Clock size={13}/>{fmt(ev.start)}{ev.end&&' – '+new Date(ev.end).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</small><small><CalendarDays size={13}/>{ev.source||'IntelliStack'} calendar</small>{ev.notes&&<p>{ev.notes}</p>}</div><button className="text-btn" onClick={()=>remove(ev.id)} aria-label={'Remove '+ev.title}>Remove</button></div>)}
+    {!selectedEvents.length&&<div className="calendar-empty"><CalendarDays size={27}/><b>No events scheduled</b><p>Select another date or add a new event to this calendar.</p><button className="secondary-btn" onClick={openNew}><Plus size={14}/> Add event</button></div>}</div>
+   </Panel>
+  </div>
+  <p className="privacy-note">Preview limitation: events are saved in this browser only and are not yet shared with other users or synchronized with Outlook / Teams. Production rollout should use authenticated shared storage, role-based access, audit history, time-zone handling, and Microsoft Graph authorization.</p>
+ </div>;
+}
+
+function IntegrationsPage(){
+ const [selected,setSelected]=useState('Supabase');
+ const [connections,setConnections]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.connectorSelections')||'[]')}catch{return []}});
+ const [notice,setNotice]=useState('');
+ const [filter,setFilter]=useState('All connectors');
+ const allProviders=connectorCatalog.flatMap(group=>group.providers.map(provider=>({...group,provider})));
+ const current=allProviders.find(item=>item.provider===selected)||allProviders[0];
+ const selectedConnection=connections.find(item=>item.provider===selected);
+ const categoryCounts=connectorCatalog.map(group=>({name:group.category,count:group.providers.length}));
+ const saveConnections=(next)=>{setConnections(next);try{localStorage.setItem('intellistack.connectorSelections',JSON.stringify(next));}catch{}};
+ function beginConnect(){
+  const entry={provider:selected,category:current.category,auth:connectorAuth(selected),status:'Setup required',updatedAt:new Date().toLocaleString()};
+  const next=[entry,...connections.filter(item=>item.provider!==selected)];
+  saveConnections(next);
+  setNotice(selected+' was added to your connection list. Live authorization is not configured yet; no credentials were requested or transmitted.');
+ }
+ function removeConnection(provider){saveConnections(connections.filter(item=>item.provider!==provider));setNotice(provider+' was removed from this browser’s connection list.');}
+ return <>
+  <div className="page-action-row"><div><h2>Connector Hub</h2><p>Select from {allProviders.length}+ provider options. No manual connection names, API URLs, or authentication plans.</p></div><span className="connector-catalog-count"><Network size={16}/>{allProviders.length} providers</span></div>
+  {notice&&<div className="inline-success"><Activity size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="connector-hub-layout">
+   <Panel title="Choose a connector" subtitle="Select a service from the dropdown to view its connection profile.">
+    <div className="connector-select-wrap">
+     <label htmlFor="connector-category-select">1. CHOOSE A CATEGORY</label>
+     <div className="connector-select-control"><Network size={18}/><select id="connector-category-select" value={filter} onChange={e=>{const nextCategory=e.target.value;setFilter(nextCategory);if(nextCategory!=='All connectors'){const first=connectorCatalog.find(group=>group.category===nextCategory)?.providers[0];if(first)setSelected(first);}}}><option value="All connectors">All connector categories ({allProviders.length})</option>{categoryCounts.map(group=><option key={group.name} value={group.name}>{group.name} ({group.count})</option>)}</select><ChevronDown size={17}/></div>
+     <label htmlFor="connector-provider-select" className="connector-provider-label">2. SELECT A PROVIDER</label>
+     <div className="connector-select-control"><Cloud size={18}/><select id="connector-provider-select" value={selected} onChange={e=>setSelected(e.target.value)}>{(filter==='All connectors'?connectorCatalog:connectorCatalog.filter(group=>group.category===filter)).map(group=><optgroup key={group.category} label={group.category}>{group.providers.map(provider=><option key={provider} value={provider}>{provider}</option>)}</optgroup>)}</select><ChevronDown size={17}/></div>
+     <p className="connector-select-help">No connection name, REST URL, or authentication plan to type. Selecting a provider fills in its profile automatically. Actual authorization still depends on the provider integration being enabled.</p>
+    </div>
+    <div className="connector-profile">
+     <div className="connector-profile-top"><div className="connector-profile-icon"><Cloud size={24}/></div><div><span className="connector-profile-category">{current.category}</span><h3>{selected}</h3></div><StatusPill kind={selectedConnection?'warn':'neutral'}>{selectedConnection?selectedConnection.status:'Not connected'}</StatusPill></div>
+     <p className="connector-profile-description">{connectorDescriptions[selected]||('Connect '+selected+' to the IntelliStack operations ecosystem using its supported provider authorization flow.')}</p>
+     <div className="connector-profile-detail"><span>Authentication method</span><b>{connectorAuth(selected)}</b></div>
+     <div className="connector-profile-detail"><span>Connection setup</span><b>{selectedConnection?'Selected · awaiting secure setup':'Not configured'}</b></div>
+     <div className="connector-security-note"><LockKeyhole size={17}/><span><b>Credentials stay protected.</b> This selection screen never asks you to paste passwords, API keys, REST endpoints, or tokens. Real connections require the provider’s authorization flow and secure server-side configuration.</span></div>
+     <div className="connector-profile-actions"><button className="primary-btn" onClick={beginConnect}><Plus size={16}/>{selectedConnection?'Add again / refresh selection':'Select & prepare connection'}</button>{selectedConnection&&<button className="secondary-btn" onClick={()=>removeConnection(selected)}>Remove selection</button>}</div>
+    </div>
+   </Panel>
+   <Panel title="Connection overview" subtitle="Your selected provider setup list">
+    <div className="connector-overview-stat"><span>Catalog providers</span><b>{allProviders.length}</b></div>
+    <div className="connector-overview-stat"><span>Selected for setup</span><b>{connections.length}</b></div>
+    <div className="connector-overview-stat"><span>Live connections</span><b>0</b></div>
+    <div className="connector-categories"><h4>Provider categories</h4>{categoryCounts.map(group=><div className="connector-category-row" key={group.name}><span>{group.name}</span><b>{group.count}</b></div>)}</div>
+    <p className="privacy-note">A provider appearing in the catalog does not mean its API is already authenticated. Live connections will be enabled provider by provider.</p>
+   </Panel>
+  </div>
+  <Panel title="Selected connectors" subtitle="Selections are remembered in this browser only; this is not a shared production connection vault.">
+   {connections.length===0?<div className="connector-empty compact"><h3>No connectors selected yet</h3><p>Choose Supabase, Vercel, GitHub, or another provider above and select “Prepare connection.”</p></div>:<div className="connector-selected-list">{connections.map(item=><div className="connector-selected-row" key={item.provider}><span className="connector-selected-icon"><Cloud size={17}/></span><div className="connector-selected-main"><b>{item.provider}</b><small>{item.category} · {item.auth}</small></div><StatusPill kind="warn">{item.status}</StatusPill><button className="text-btn" onClick={()=>{setSelected(item.provider);setNotice('Showing '+item.provider+' connection profile.')}}>Open</button><button className="secondary-btn small" onClick={()=>removeConnection(item.provider)}>Remove</button></div>)}</div>}
+  </Panel>
+  <div className="content-grid two-col"><Panel title="How live connection works" subtitle="No hand-entered endpoint forms"><div className="check-item"><ShieldCheck/><div><b>1. Choose the provider</b><p>Pick it from the catalog. The connector profile selects the expected authorization method automatically.</p></div></div><div className="check-item"><LockKeyhole/><div><b>2. Authorize securely</b><p>The completed integration will redirect to the provider or use an administrator-configured secure setup. Tokens must remain server-side.</p></div></div><div className="check-item"><Zap/><div><b>3. Enable permitted actions</b><p>After authorization, provider-specific scopes, sync jobs, status checks, and audit events can be enabled.</p></div></div></Panel><Panel title="Priority connectors" subtitle="First integrations to activate"><div className="connector-priority-list">{['Supabase','Vercel','GitHub','Microsoft Entra ID','Microsoft 365','Google Workspace','ServiceNow','Jira Service Management'].map((provider,index)=><button key={provider} className={selected===provider?'active':''} onClick={()=>setSelected(provider)}><span>{String(index+1).padStart(2,'0')}</span><b>{provider}</b><ChevronDown size={14}/></button>)}</div></Panel></div>
+  <p className="privacy-note">Current milestone: provider dropdown catalog and local selection management. OAuth/API execution, durable shared connection records, and data synchronization are not active until their backend adapters and provider credentials are configured.</p>
  </>;
 }
+
 function SecurityPage(){
  const [mfaRequired,setMfaRequired]=useState(true);
  const [adminsExempt,setAdminsExempt]=useState(false);
@@ -331,26 +725,32 @@ function answerAssistant(question,assistant,{tickets,devices,endUsers}){
  return 'I don’t have a preset answer for that exact question yet. I can help with tickets, VPN/MFA troubleshooting, users, PCs and peripherals, device status, connector setup, security basics, and AI-provider architecture. Try one of the suggested questions, or rephrase your question around one of those topics.\n\nMode: built-in knowledge assistant. No external AI service is connected.';
 }
 function AssistantPage({assistant,tickets,devices,endUsers,onNavigate}){
- const [messages,setMessages]=useState([{role:'assistant',text:assistant==='maximus'?'I’m Maximus AI, your operations assistant. I can answer support and troubleshooting questions using the built-in knowledge base and current local lab records. What would you like to work on?':'I’m Optimus, your Super Admin command assistant. I can help you understand your workspace, device estate, security posture, and integration steps. What do you need?'}]);
+ const max=assistant==='maximus';
+ const [messages,setMessages]=useState([{role:'assistant',text:max?'I’m Maximus, your executive command partner. I help assess enterprise performance, financial exposure, security risk, network impact, and incident coordination. I’ll clearly separate available sample records from live evidence. What should we examine?':'I’m Optimus, your operational intelligence partner. I help investigate tickets, users, devices, knowledge, policies, and connected systems using authorized evidence.'}]);
  const [draft,setDraft]=useState('');
  const [showSetup,setShowSetup]=useState(false);
  const [provider,setProvider]=useState('Azure AI Foundry');
  const [endpoint,setEndpoint]=useState('');
  const [notice,setNotice]=useState('');
+ const open=tickets.filter(t=>t.status!=='Resolved').length;
+ const high=tickets.filter(t=>t.status!=='Resolved'&&(t.priority==='High'||t.priority==='Critical')).length;
+ const offline=devices.filter(d=>d.status==='Offline').length;
+ const attention=devices.filter(d=>d.status==='Needs attention').length;
+ const suggestions=max?['Summarize enterprise health and key risks','Prepare a CFO-style cost and license review','Assess security incident business impact','Create a War Room plan for a major outage','Draft an executive situation report']:['Investigate why a user cannot access email','Find a device by hostname or asset tag','Summarize high-priority tickets','Find troubleshooting knowledge','Draft an evidence-based ticket update'];
  function send(value){const q=(value??draft).trim();if(!q)return;const reply=answerAssistant(q,assistant,{tickets,devices,endUsers});setMessages(prev=>[...prev,{role:'user',text:q},{role:'assistant',text:reply}]);setDraft('');}
- const suggestions=assistantSuggestions[assistant]||assistantSuggestions.maximus;
- return <div className="assistant-workspace">
-  <div className={'assistant-hero '+(assistant==='optimus'?'optimus-hero':'maximus-hero')}><div className="assistant-orb">{assistant==='optimus'?<Sparkles size={30}/>:<Bot size={30}/>}</div><div className="assistant-hero-copy"><div className="eyebrow"><span className="pulse"/> BUILT-IN KNOWLEDGE MODE</div><h2>{assistant==='optimus'?'Optimus':'Maximus AI'}</h2><p>{assistant==='optimus'?'Your Super Admin command partner for governance, devices, identity, and platform operations.':'Your service operations partner for ticket triage, troubleshooting, and endpoint support.'}</p><div className="assistant-capabilities">{(assistant==='optimus'?['Admin guidance','Security & audit','Device operations','Integration planning']:['Ticket triage','Troubleshooting','Device lookups','Connector guidance']).map(x=><span key={x}>{x}</span>)}</div></div><button className="secondary-btn assistant-provider-btn" onClick={()=>setShowSetup(v=>!v)}><Settings size={15}/> AI provider setup</button></div>
-  <div className="assistant-status-row"><span><span className="green-dot"/> Ready to answer</span><span>Knowledge engine: local preset Q&A</span><span>External model: not connected</span></div>
-  <div className="assistant-chat-layout"><section className="assistant-chat-panel"><div className="assistant-chat-head"><div className="assistant-mini-avatar">{assistant==='optimus'?<Sparkles size={17}/>:<Bot size={17}/>}</div><div><b>{assistant==='optimus'?'Optimus Command Assistant':'Maximus Operations Assistant'}</b><small>Context-aware answers from this lab session</small></div><button className="text-btn" onClick={()=>setMessages([{role:'assistant',text:assistant==='optimus'?'I’m Optimus. What would you like to review in the Command Center?':'I’m Maximus AI. What support or operations issue can I help with?'}])}>New chat</button></div>
-   <div className="assistant-messages">{messages.map((m,i)=><div key={i} className={'assistant-message '+m.role}><span className="assistant-message-avatar">{m.role==='user'?<Users size={14}/>:assistant==='optimus'?<Sparkles size={14}/>:<Bot size={14}/>}</span><div className="assistant-message-body"><b>{m.role==='user'?'You':assistant==='optimus'?'Optimus':'Maximus AI'}</b><p>{m.text.split('\n').map((line,j)=><React.Fragment key={j}>{j>0&&<br/>}{line}</React.Fragment>)}</p></div></div>)}</div>
-   <div className="assistant-suggestions"><span>TRY ASKING</span>{suggestions.map(q=><button key={q} onClick={()=>send(q)}>{q}<span>↗</span></button>)}</div>
-   <form className="assistant-compose" onSubmit={e=>{e.preventDefault();send();}}><textarea aria-label="Ask the assistant" value={draft} onChange={e=>setDraft(e.target.value)} placeholder={assistant==='optimus'?'Ask Optimus about your command center…':'Ask Maximus about a ticket, device, or issue…'} rows={2}/><button className="primary-btn" type="submit" disabled={!draft.trim()}><MessageSquare size={16}/> Send</button></form><p className="assistant-disclaimer">Responses use preset knowledge and current local test records. Verify critical actions; no external AI or live systems are connected.</p>
-  </section><aside className="assistant-context-panel"><h3>Workspace context</h3><p>Current local session snapshot</p><div className="assistant-context-stat"><span>Tickets not resolved</span><b>{tickets.filter(t=>t.status!=='Resolved').length}</b></div><div className="assistant-context-stat"><span>Device records</span><b>{devices.length}</b></div><div className="assistant-context-stat"><span>Offline devices</span><b>{devices.filter(d=>d.status==='Offline').length}</b></div><div className="assistant-context-stat"><span>Needs attention</span><b>{devices.filter(d=>d.status==='Needs attention').length}</b></div><div className="assistant-context-links"><button onClick={()=>onNavigate('tickets')}><Ticket size={15}/> Open service desk <span>↗</span></button><button onClick={()=>onNavigate('devices')}><MonitorCog size={15}/> Open device inventory <span>↗</span></button><button onClick={()=>onNavigate('integrations')}><Network size={15}/> Open connectors <span>↗</span></button></div></aside></div>
-  {showSetup&&<Panel title="Connect an external AI provider" subtitle="Connection settings are an architecture guide only in this static GitHub Pages deployment"><div className="ai-provider-setup"><div className="connector-security-note"><LockKeyhole size={16}/><span>For safety, this frontend does not accept or store API keys. A server-side API proxy is required to protect provider credentials and authenticate requests.</span></div><label>Provider<select value={provider} onChange={e=>setProvider(e.target.value)}><option>Azure AI Foundry</option><option>OpenAI API</option><option>Anthropic API</option><option>Self-hosted model endpoint</option></select></label><label>Provider endpoint (optional planning note)<input type="url" value={endpoint} onChange={e=>setEndpoint(e.target.value)} placeholder="https://your-secure-backend.example/api/chat"/></label><button className="primary-btn" onClick={()=>setNotice(provider+' selected. No connection was made. Implement a secure backend proxy before enabling live AI.')}>Save provider plan</button>{notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')}><X size={14}/></button></div>}<p className="privacy-note">GitHub Models inference was retired on July 30, 2026. A currently supported provider must be called from a protected backend; do not put secrets in frontend environment variables or a public repository.</p></div></Panel>}
+ return <div className={'assistant-workspace '+(max?'maximus-command-page':'optimus-command-page')}>
+  <div className={'assistant-hero '+(max?'maximus-hero':'optimus-hero')}><div className="assistant-orb">{max?<Bot size={30}/>:<Sparkles size={30}/>}</div><div className="assistant-hero-copy"><div className="eyebrow"><span className="pulse"/> {max?'EXECUTIVE COMMAND MODE':'OPERATIONAL INTELLIGENCE MODE'}</div><h2>{max?'Maximus':'Optimus'}</h2><p>{max?'Your strategic command partner for CEO/CFO insights, enterprise risk, security, network operations, and War Room coordination.':'Your operational intelligence partner for universal search, evidence-based investigations, service records, devices, policies, and workflows.'}</p><div className="assistant-capabilities">{(max?['Executive briefings','Financial oversight','Security & risk','Network impact','War Room command']:['Universal search','Evidence-led investigations','Ticket & device context','Knowledge & policies','Controlled actions']).map(x=><span key={x}>{x}</span>)}</div></div><button className="secondary-btn assistant-provider-btn" onClick={()=>setShowSetup(v=>!v)}><Settings size={15}/> AI provider setup</button></div>
+  <div className="assistant-status-row"><span><span className="green-dot"/> Workspace ready</span><span>Context: local prototype records</span><span>Live data and external model: not connected</span></div>
+  {max&&<div className="maximus-command-strip"><div><Activity size={17}/><span><small>ENTERPRISE OPERATIONS</small><b>Executive command overview</b></span></div><div><ShieldCheck size={17}/><span><small>DECISION SUPPORT</small><b>Risk · Impact · Next actions</b></span></div><div><Users size={17}/><span><small>INCIDENT COORDINATION</small><b>Owners · Blockers · War Room</b></span></div></div>}
+  <div className="metrics-grid compact-metrics"><Metric icon={Ticket} label="Unresolved tickets" value={open} trend="Local sample queue"/><Metric icon={AlertTriangle} label="High-priority open" value={high} trend="Review impact and owners"/><Metric icon={MonitorCog} label="Offline devices" value={offline} trend="Local device sample"/><Metric icon={Activity} label="Device attention" value={attention} trend="Local device sample"/></div>
+  <div className="assistant-chat-layout"><section className="assistant-chat-panel"><div className="assistant-chat-head"><div className="assistant-mini-avatar">{max?<Bot size={17}/>:<Sparkles size={17}/>}</div><div><b>{max?'Maximus Executive Command':'Optimus Operational Intelligence'}</b><small>{max?'Decision briefs and cross-team incident coordination':'Search, investigate, explain, and recommend'}</small></div><button className="text-btn" onClick={()=>setMessages([{role:'assistant',text:max?'I’m Maximus. What business decision, risk, or incident should we assess?':'I’m Optimus. What would you like to find or investigate?'}])}>New chat</button></div>
+   <div className="assistant-messages">{messages.map((m,i)=><div key={i} className={'assistant-message '+m.role}><span className="assistant-message-avatar">{m.role==='user'?<Users size={14}/>:max?<Bot size={14}/>:<Sparkles size={14}/>}</span><div className="assistant-message-body"><b>{m.role==='user'?'You':max?'Maximus':'Optimus'}</b><p>{m.text.split('\n').map((line,j)=><React.Fragment key={j}>{j>0&&<br/>}{line}</React.Fragment>)}</p></div></div>)}</div>
+   <div className="assistant-suggestions"><span>{max?'EXECUTIVE SHORTCUTS':'INVESTIGATION SHORTCUTS'}</span>{suggestions.map(q=><button key={q} onClick={()=>send(q)}>{q}<span>↗</span></button>)}</div>
+   <form className="assistant-compose" onSubmit={e=>{e.preventDefault();send();}}><textarea aria-label={'Ask '+(max?'Maximus':'Optimus')} value={draft} onChange={e=>setDraft(e.target.value)} placeholder={max?'Ask about business impact, financial exposure, risk, or incident command…':'Ask to search records, investigate an issue, or explain system activity…'} rows={2}/><button className="primary-btn" type="submit" disabled={!draft.trim()}><MessageSquare size={16}/> Send</button></form><p className="assistant-disclaimer">Prototype mode: replies use preset logic and local sample records. Live enterprise search, financial systems, telemetry, external AI, and action execution are not connected. Consequential actions must require permission, approval where applicable, and audit logging.</p>
+  </section><aside className="assistant-context-panel"><h3>{max?'Command context':'Investigation context'}</h3><p>{max?'Operational signals for executive decision support.':'Current local record snapshot; not a live enterprise data feed.'}</p><div className="assistant-context-stat"><span>Unresolved tickets</span><b>{open}</b></div><div className="assistant-context-stat"><span>High-priority open</span><b>{high}</b></div><div className="assistant-context-stat"><span>Device records</span><b>{devices.length}</b></div><div className="assistant-context-stat"><span>End-user records</span><b>{endUsers.length}</b></div><div className="assistant-context-links"><button onClick={()=>onNavigate('overview')}><LayoutDashboard size={15}/> Enterprise dashboard <span>↗</span></button><button onClick={()=>onNavigate('tickets')}><Ticket size={15}/> Review incident queue <span>↗</span></button><button onClick={()=>onNavigate('noc')}><Network size={15}/> Network operations <span>↗</span></button><button onClick={()=>onNavigate('soc')}><ShieldCheck size={15}/> Security operations <span>↗</span></button><button onClick={()=>onNavigate('warroom')}><Activity size={15}/> Open War Room <span>↗</span></button><button onClick={()=>onNavigate('integrations')}><Network size={15}/> Connected systems <span>↗</span></button></div></aside></div>
+  {showSetup&&<Panel title="Connect an external AI provider" subtitle="Provider setup is planning only; it does not connect a model"><div className="ai-provider-setup"><div className="connector-security-note"><LockKeyhole size={16}/><span>Provider credentials must stay on a protected backend. Do not place API keys in this React app or public repository.</span></div><label>Provider<select value={provider} onChange={e=>setProvider(e.target.value)}><option>Azure AI Foundry</option><option>OpenAI API</option><option>Anthropic API</option><option>Self-hosted model endpoint</option></select></label><label>Secure backend endpoint (planning only)<input type="url" value={endpoint} onChange={e=>setEndpoint(e.target.value)} placeholder="https://your-secure-backend.example/api/chat"/></label><button className="primary-btn" onClick={()=>setNotice(provider+' selected as a plan only. No connection was made.')}>Save provider plan</button>{notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')}><X size={14}/></button></div>}<p className="privacy-note">Live AI requires authenticated server-side requests, permission-scoped retrieval, source citations, rate limits, safe logging, and approval gates for consequential actions.</p></div></Panel>}
  </div>;
 }
-
 function PlatformBuilderPage(){
  const [items,setItems]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack-platform-registry')||'[]')}catch{return []}});
  const [kind,setKind]=useState('Module');
@@ -443,13 +843,168 @@ function WarRoomPage(){
  <p className="privacy-note">Prototype only: room roster, chat, and text drafts are saved in this browser, not transmitted. Video is a placeholder until a conferencing provider is integrated. Production needs authenticated shared storage, role-based oversight, audit logs, tested on-call rotations, and approved messaging/video connectors.</p></>;
 }
 
+
+function MeetingsCenterPage({onNavigate}){
+ const seed=()=>[
+  {id:'MTG-001',title:'Operations stand-up',date:new Date(Date.now()+86400000).toLocaleDateString('en-CA'),time:'09:00',duration:'30',team:'Operations',host:'IT Administrator',provider:'Teams',agenda:'Review priorities, incidents, and handoffs.',attendees:'ops-team@intellistack.example',status:'Scheduled',createdAt:new Date().toISOString()},
+  {id:'MTG-002',title:'Security controls review',date:new Date(Date.now()+172800000).toLocaleDateString('en-CA'),time:'13:30',duration:'45',team:'Security & Compliance',host:'Security Lead',provider:'IntelliStack',agenda:'Review open control actions and evidence owners.',attendees:'security-team@intellistack.example',status:'Invitation draft',createdAt:new Date().toISOString()}
+ ];
+ const [meetings,setMeetings]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.meetings')||'null');return Array.isArray(saved)?saved:seed()}catch{return seed()}});
+ const [showForm,setShowForm]=useState(false);
+ const [notice,setNotice]=useState('');
+ const [filter,setFilter]=useState('All');
+ const makeDraft=()=>({title:'',date:new Date(Date.now()+86400000).toLocaleDateString('en-CA'),time:'10:00',duration:'30',team:'Operations',host:'Meeting organizer',provider:'Teams',agenda:'',attendees:'',status:'Invitation draft'});
+ const [draft,setDraft]=useState(makeDraft);
+ const persist=next=>{setMeetings(next);try{localStorage.setItem('intellistack.meetings',JSON.stringify(next))}catch{}};
+ const update=(key,value)=>setDraft(old=>({...old,[key]:value}));
+ const create=e=>{e.preventDefault();if(!draft.title.trim()||!draft.date||!draft.time){setNotice('Add a meeting title, date, and start time.');return;}const item={...draft,id:'MTG-'+Date.now(),createdAt:new Date().toISOString()};persist([item,...meetings]);setShowForm(false);setDraft(makeDraft());setNotice('Meeting saved in this browser. Invitations are drafts only; no emails or calendar events have been sent.');};
+ const remove=id=>{persist(meetings.filter(m=>m.id!==id));setNotice('Meeting removed from this browser preview.');};
+ const changeStatus=(id,status)=>{persist(meetings.map(m=>m.id===id?{...m,status}:m));setNotice('Meeting status updated in this browser preview.');};
+ const filtered=meetings.filter(m=>filter==='All'||m.status===filter);
+ return <div className="meetings-page">
+  <div className="meetings-hero"><div><div className="calendar-eyebrow"><Video size={15}/> COLLABORATION CENTER</div><h2>Meetings & Teams</h2><p>Schedule group meetings, coordinate teams, manage invitations, and keep follow-up actions connected to the Global Calendar.</p></div><div className="meetings-hero-actions"><button className="secondary-btn" onClick={()=>onNavigate('calendar')}><CalendarDays size={16}/> Open calendar</button><button className="primary-btn" onClick={()=>{setDraft(makeDraft());setShowForm(true)}}><Plus size={16}/> Schedule meeting</button></div></div>
+  <div className="meetings-metrics"><div><span className="meetings-metric-icon"><CalendarDays size={18}/></span><b>{meetings.length}</b><small>Meetings in this preview</small></div><div><span className="meetings-metric-icon"><Mail size={18}/></span><b>{meetings.filter(m=>m.status==='Invitation draft').length}</b><small>Invitation drafts</small></div><div><span className="meetings-metric-icon"><Users size={18}/></span><b>{new Set(meetings.map(m=>m.team)).size}</b><small>Teams represented</small></div><div><span className="meetings-metric-icon"><ListChecks size={18}/></span><b>{meetings.filter(m=>m.status==='Scheduled').length}</b><small>Scheduled items</small></div></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="meetings-provider-strip"><div className="meetings-provider-icon"><Video size={20}/></div><div><b>Choose the meeting provider that fits your organization</b><small>Teams is the planned first live integration. Native IntelliStack video, email invitations, and shared team storage are not connected in this preview.</small></div><span className="calendar-local-badge">PREVIEW</span></div>
+  {showForm&&<Panel title="Schedule a group meeting" subtitle="Build the meeting details and invitation list"><form className="meeting-form" onSubmit={create}>
+   <label>Meeting title<input value={draft.title} onChange={e=>update('title',e.target.value)} placeholder="e.g. Weekly Operations Review" required/></label>
+   <div className="meeting-form-grid"><label>Date<input type="date" value={draft.date} onChange={e=>update('date',e.target.value)} required/></label><label>Start time<input type="time" value={draft.time} onChange={e=>update('time',e.target.value)} required/></label><label>Duration<select value={draft.duration} onChange={e=>update('duration',e.target.value)}><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">90 minutes</option><option value="120">2 hours</option></select></label><label>Meeting provider<select value={draft.provider} onChange={e=>update('provider',e.target.value)}><option>Teams</option><option>IntelliStack</option><option>Outlook conference</option><option>In person</option></select></label></div>
+   <div className="meeting-form-grid"><label>Team / department<input value={draft.team} onChange={e=>update('team',e.target.value)} placeholder="Operations, Help Desk, Security…"/></label><label>Organizer / host<input value={draft.host} onChange={e=>update('host',e.target.value)} placeholder="Meeting owner"/></label></div>
+   <label>Invite attendees<input value={draft.attendees} onChange={e=>update('attendees',e.target.value)} placeholder="Emails separated by commas"/></label><small className="meeting-help">Internal users and external guests can be listed. In this prototype, this field creates an invitation draft; it does not send email.</small>
+   <label>Agenda and preparation notes<textarea value={draft.agenda} onChange={e=>update('agenda',e.target.value)} placeholder="Topics, pre-reading, decisions needed, or links…" rows={3}/></label>
+   <div className="meeting-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><Mail size={15}/> Save meeting & invitation draft</button></div>
+  </form></Panel>}
+  <Panel title="Meeting schedule" subtitle="Manage meeting details, invitation status, and team coordination" action={<select className="meeting-filter" value={filter} onChange={e=>setFilter(e.target.value)} aria-label="Filter meetings"><option>All</option><option>Scheduled</option><option>Invitation draft</option><option>Completed</option><option>Cancelled</option></select>}>
+   {filtered.length===0?<div className="empty-state"><div className="service-icon"><CalendarDays size={24}/></div><h3>No meetings in this view</h3><p>Schedule a meeting to start building the team calendar.</p></div>:<div className="meeting-list">{filtered.map(m=><article className="meeting-card" key={m.id}><div className="meeting-date-tile"><b>{new Date(m.date+'T12:00:00').toLocaleDateString(undefined,{day:'2-digit'})}</b><small>{new Date(m.date+'T12:00:00').toLocaleDateString(undefined,{month:'short'})}</small></div><div className="meeting-card-main"><div className="meeting-title-line"><h4>{m.title}</h4><span className={'meeting-status '+(m.status==='Scheduled'?'scheduled':m.status==='Completed'?'completed':'draft')}>{m.status}</span></div><div className="meeting-meta"><span><Clock size={13}/>{m.time} · {m.duration} min</span><span><Users size={13}/>{m.team||'General team'}</span><span><Video size={13}/>{m.provider}</span></div><p>{m.agenda||'No agenda added yet.'}</p><div className="meeting-attendees"><Mail size={13}/><span>{m.attendees||'No invitees listed'}</span></div><small className="meeting-host">Host: {m.host||'Not assigned'}</small></div><div className="meeting-card-actions"><button className="secondary-btn" onClick={()=>changeStatus(m.id,m.status==='Scheduled'?'Completed':'Scheduled')}>{m.status==='Scheduled'?'Mark complete':'Mark scheduled'}</button><button className="top-icon" title="Remove meeting" aria-label={'Remove '+m.title} onClick={()=>remove(m.id)}><X size={15}/></button></div></article>)}</div>}
+  </Panel>
+  <Panel title="Team meeting workflow" subtitle="Designed to grow into a connected collaboration service"><div className="meeting-workflow-grid"><div><span>01</span><b>Schedule</b><p>Set time, duration, time zone, agenda, and recurrence.</p></div><div><span>02</span><b>Invite</b><p>Invite staff and guests, track responses, and send reminders.</p></div><div><span>03</span><b>Host</b><p>Launch a Teams or approved conferencing link with controlled access.</p></div><div><span>04</span><b>Follow up</b><p>Capture decisions, action owners, due dates, and meeting notes.</p></div></div></Panel>
+  <p className="privacy-note">Prototype limitation: meeting records are stored in this browser only. Invitations, email delivery, shared teams, conferencing, and cross-device sync require authenticated backend storage and connected provider APIs.</p>
+ </div>;
+}
+
+
+function EmailCenterPage({onNavigate}){
+ const seed=()=>[
+  {id:'MAIL-001',from:'Microsoft 365 Notifications',email:'notifications@microsoft.example',subject:'Welcome to your collaboration workspace',preview:'Sample inbox item for the IntelliStack Email Center preview.',date:new Date().toISOString(),folder:'Inbox',unread:true,starred:true,body:'This is sample content to demonstrate the planned inbox experience. No real email account is connected.'},
+  {id:'MAIL-002',from:'Operations Team',email:'operations@intellistack.example',subject:'Weekly operations meeting',preview:'Please review the agenda before the team meeting.',date:new Date(Date.now()-3600000).toISOString(),folder:'Inbox',unread:true,starred:false,body:'Agenda: review open incidents, upcoming maintenance, and team handoffs. This is a local preview message.'},
+  {id:'MAIL-003',from:'Security Desk',email:'security@intellistack.example',subject:'Access review follow-up',preview:'Three access review actions need an owner.',date:new Date(Date.now()-86400000).toISOString(),folder:'Inbox',unread:false,starred:false,body:'Assign owners for the outstanding access review actions and record due dates. Sample message only.'}
+ ];
+ const [messages,setMessages]=useState(()=>{try{const v=JSON.parse(localStorage.getItem('intellistack.emailPreview')||'null');return Array.isArray(v)?v:seed()}catch{return seed()}});
+ const [folder,setFolder]=useState('Inbox');
+ const [selected,setSelected]=useState(null);
+ const [query,setQuery]=useState('');
+ const [compose,setCompose]=useState(false);
+ const [notice,setNotice]=useState('');
+ const [draft,setDraft]=useState({to:'',subject:'',body:''});
+ const persist=next=>{setMessages(next);try{localStorage.setItem('intellistack.emailPreview',JSON.stringify(next))}catch{}};
+ const filtered=messages.filter(m=>(folder==='Starred'?m.starred:folder==='Sent'?m.folder==='Sent':folder==='Drafts'?m.folder==='Drafts':folder==='Archive'?m.folder==='Archive':m.folder==='Inbox')&&((m.from+' '+m.email+' '+m.subject+' '+m.preview).toLowerCase().includes(query.toLowerCase())));
+ const openMessage=m=>{setSelected(m);if(m.unread)persist(messages.map(x=>x.id===m.id?{...x,unread:false}:x))};
+ const saveDraft=e=>{e.preventDefault();const item={id:'MAIL-'+Date.now(),from:'You (draft)',email:'',subject:draft.subject||'(No subject)',preview:draft.body.slice(0,100),date:new Date().toISOString(),folder:'Drafts',unread:false,starred:false,body:draft.body,to:draft.to};persist([item,...messages]);setCompose(false);setDraft({to:'',subject:'',body:''});setNotice('Draft saved locally. Email sending is not connected yet.');};
+ const toggleStar=m=>persist(messages.map(x=>x.id===m.id?{...x,starred:!x.starred}:x));
+ const archive=m=>{persist(messages.map(x=>x.id===m.id?{...x,folder:'Archive'}:x));setSelected(null);setNotice('Message archived in this browser preview.');};
+ const folders=[['Inbox',Inbox],['Starred',Star],['Sent',Send],['Drafts',Paperclip],['Archive',Archive]];
+ return <div className="email-center-page">
+  <div className="email-center-hero"><div><div className="calendar-eyebrow"><Mail size={15}/> COMMUNICATIONS</div><h2>Email Center</h2><p>One workspace for business email, shared mailboxes, meeting invitations, service desk correspondence, and team communication.</p></div><button className="primary-btn" onClick={()=>{setSelected(null);setCompose(true)}}><Plus size={16}/> Compose email</button></div>
+  <div className="email-connection-strip"><span><Mail size={20}/></span><div><b>Connect Outlook or another supported mail provider</b><small>Real inbox access, sending, shared mailboxes, and cross-device sync require a secure provider authorization and backend integration.</small></div><button className="secondary-btn" onClick={()=>onNavigate('integrations')}>Open integrations</button></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="email-layout">
+   <aside className="email-folder-nav"><div className="email-folder-heading">MAILBOX</div>{folders.map(([name,Icon])=><button key={name} className={'email-folder-btn '+(folder===name?'active':'')} onClick={()=>{setFolder(name);setSelected(null)}}><Icon size={16}/><span>{name}</span>{name==='Inbox'&&<small>{messages.filter(m=>m.folder==='Inbox'&&m.unread).length}</small>}</button>)}<div className="email-mailbox-note"><b>Planned shared mailboxes</b><small>support@</small><small>security@</small><small>sales@</small></div></aside>
+   <section className="email-message-list"><div className="email-list-toolbar"><b>{folder}</b><div><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search mail…" aria-label="Search mail"/></div></div>{filtered.length===0?<div className="email-empty">No messages found in this folder.</div>:filtered.map(m=><button key={m.id} className={'email-message-row '+(selected?.id===m.id?'selected ':'')+(m.unread?'unread':'')} onClick={()=>openMessage(m)}><span className="email-avatar">{(m.from||'M').slice(0,1)}</span><span className="email-row-copy"><b>{m.from}</b><strong>{m.subject}</strong><small>{m.preview}</small></span><span className="email-row-end"><small>{new Date(m.date).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</small><span onClick={e=>{e.stopPropagation();toggleStar(m)}} role="button" tabIndex={0} aria-label="Toggle star" className={'email-star '+(m.starred?'on':'')}><Star size={14} fill={m.starred?'currentColor':'none'}/></span></span></button>)}</section>
+   <section className="email-reading-pane">{compose?<><div className="email-pane-heading"><b>Compose message</b><button className="top-icon" onClick={()=>setCompose(false)} aria-label="Close compose"><X size={15}/></button></div><form className="email-compose-form" onSubmit={saveDraft}><label>To<input type="text" value={draft.to} onChange={e=>setDraft({...draft,to:e.target.value})} placeholder="name@company.com" required/></label><label>Subject<input value={draft.subject} onChange={e=>setDraft({...draft,subject:e.target.value})} placeholder="Subject"/></label><label>Message<textarea rows={8} value={draft.body} onChange={e=>setDraft({...draft,body:e.target.value})} placeholder="Write your message…" required/></label><p className="email-prototype-note">Save as a local draft. No email will be sent in this preview.</p><button className="primary-btn" type="submit"><Paperclip size={15}/> Save draft</button></form></>:selected?<><div className="email-pane-heading"><b>Message</b><div><button className="top-icon" onClick={()=>toggleStar(selected)} aria-label="Star message"><Star size={15}/></button><button className="top-icon" onClick={()=>archive(selected)} aria-label="Archive message"><Archive size={15}/></button></div></div><h3 className="email-reading-subject">{selected.subject}</h3><div className="email-sender-details"><span className="email-avatar">{(selected.from||'M').slice(0,1)}</span><div><b>{selected.from}</b><small>{selected.email||'Local draft'} · {new Date(selected.date).toLocaleString()}</small></div></div><div className="email-reading-body">{selected.body||selected.preview}</div><button className="secondary-btn" onClick={()=>{setDraft({to:selected.email||selected.to||'',subject:'Re: '+selected.subject,body:''});setCompose(true)}}><Reply size={15}/> Reply</button></>:<div className="email-empty-detail"><span><Mail size={26}/></span><b>Select a message</b><p>Choose an email from the list or compose a new message.</p></div>}</section>
+  </div>
+  <p className="privacy-note">Prototype only: messages and drafts are sample/local browser data. This workspace does not access a real mailbox or send email. Production requires provider OAuth, encrypted token handling, mailbox permissions, audit logs, and authenticated shared storage.</p>
+ </div>;
+}
+
+const suiteModules = {
+  intellilink:{name:'IntelliLink',eyebrow:'CONNECTED ENTERPRISE SERVICES',subtitle:'A governed hub for enterprise connectors, service health, and cross-platform data exchange.',purpose:'Connect business systems without losing control of access, ownership, or auditability.',features:['Connector catalog and connection ownership','Integration health, sync state, and recent failures','Scoped API credentials and rotation reminders','Field mapping and data exchange policies','Audit trail for administrative connection changes'],pages:['Overview','Connectors','Health & sync','Data policies','Audit history'],actions:['Explore connectors','Review integration health','Add connection']},
+  intellivision:{name:'IntelliVision',eyebrow:'ENTERPRISE VISIBILITY',subtitle:'Bring service health, risk signals, and operational trends into one clear view.',purpose:'Give each role a shared, evidence-aware view of what is happening across the organization.',features:['Service and integration health overview','Incident and alert timeline','Department-level operational indicators','Trend and impact summaries','Role-aware dashboards and drill-down links'],pages:['Overview','Service health','Risk & alerts','Department views','Trends & reports']},
+  intellispheresuite:{name:'IntelliSphere',eyebrow:'CONNECTED BUSINESS APPLICATIONS',subtitle:'The business application layer that connects people, work, documents, finance, and marketplace services.',purpose:'One connected operating environment for the full business lifecycle.',features:['Application launchpad and cross-product navigation','Shared people, teams, permissions, and organization directory','Cross-product search, notifications, and activity feed','Integration registry and data-sharing controls','Unified reporting, audit history, and workspace preferences'],pages:['Suite overview','Applications','Shared data','Reports','Administration'],actions:['Open application catalog','Review connected systems','Configure workspace']},
+  intellistaff:{name:'IntelliStaff',eyebrow:'WORKFORCE OPERATIONS',subtitle:'Coordinate staffing demand, talent pools, assignments, onboarding, and workforce coverage.',purpose:'Connect staffing teams, hiring managers, contractors, and worker availability.',features:['Worker profiles, skills, certifications, and availability','Staffing requests, requisitions, and candidate matching','Assignment lifecycle, onboarding, and offboarding checklists','Shift scheduling, time-entry review, and coverage planning','Client accounts, staffing agreements, and workforce reports'],pages:['Workforce dashboard','Talent pool','Assignments','Scheduling & time','Clients & reports'],actions:['Create staffing request','Add worker profile','Review assignment pipeline']},
+  intelliwork:{name:'IntelliWork',eyebrow:'WORK AND PROJECT DELIVERY',subtitle:'Plan work, route requests, coordinate projects, and keep teams accountable for outcomes.',purpose:'Bring daily work and cross-functional delivery into one shared operating view.',features:['Tasks, projects, milestones, owners, and due dates','Kanban boards, work queues, and priority management','Approvals, recurring checklists, and handoff workflows','Time tracking, workload balancing, and dependencies','Portfolio dashboards, comments, and decision history'],pages:['My work','Team boards','Projects','Approvals','Reports'],actions:['Create work item','Open team board','Review overdue work']},
+  intellihire:{name:'IntelliHire',eyebrow:'TALENT ACQUISITION',subtitle:'Manage the recruiting lifecycle from job requisition through candidate selection and onboarding handoff.',purpose:'Give recruiting teams and hiring managers a consistent, auditable hiring pipeline.',features:['Job openings, requisition approvals, and hiring plans','Candidate profiles, resume tracking, and talent pools','Interview scheduling, scorecards, and feedback collection','Offer approvals, status tracking, and candidate communications','Hiring analytics, equal-opportunity reporting, and onboarding handoff'],pages:['Hiring dashboard','Jobs','Candidates','Interviews','Offers & analytics'],actions:['Create job requisition','Add candidate record','Schedule interview']},
+  intellipay:{name:'IntelliPay',eyebrow:'PAYMENTS AND FINANCIAL OPERATIONS',subtitle:'A controlled workspace for payment workflows, payroll-related operations, reconciliation, and finance reporting.',purpose:'Make financial workflows visible, reviewable, and permission-controlled.',features:['Payment requests and approval routing','Payroll preparation and approved time-entry handoff','Vendor and payee records with role-based access','Reconciliation queues, exceptions, and payment status','Period summaries, exports, and finance audit trail'],pages:['Finance overview','Payment requests','Payroll handoff','Reconciliation','Reports & controls'],actions:['Prepare payment request','Review reconciliation queue','Export finance report'],notice:'Financial execution is not connected. Do not enter bank details, payment credentials, or real payroll data in this preview.'},
+  intellitax:{name:'IntelliTax',eyebrow:'TAX DOCUMENTS AND COMPLIANCE WORKFLOWS',subtitle:'Organize tax documents, preparation checklists, review steps, deadlines, and compliance reporting.',purpose:'Provide a controlled workspace for tax-related document preparation and professional review.',features:['Tax-year folders and document intake checklists','Client or business profiles and required-document tracking','Preparation tasks, review queues, and approval checkpoints','Due-date calendar, reminders, and exception tracking','Audit trail, exportable summaries, and role-based document access'],pages:['Tax workspace','Document checklist','Preparation workflow','Deadlines & reviews','Reports & settings'],actions:['Create tax checklist','Add document task','Review upcoming deadlines'],notice:'No tax calculations, tax filing, identity verification, or transmission to tax authorities is connected. Do not enter sensitive tax or Social Security data in this preview.'},
+  intelliword:{name:'IntelliWord',eyebrow:'DOCUMENT WORKSPACE',subtitle:'Create, edit, organize, and route business documents through review and approval.',purpose:'A central place for policies, procedures, proposals, letters, and collaborative documents.',features:['Document templates and reusable branded layouts','Rich-text authoring and shared editing roadmap','Version history, comments, and review assignments','Approval workflows, signatures handoff, and retention labels','Folder organization, access controls, and document search'],pages:['Recent documents','Templates','Shared with me','Reviews & approvals','Document settings'],actions:['Create document','Browse templates','Start review workflow']},
+  intellidrive:{name:'IntelliDrive',eyebrow:'BUSINESS FILES AND SHARING',subtitle:'Organize files and folders with structured access, sharing review, versioning, and retention controls.',purpose:'Make business content easier to find while keeping sharing and ownership visible.',features:['Folder and file organization with metadata','Role-scoped sharing links and external-share review','Version history, restore points, and change notes','Retention labels, archive workflow, and ownership handoff','Search, previews, and integration handoff to Word, Excel, and Slides'],pages:['My files','Shared workspaces','Recent activity','Sharing review','Retention & settings'],actions:['Create folder','Review shared items','Open document workspace'],notice:'File storage and cross-device synchronization are not connected. Do not upload confidential or personal data to this prototype.'},
+  intelliforms:{name:'IntelliForms',eyebrow:'FORMS AND DATA COLLECTION',subtitle:'Create structured forms and surveys for onboarding, requests, reviews, and internal business processes.',purpose:'Standardize intake and approvals while making collected information traceable.',features:['Form builder with reusable fields and sections','Conditional questions and validation rules roadmap','Submission inbox, assignment, and review status','Approval steps, notifications, and response exports','Access controls, retention rules, and audit history'],pages:['Form library','Form builder','Submissions','Approvals & routing','Reports & settings'],actions:['Create form','Open submissions','Design intake workflow'],notice:'Form submissions are local preview data only. Do not collect sensitive personal, financial, medical, or authentication information here.'},
+  intelliexcel:{name:'IntelliExcel',eyebrow:'SPREADSHEETS AND ANALYTICS',subtitle:'Organize tabular data, calculate metrics, analyze operations, and build reusable reports.',purpose:'Bring spreadsheet-style analysis into the IntelliStack ecosystem.',features:['Workbooks, worksheets, tables, sorting, and filtering','Formula and function support roadmap','CSV/XLSX import-export and data validation','Charts, pivots, summaries, and operational dashboards','Protected ranges, sharing controls, and version history'],pages:['Recent workbooks','Data tables','Formulas & analysis','Charts & dashboards','Import / export'],actions:['Create workbook','Import sample data','Build report'],notice:'Spreadsheet editing and formula execution are planned capabilities; this screen is a navigable product prototype, not a full spreadsheet engine.'},
+  intellislides:{name:'IntelliSlides',eyebrow:'PRESENTATIONS AND BRIEFINGS',subtitle:'Build consistent presentations for leadership reviews, customer meetings, training, and incident briefings.',purpose:'Turn connected operational information into clear, reusable presentations.',features:['Slide templates, themes, layouts, and brand controls','Text, charts, diagrams, image, and media placeholders','Speaker notes, presenter view, and rehearsal roadmap','Comments, review requests, and version history','PDF/PPTX export roadmap and executive briefing library'],pages:['Recent decks','Templates & themes','Slide editor','Review & present','Brand library'],actions:['Create presentation','Choose a theme','Prepare executive briefing']},
+  intellistudio:{name:'IntelliStudio',eyebrow:'VISUAL PLATFORM BUILDER',subtitle:'Build and refine pages using reusable sections, containers, forms, data views, and responsive layouts.',purpose:'Give administrators a structured, visual way to shape the IntelliStack experience.',features:['Page and section tree with header-to-footer ordering','Reusable blocks, cards, tables, forms, and navigation','Responsive portrait, landscape, and desktop previews','Theme tokens, typography, color palettes, and image controls','Undo/redo, per-component save, page preview, and publish workflow'],pages:['Page library','Visual canvas','Component library','Themes & assets','Publish & history'],actions:['Open page library','Add layout section','Preview responsive layout']},
+  marketplace:{name:'Contractor / Worker / Business Marketplace',eyebrow:'BUSINESS AND TALENT MARKETPLACE',subtitle:'A multi-sided marketplace connecting businesses, independent contractors, workers, and opportunities.',purpose:'Support discovery, verified profiles, service listings, job opportunities, and engagement management.',features:['Business profiles, service categories, and verification status','Worker and contractor profiles, skills, credentials, and availability','Job posts, service requests, matching, and applications','Quotes, contracts, milestones, deliverables, and approvals','Ratings, dispute intake, marketplace messages, and reporting'],pages:['Marketplace home','Businesses','Workers & contractors','Jobs & opportunities','Engagements & contracts','Messages & reviews'],actions:['Create business profile','Post an opportunity','Browse worker directory'],notice:'Marketplace listings, identity checks, contracts, payments, and messaging are preview workflows only. Production requires verified accounts, moderation, privacy controls, and legally reviewed terms.'},
+  news:{name:'News Monitoring',eyebrow:'NEWS AND SIGNAL MONITORING',subtitle:'A role-aware monitoring workspace for IT, cybersecurity, cloud, business, markets, and company updates.',purpose:'Help teams turn relevant news into an organized signal feed rather than an unfiltered stream.',features:['Topic and source subscriptions by role or department','Priority labels for critical alerts and emerging stories','Saved articles, annotations, and follow-up assignments','Digest schedules and configurable monitoring rules','Source health, duplicate grouping, and audit history'],pages:['Live feed','Cybersecurity','Cloud & IT','Business & markets','Saved stories','Alert rules'],actions:['Add monitoring topic','Save story','Create briefing'],notice:'Feed content and alerting are not connected to live news sources in this preview.'}
+};
+function WorkspaceModulePage({moduleInfo,onNavigate}){
+ const [tab,setTab]=useState(moduleInfo.pages[0]);
+ const [notice,setNotice]=useState('');
+ const [query,setQuery]=useState('');
+ const [items,setItems]=useState([]);
+ const titleFor=(label)=>label==='Suite overview'?'Overview':label;
+ return <div className="workspace-module">
+  <div className="module-hero panel">
+   <div className="module-hero-copy"><div className="eyebrow"><span className="pulse"/> {moduleInfo.eyebrow}</div><h2>{moduleInfo.name}</h2><p>{moduleInfo.subtitle}</p><div className="module-purpose">{moduleInfo.purpose}</div><div className="module-hero-actions">{moduleInfo.actions.map((action,i)=><button key={action} className={i===0?'primary-btn':'secondary-btn'} onClick={()=>{setNotice(action+' opened in preview. No external service was contacted.');setTab(moduleInfo.pages[Math.min(i+1,moduleInfo.pages.length-1)]);}}>{i===0?<Plus size={15}/>:<ChevronRight size={15}/>} {action}</button>)}</div></div>
+   <div className="module-hero-art"><div className="module-orbit orbit-one"/><div className="module-orbit orbit-two"/><div className="module-orbit orbit-three"/><div className="module-orbit-core"><Globe2 size={34}/></div><span className="module-art-node node-a"><Zap size={14}/></span><span className="module-art-node node-b"><Database size={14}/></span><span className="module-art-node node-c"><Workflow size={14}/></span></div>
+  </div>
+  <div className="module-metrics-grid"><div className="metric-card"><div className="metric-top">Workspace status <span className="metric-icon"><Activity size={17}/></span></div><div className="metric-value">Preview</div><div className="metric-trend">Prototype environment</div></div><div className="metric-card"><div className="metric-top">Feature areas <span className="metric-icon"><Workflow size={17}/></span></div><div className="metric-value">{moduleInfo.features.length}</div><div className="metric-trend">Planned capability groups</div></div><div className="metric-card"><div className="metric-top">Workspace pages <span className="metric-icon"><LayoutDashboard size={17}/></span></div><div className="metric-value">{moduleInfo.pages.length}</div><div className="metric-trend">Module navigation map</div></div><div className="metric-card"><div className="metric-top">External connections <span className="metric-icon"><Network size={17}/></span></div><div className="metric-value">Not connected</div><div className="metric-trend">Integration required</div></div></div>
+  <div className="module-tabs" role="tablist" aria-label={moduleInfo.name+' pages'}>{moduleInfo.pages.map(page=><button role="tab" aria-selected={tab===page} key={page} className={tab===page?'active':''} onClick={()=>{setTab(page);setNotice('')}}>{page}</button>)}</div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/>{notice}<button onClick={()=>setNotice('')} aria-label="Dismiss message"><X size={14}/></button></div>}
+  {moduleInfo.notice&&<div className="demo-notice"><AlertTriangle size={16}/><span>{moduleInfo.notice}</span></div>}
+  <div className="content-grid two-col module-content-grid"><section className="panel"><div className="panel-head"><div><h3>{titleFor(tab)}</h3><p>Feature map and working entry points for this application</p></div><StatusPill kind="neutral">Preview</StatusPill></div><div className="module-feature-list">{moduleInfo.features.map((feature,i)=><div className="module-feature" key={feature}><span className="module-feature-number">{String(i+1).padStart(2,'0')}</span><div><b>{feature}</b><p>{['Workspace and record management','Role-aware actions and approval points','History, reporting, and administration'][i%3]}</p></div><ChevronRight size={15}/></div>)}</div></section><section className="panel"><div className="panel-head"><div><h3>{moduleInfo.name} workspace</h3><p>Start a local preview record or review planned workflows</p></div><span className="metric-icon"><ClipboardList size={17}/></span></div><div className="table-tools module-tools"><div className="search-box"><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search preview records…"/></div><button className="secondary-btn" onClick={()=>{setQuery('');setItems([]);setNotice('Local preview list cleared.')}}><X size={14}/> Reset</button></div><form className="module-quick-form" onSubmit={e=>{e.preventDefault();const value=query.trim();if(!value){setNotice('Enter a short label in search to create a local preview record.');return;}setItems(old=>[{id:Date.now(),label:value,at:new Date().toLocaleString()},...old]);setNotice('Added a local preview record. It is not shared with other users.');setQuery('')}}><label className="field-label">QUICK ADD · LOCAL PREVIEW</label><div className="module-quick-row"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={'Enter a '+(moduleInfo.name.includes('Marketplace')?'business, worker, or opportunity':moduleInfo.name+' item')}/><button className="primary-btn" type="submit"><Plus size={14}/> Add</button></div></form><div className="module-local-list">{items.length?items.map(item=><div className="module-local-item" key={item.id}><span className="module-local-icon"><FileText size={15}/></span><span><b>{item.label}</b><small>{item.at} · local preview record</small></span><button className="icon-btn" onClick={()=>setItems(old=>old.filter(x=>x.id!==item.id))} aria-label={'Remove '+item.label}><X size={14}/></button></div>):<div className="module-empty"><div className="service-icon"><Database size={22}/></div><b>No local preview records yet</b><p>Use the quick-add field to test the page layout. This does not create a production record.</p></div>}</div></section></div>
+  <section className="panel"><div className="panel-head"><div><h3>Connected IntelliStack workspaces</h3><p>Jump to related systems without leaving the command center</p></div></div><div className="module-related-links"><button onClick={()=>onNavigate('overview')}><LayoutDashboard size={16}/> Dashboard <ChevronRight size={14}/></button><button onClick={()=>onNavigate('integrations')}><Network size={16}/> System Integrations <ChevronRight size={14}/></button><button onClick={()=>onNavigate('users')}><Users size={16}/> Users & Role Management <ChevronRight size={14}/></button><button onClick={()=>onNavigate('calendar')}><CalendarDays size={16}/> Global Calendar <ChevronRight size={14}/></button><button onClick={()=>onNavigate('news')}><Globe2 size={16}/> News Monitoring <ChevronRight size={14}/></button></div></section>
+  <p className="privacy-note">Capability map and page navigation are prototypes. Real multi-user records, file storage, office editing, payroll/payment processing, marketplace transactions, and external connections must be implemented with authenticated services, permissions, audit trails, and appropriate provider integrations.</p>
+ </div>;
+}
+function ServiceDeskWorkspace({onNavigate,tickets}){
+ const open=tickets.filter(t=>t.status!=='Resolved').length;
+ const priorities=tickets.filter(t=>t.priority==='High'||t.priority==='Critical').length;
+ const tools=[['Request catalog','Service requests, access, equipment, onboarding, and business services.','tickets',ClipboardList],['Incident queue','Prioritized incidents, ownership, status changes, and escalation.','tickets',Ticket],['Knowledge & runbooks','Troubleshooting articles, service procedures, and approved guidance.','knowledge',BookOpen],['SLA & service levels','Response targets, aging work, breach warnings, and escalation paths.','tickets',Clock],['End-user support','Employee lookup, assigned devices, and support history.','endusers',Users],['Remote support','Device diagnostics and controlled support session entry point.','remote',MonitorCog]];
+ return <><div className="demo-notice"><Activity size={16}/><span><b>Service operations workspace.</b> Use this as the entry point for service intake and team operations; use Tickets for the full ticket queue.</span></div><div className="metrics-grid compact-metrics"><Metric icon={Ticket} label="Open work items" value={open} trend="Current sample queue"/><Metric icon={AlertTriangle} label="High / critical" value={priorities} trend="Sample priority count"/><Metric icon={Clock} label="SLA monitoring" value="Configured in UI" trend="Live timers not connected"/><Metric icon={Users} label="Support channels" value="6 areas" trend="Workspace navigation"/></div><div className="service-desk-grid">{tools.map(([title,description,target,Icon])=><button key={title} className="service-desk-card" onClick={()=>onNavigate(target)}><span className="service-desk-icon"><Icon size={20}/></span><b>{title}</b><p>{description}</p><span className="service-desk-open">Open workspace <ChevronRight size={14}/></span></button>)}</div><div className="content-grid two-col"><Panel title="Service management lifecycle" subtitle="From request to resolution"><div className="service-lifecycle">{['Intake','Classify & prioritize','Assign & investigate','Resolve & validate','Close & improve'].map((step,i)=><div key={step}><span>{String(i+1).padStart(2,'0')}</span><b>{step}</b><ChevronRight size={14}/></div>)}</div></Panel><Panel title="Operations handoffs" subtitle="Connected areas"><div className="module-related-links"><button onClick={()=>onNavigate('meetings')}><Video size={16}/> Meetings & Teams <ChevronRight size={14}/></button><button onClick={()=>onNavigate('warroom')}><Activity size={16}/> War & Breakout Rooms <ChevronRight size={14}/></button><button onClick={()=>onNavigate('noc')}><Network size={16}/> Network Operations Center <ChevronRight size={14}/></button><button onClick={()=>onNavigate('soc')}><Shield size={16}/> Security Operations Center <ChevronRight size={14}/></button></div></Panel></div><p className="privacy-note">The service desk currently uses sample/local ticket state. Shared queues, SLA timers, notifications, and integrations require production backend work.</p></>;
+}
+function OperationsCenterPage({type,onNavigate,tickets}){
+ const isSoc=type==='soc';
+ const signals=isSoc?[['Identity & access','Review','Access review and authentication events'],['Endpoint protection','Monitor','Endpoint alert intake and response status'],['Policy controls','Healthy','Control exceptions and remediation'],['Threat investigations','Open','Investigation notes and evidence']]:[['Core network','Healthy','Network availability and service dependencies'],['WAN / VPN','Monitor','Remote access and connectivity signals'],['Cloud services','Healthy','Cloud connectivity and infrastructure dependencies'],['Capacity & performance','Review','Latency, utilization, and threshold exceptions']];
+ const [selected,setSelected]=useState(signals[0][0]);
+ const [note,setNote]=useState('');
+ const [notes,setNotes]=useState([]);
+ return <><div className="demo-notice"><AlertTriangle size={16}/><span><b>Illustrative operations center.</b> No live network telemetry, security events, packet capture, or endpoint alerts are connected.</span></div><div className="metrics-grid compact-metrics"><Metric icon={Activity} label={isSoc?'Alert queue':'Service signals'} value={isSoc?'4 sample signals':'4 sample signals'} trend="Illustrative only"/><Metric icon={AlertTriangle} label="Needs review" value={isSoc?'2':'2'} trend="Synthetic records"/><Metric icon={Ticket} label="Linked open tickets" value={tickets.filter(t=>t.status!=='Resolved').length} trend="Shared sample ticket state"/><Metric icon={Users} label="Response coverage" value="Team roster UI" trend="On-call integrations pending"/></div><div className="content-grid two-col"><Panel title={isSoc?'Security signal triage':'Network service overview'} subtitle={isSoc?'Prioritize security work and investigation handoffs':'Review network services and operational follow-up'}><div className="center-signal-list">{signals.map(([name,status,description])=><button key={name} className={'center-signal '+(selected===name?'selected':'')} onClick={()=>setSelected(name)}><span className={'center-signal-mark '+(status==='Review'||status==='Open'?'warn':'')}>{isSoc?<Shield size={17}/>:<Network size={17}/>}</span><span><b>{name}</b><small>{description}</small></span><StatusPill kind={status==='Healthy'?'good':status==='Review'||status==='Open'?'warn':'neutral'}>{status}</StatusPill></button>)}</div></Panel><Panel title={selected} subtitle="Signal details and response notes"><div className="detail-block"><span>SELECTED SIGNAL</span><b>{selected}</b></div><div className="detail-block"><span>RECOMMENDED HANDOFF</span><p>{isSoc?'Validate severity, preserve evidence, assign an incident owner, and follow the approved response playbook.':'Validate service impact, check dependencies, assign an owner, and record any change or maintenance context.'}</p></div><label className="field-label">OPERATOR NOTE</label><textarea className="center-note-input" value={note} onChange={e=>setNote(e.target.value)} placeholder="Record a local observation or handoff note…"/><button className="primary-btn full" onClick={()=>{if(!note.trim())return;setNotes(old=>[{id:Date.now(),signal:selected,note:note.trim(),at:new Date().toLocaleString()},...old]);setNote('')}}><Plus size={15}/> Add local note</button>{notes.filter(n=>n.signal===selected).map(n=><div className="center-note" key={n.id}><b>{n.signal}</b><p>{n.note}</p><small>{n.at} · local preview</small></div>)}<button className="secondary-btn full" onClick={()=>onNavigate('warroom')}><Activity size={15}/> Open War & Breakout Rooms</button><button className="secondary-btn full" onClick={()=>onNavigate('tickets')}><Ticket size={15}/> Review tickets</button></Panel></div><p className="privacy-note">Production operations require authenticated event sources, tested alert rules, role-scoped access, immutable audit records, escalation policies, and validated incident procedures.</p></>;
+}
+
+function ProfileWorkspace({theme,setTheme,favorites,setFavorites,quickActions,setQuickActions,recentScreens,setRecentScreens,screenDefs,onNavigate,displayName,setDisplayName,accent,setAccent}){
+ const [email,setEmail]=useState(()=>{try{return localStorage.getItem('intellistack.profileEmail')||''}catch{return ''}}); const [jobTitle,setJobTitle]=useState(()=>{try{return localStorage.getItem('intellistack.profileTitle')||'Super Admin'}catch{return 'Super Admin'}}); const [department,setDepartment]=useState(()=>{try{return localStorage.getItem('intellistack.profileDepartment')||'Executive Leadership'}catch{return 'Executive Leadership'}});
+ const [tab,setTab]=useState('profile');
+ const items=screenDefs.filter(x=>!['profile','maximus','optimus'].includes(x.id));
+ const recent=recentScreens.map(id=>items.find(x=>x.id===id)).filter(Boolean);
+ const toggle=(list,setList,id)=>setList(old=>old.includes(id)?old.filter(x=>x!==id):[...old,id]);
+ return <div className="profile-workspace"><div className="profile-hero"><div><div className="eyebrow">PERSONAL WORKSPACE</div><h2>{displayName||'My Profile'}</h2><p>Customize your profile, dashboard, colors, favorites, and shortcuts.</p></div><button className="secondary-btn" onClick={()=>onNavigate('overview')}>Back to Dashboard</button></div>
+ <div className="profile-tabs">{[['profile','Profile'],['appearance','Appearance'],['favorites','Favorites bar'],['quick','Quick actions'],['recent','Recently used']].map(([id,label])=><button key={id} className={tab===id?'active':''} onClick={()=>setTab(id)}>{label}</button>)}</div>
+ {tab==='profile'&&<section className="panel profile-panel"><h3>Profile preferences</h3><label className="profile-field">Display name<input value={displayName} onChange={e=>setDisplayName(e.target.value)} placeholder="Your display name"/></label><label className="profile-field">Work email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="admin@company.com"/></label><label className="profile-field">Job title<input value={jobTitle} onChange={e=>setJobTitle(e.target.value)}/></label><label className="profile-field">Department<input value={department} onChange={e=>setDepartment(e.target.value)}/></label><button className="primary-btn" onClick={()=>{try{localStorage.setItem("intellistack.profileEmail",email);localStorage.setItem("intellistack.profileTitle",jobTitle);localStorage.setItem("intellistack.profileDepartment",department)}catch{}}}>Save master profile</button><p className="privacy-note">Preferences are saved in this browser prototype. Production profile data should be tied to authenticated accounts.</p></section>}
+ {tab==='appearance'&&<section className="panel profile-panel"><h3>Appearance & brightness</h3><p>Choose the dashboard look that works best for you.</p><div className="theme-choice-grid">{[['dark','Dark control room'],['light','Bright light theme'],['vivid','Vivid contrast']].map(([id,label])=><button key={id} className={'theme-choice '+(theme===id?'selected':'')} onClick={()=>setTheme(id)}><span className={'theme-preview theme-preview-'+id}></span><b>{label}</b>{theme===id&&<small>Currently selected</small>}</button>)}</div><h3>Accent color</h3><div className="accent-options">{[['cyan','Cyan'],['blue','Blue'],['purple','Purple'],['green','Green'],['amber','Amber']].map(([id,label])=><button key={id} className={'accent-swatch accent-'+id+(accent===id?' selected':'')} onClick={()=>setAccent(id)}><span></span>{label}</button>)}</div></section>}
+ {tab==='favorites'&&<section className="panel profile-panel"><h3>Favorites bar</h3><p>Pin your most-used pages to the dashboard.</p><div className="profile-option-list">{items.map(item=><label key={item.id}><input type="checkbox" checked={favorites.includes(item.id)} onChange={()=>toggle(favorites,setFavorites,item.id)}/><span><b>{item.label}</b><small>{item.group}</small></span></label>)}</div></section>}
+ {tab==='quick'&&<section className="panel profile-panel"><h3>Quick actions</h3><p>Select shortcuts for your personal dashboard.</p><div className="profile-option-list">{items.map(item=><label key={item.id}><input type="checkbox" checked={quickActions.includes(item.id)} onChange={()=>toggle(quickActions,setQuickActions,item.id)}/><span><b>{item.label}</b><small>{item.description}</small></span></label>)}</div></section>}
+ {tab==='recent'&&<section className="panel profile-panel"><h3>Recently used</h3>{recent.length?recent.map(item=><button className="recent-page-row" key={item.id} onClick={()=>onNavigate(item.id)}><span><b>{item.label}</b><small>{item.group}</small></span><span>Open →</span></button>):<p>No recent pages yet. Open a workspace and it will appear here.</p>}<button className="secondary-btn" onClick={()=>setRecentScreens([])}>Clear recently used</button></section>}</div>;
+}
 function App(){
   const [session,setSession]=useState(null);
+  const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('intellistack.theme')||'dark'}catch{return 'dark'}});
+  const [accent,setAccent]=useState(()=>{try{return localStorage.getItem('intellistack.accent')||'cyan'}catch{return 'cyan'}});
+  const [displayName,setDisplayName]=useState(()=>{try{return localStorage.getItem('intellistack.displayName')||'Master Admin'}catch{return 'Master Admin'}});
+  const [favorites,setFavorites]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.favorites')||'["tickets","intellichat","email","knowledge","intellistudio"]')}catch{return ['tickets','intellichat','email','knowledge','intellistudio']}});
+  const [quickActions,setQuickActions]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.quickActions')||'["tickets","intellichat","email","calendar"]')}catch{return ['tickets','intellichat','email','calendar']}});
+  const [recentScreens,setRecentScreens]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.recentScreens')||'[]')}catch{return []}});
+  const [clockNow,setClockNow]=useState(()=>Date.now());
+  const [profileEmail,setProfileEmail]=useState(()=>{try{return localStorage.getItem('intellistack.profileEmail')||''}catch{return ''}});
+  const [profileTitle,setProfileTitle]=useState(()=>{try{return localStorage.getItem('intellistack.profileTitle')||'Super Admin'}catch{return 'Super Admin'}});
+  const [profileDepartment,setProfileDepartment]=useState(()=>{try{return localStorage.getItem('intellistack.profileDepartment')||'Executive Leadership'}catch{return 'Executive Leadership'}});
+  useEffect(()=>{const timer=setInterval(()=>setClockNow(Date.now()),1000);return ()=>clearInterval(timer)},[]);
+  useEffect(()=>{try{localStorage.setItem('intellistack.profileEmail',profileEmail);localStorage.setItem('intellistack.profileTitle',profileTitle);localStorage.setItem('intellistack.profileDepartment',profileDepartment)}catch{}},[profileEmail,profileTitle,profileDepartment]);
+  useEffect(()=>{try{localStorage.setItem('intellistack.theme',theme);localStorage.setItem('intellistack.accent',accent);localStorage.setItem('intellistack.displayName',displayName);localStorage.setItem('intellistack.favorites',JSON.stringify(favorites));localStorage.setItem('intellistack.quickActions',JSON.stringify(quickActions));localStorage.setItem('intellistack.recentScreens',JSON.stringify(recentScreens))}catch{}},[theme,accent,displayName,favorites,quickActions,recentScreens]);
+  useEffect(()=>{document.documentElement.dataset.theme=theme;document.documentElement.dataset.accent=accent},[theme,accent]);
   const [activeScreen,setActiveScreen]=useState('overview');
   const [tickets,setTickets]=useState(initialTickets);
   const [endUsers,setEndUsers]=useState(initialEndUsers);
   const [devices,setDevices]=useState(labDevices);
   const [mobileNav,setMobileNav]=useState(false);
+  const [expandedNavGroups,setExpandedNavGroups]=useState({'Command Center':true,'Service Operations':true,'Administration':true,'Collaboration':true,'Platform & Governance':false,'Operations Centers':true,'IntelliSphere Suite':true,'Marketplace':true,'AI Assistants':false,'Communication & Collaboration':true,'Identity & Access':true,'Enterprise Departments':false});
   const [globalSearch,setGlobalSearch]=useState('');
   const [floatingAssistant,setFloatingAssistant]=useState(null);
   const currentRole=session||'Super Admin';
@@ -457,6 +1012,7 @@ function App(){
   const roleScreens=screenDefs;
   const currentScreen=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
   const navigate=(id)=>{
+    setRecentScreens(old=>[id,...old.filter(x=>x!==id)].slice(0,8));
     setActiveScreen(id);
     setMobileNav(false);
     setFloatingAssistant(null);
@@ -464,17 +1020,31 @@ function App(){
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
+    if(activeScreen==='secure-browser') return <BrowserSecurityWorkspace favorites={favorites} setFavorites={setFavorites} screenDefs={screenDefs} onNavigate={navigate}/>;
+    if(activeScreen==='profile') return <ProfileWorkspace theme={theme} setTheme={setTheme} favorites={favorites} setFavorites={setFavorites} quickActions={quickActions} setQuickActions={setQuickActions} recentScreens={recentScreens} setRecentScreens={setRecentScreens} screenDefs={screenDefs} onNavigate={navigate} displayName={displayName} setDisplayName={setDisplayName} accent={accent} setAccent={setAccent}/>;
     if(!allowedScreens.has(activeScreen)){
       const locked=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
       return <Panel title={locked.label} subtitle={locked.description}><div className="empty-state role-locked-state"><div className="service-icon"><LockKeyhole size={24}/></div><h3>Access restricted</h3><p><b>{locked.label}</b> is not included in the <b>{currentRole}</b> role.</p><p className="privacy-note">This screen remains visible for command-center inspection, but its controls are locked for this role.</p><button className="primary-btn" onClick={()=>navigate('overview')}>Return to allowed workspace →</button></div></Panel>;
     }
-    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
+
+    if(activeScreen==='knowledge') return <KnowledgeBasePage onNavigate={navigate}/>;
+    if(activeScreen==='intellichat') return <IntelliChatPage onNavigate={navigate}/>;
+    if(activeScreen==='intellistackid') return <IntelliStackIdentityPage endUsers={endUsers} onNavigate={navigate}/>;
+    if(activeScreen.startsWith('dept-')) return <DepartmentWorkspacePage screen={currentScreen} onNavigate={navigate}/>;
+    if(activeScreen==='servicedesk') return <ServiceDeskWorkspace onNavigate={navigate} tickets={tickets}/>;
+    if(activeScreen==='noc') return <OperationsCenterPage type="noc" onNavigate={navigate} tickets={tickets}/>;
+    if(activeScreen==='soc') return <OperationsCenterPage type="soc" onNavigate={navigate} tickets={tickets}/>;
+    if(suiteModules[activeScreen]) return <WorkspaceModulePage moduleInfo={suiteModules[activeScreen]} onNavigate={navigate}/>;
+    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs} currentRole={currentRole}/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
     if(activeScreen==='maximus') return <AssistantPage assistant="maximus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen==='optimus') return <AssistantPage assistant="optimus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen==='integrations') return <IntegrationsPage/>;
+    if(activeScreen==='calendar') return <CalendarPage/>;
+    if(activeScreen==='meetings') return <MeetingsCenterPage onNavigate={navigate}/>;
+    if(activeScreen==='email') return <EmailCenterPage onNavigate={navigate}/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
@@ -482,13 +1052,13 @@ function App(){
     return <Panel title={currentScreen.label} subtitle={currentScreen.description}><div className="empty-state"><div className="service-icon"><currentScreen.icon size={24}/></div><h3>{currentScreen.label}</h3><p>This section is represented in the command-center navigation, but its full workflow has not been implemented in this build yet.</p><p className="privacy-note">Preview workspace · no live services or production systems are connected.</p><button className="primary-btn" onClick={()=>navigate(currentRole==='Help Desk Agent'?'tickets':'overview')}>Return to {currentRole==='Help Desk Agent'?'Service Desk':'Command Center'} →</button></div></Panel>;
   };
   if(!session) return <Login onLogin={login}/>;
-  return <div className="app-shell">
+  return <div className={'app-shell theme-'+theme+' accent-'+accent}>
     <aside className={'sidebar '+(mobileNav?'mobile-open':'')}>
       <div className="sidebar-brand"><div className="sidebar-brand-content"><Brand/><div className="brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</div></div><button className="top-icon mobile-menu sidebar-close-button" onClick={()=>setMobileNav(false)} aria-label="Close navigation"><X size={17}/></button></div>
       <div className="workspace-label">WORKSPACE</div>
       <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch system role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
       <div className="nav-section-title">{currentRole.toUpperCase()}</div>
-      <nav className="side-nav"><div className="nav-section-title">ALL WORKSPACES</div>{screenDefs.map(item=>{const Icon=item.icon;const allowed=allowedScreens.has(item.id);return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')+' '+(!allowed?'locked':'')} onClick={()=>navigate(item.id)} aria-disabled={!allowed} title={allowed?'Open '+item.label:'Locked for '+currentRole}><Icon size={17}/><span>{item.label}</span>{!allowed&&<LockKeyhole size={12} className="nav-lock"/>}{item.id==='tickets'&&allowed&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}</nav>
+      <nav className="side-nav grouped-side-nav"><div className="nav-section-title">WORKSPACE NAVIGATION</div>{[...navGroupOrder.filter(group=>screenDefs.some(item=>item.group===group)), ...[...new Set(screenDefs.map(item=>item.group))].filter(group=>!navGroupOrder.includes(group))].map(group=>{const groupItems=screenDefs.filter(item=>item.group===group);const expanded=!!expandedNavGroups[group];const groupActive=groupItems.some(item=>item.id===activeScreen);return <section className={'nav-group '+(groupActive?'has-active':'')} key={group}><button className={'nav-group-toggle '+(groupActive?'group-active':'')} onClick={()=>setExpandedNavGroups(old=>({...old,[group]:!old[group]}))} aria-expanded={expanded}><span>{group}</span><small>{groupItems.length}</small><ChevronDown size={14} className={expanded?'expanded':''}/></button>{expanded&&<div className="nav-group-items">{groupItems.map(item=>{const Icon=item.icon;const allowed=allowedScreens.has(item.id);return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')+(!allowed?' locked':'')} onClick={()=>navigate(item.id)} aria-disabled={!allowed} title={allowed?'Open '+item.label:'Locked for '+currentRole}><Icon size={16}/><span>{item.label}</span>{!allowed&&<LockKeyhole size={12} className="nav-lock"/>}{item.id==='tickets'&&allowed&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}</div>}</section>;})}</nav>
       <div className="nav-section-title assistant-nav-title">AI ASSISTANTS</div><nav className="side-nav assistant-side-nav"><button className={'nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus AI</span><small className="assistant-nav-status">READY</small></button><button className={'nav-link '+(activeScreen==='optimus'?'active':'')} onClick={()=>navigate('optimus')}><Sparkles size={17}/><span>Optimus</span><small className="assistant-nav-status">READY</small></button></nav>
       <div className="sidebar-spacer"/>
       <div className="ai-shortcuts"><button onClick={()=>navigate('maximus')}><span className="ai-mini blue"><Bot size={16}/></span><span><b>Maximus AI</b><small>Operations assistant · ready</small></span><ChevronDown size={14}/></button><button onClick={()=>navigate('optimus')}><span className="ai-mini purple"><Sparkles size={16}/></span><span><b>Optimus</b><small>Command assistant · ready</small></span><ChevronDown size={14}/></button></div>
@@ -496,8 +1066,8 @@ function App(){
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
-      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
-      <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
+      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('calendar')}><CalendarDays size={15}/> Calendar</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action theme-toggle" onClick={()=>setTheme(theme==='dark'?'light':theme==='light'?'vivid':'dark')}>Appearance: {theme}</button><button className="header-action" onClick={()=>navigate('profile')}>My Profile</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
+      <div className="page-content"><section className="workspace-profile-strip"><button className="workspace-profile-summary" onClick={()=>navigate('profile')}><span className="master-avatar"><UserCog size={18}/></span><span><small>MASTER PROFILE · {currentRole.toUpperCase()}</small><b>{displayName}</b><em>{profileTitle} · {profileDepartment}</em></span><Settings size={15}/></button><div className="workspace-profile-prefs"><span><b>Appearance</b><small>{theme==='dark'?'Dark':theme==='light'?'Bright light':'Vivid contrast'} · {accent} accent</small></span><button onClick={()=>navigate('profile')}>Preferences</button></div></section><section className="workspace-news-feed"><div className="workspace-news-title"><Newspaper size={16}/><b>News feed</b><button onClick={()=>navigate('news')}>View all news →</button></div><div className="workspace-news-items"><article><small>PLATFORM UPDATE</small><b>IntelliSphere workspace hub</b><span>Keep business apps, collaboration, and service tools together.</span></article><article><small>SECURITY AWARENESS</small><b>Review access and account hygiene</b><span>Check role access and follow your organization's reporting procedures.</span></article><article><small>OPERATIONS</small><b>Service desk and knowledge resources</b><span>Use tickets and approved knowledge articles to track work.</span></article></div></section><section className="workspace-world-clock"><div className="world-clock-heading"><Clock size={16}/><b>World clock</b><small>Live local times</small></div>{[['Chicago','America/Chicago'],['New York','America/New_York'],['London','Europe/London'],['Dubai','Asia/Dubai'],['Singapore','Asia/Singapore'],['Tokyo','Asia/Tokyo'],['Sydney','Australia/Sydney']].map(([city,tz])=><div className="world-clock-city" key={tz}><span>{city}</span><b>{new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true}).format(clockNow)}</b><small>{new Intl.DateTimeFormat('en-US',{timeZone:tz,weekday:'short',month:'short',day:'numeric'}).format(clockNow)}</small></div>)}</section><div className="dashboard-favorites-bar"><b>★ Favorites</b>{favorites.slice(0,7).map(id=>{const item=screenDefs.find(x=>x.id===id);return item?<button key={id} onClick={()=>navigate(id)}>{item.label}</button>:null})}<button onClick={()=>navigate('profile')}>Edit</button></div><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
     </main>
   </div>;
 }

@@ -1,4 +1,4 @@
-IntelliStack Systems — Maximus Optimus Command Center
+IntelliStack Systems — Optimus Maximus Command Center
 A responsive React + Vite portfolio demo for a fictional enterprise IT command center. All identities, metrics, tickets, audit events, connector statuses, and device states are synthetic. No production systems or real remote devices are connected.
 Included workspaces and screens
 Super Admin
@@ -45,3 +45,15 @@ intellistack-portfolio/
     └── styles.css
 About scale claims
 User counts, availability figures, volumes, and operational KPIs are illustrative target-state portfolio values—not real customer counts or measured service levels. A production system intended for million-user scale requires architecture design, durable data services, identity integration, server-enforced authorization, observability, load testing, and security review. Role switching in this demo is for exploration only and is not an access-control boundary.
+
+
+## Optimus Maximus naming and agent model
+
+**Optimus Maximus Command Center** is the umbrella operations environment for IntelliStack Systems. **Optimus** and **Maximus** are two distinct, cooperating AI agents within that environment—not separate products that replace the command center.
+
+- **Optimus — technical intelligence:** supports technical investigation, incident triage, service and infrastructure analysis, and troubleshooting guidance.
+- **Maximus — strategic intelligence:** supports operational prioritization, business-impact framing, governance considerations, and executive decision support.
+- **Together:** the agents connect technical findings to operational priorities while the command center remains the shared workspace and source of navigation.
+- **Human control:** agent suggestions and any future tool actions must remain subject to the signed-in user's server-enforced permissions, policy checks, audit trails, and approval requirements. UI-only role controls are not a security boundary.
+
+The current AI assistant behavior is a scripted prototype. This naming and responsibility model documents product direction; it does not claim that production AI services, live integrations, or privileged execution are connected.
