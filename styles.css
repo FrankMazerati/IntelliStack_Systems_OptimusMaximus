@@ -781,3 +781,49 @@
 .app-shell.theme-crimson{--bg:#200d14;--panel:#30131e;--panel2:#411a29;--border:rgba(255,82,108,.27);--muted:#d2a2ae;--text:#fff1f4;--cyan:#ff526c;--purple:#ff8eaa;background-image:radial-gradient(ellipse at 88% 0%,rgba(255,40,81,.14),transparent 42%)}
 .app-shell.theme-crimson .sidebar{background:#280e18}.app-shell.theme-crimson .topbar{background:rgba(32,13,20,.96)}.app-shell.theme-crimson .nav-link.active{background:rgba(255,82,108,.14);color:#ffd9e0}.app-shell.theme-crimson .panel{box-shadow:0 8px 26px rgba(0,0,0,.14)}
 .theme-selected-label{color:var(--cyan);font-weight:700}
+
+
+/* Top-level Theme Studio: preview, apply, and save without leaving the workspace. */
+.app-shell.theme-white{--bg:#ffffff;--panel:#ffffff;--panel2:#f7f9fc;--border:rgba(26,45,72,.15);--muted:#59677b;--text:#172033;--cyan:#2563eb;--purple:#7c3aed;background:#fff;color:#172033}
+.app-shell.theme-white .sidebar,.app-shell.theme-white .topbar{background:#fff}
+.app-shell.theme-white .sidebar{border-right:1px solid #e6eaf0}
+.app-shell.theme-white .topbar{border-bottom:1px solid #e6eaf0}
+.app-shell.theme-white .brand-name,.app-shell.theme-white .brand-tag,.app-shell.theme-white .role-switch select,.app-shell.theme-white .global-search input,.app-shell.theme-white .topbar-current-page{color:#172033}
+.app-shell.theme-white .global-search,.app-shell.theme-white .search-box,.app-shell.theme-white .role-switch{background:#fff;border-color:#dce2eb;color:#334155}
+.app-shell.theme-white .nav-link{color:#475569}
+.app-shell.theme-white .nav-link.active{background:#eff6ff;color:#1d4ed8}
+.app-shell.theme-white .panel,.app-shell.theme-white .workspace-profile-summary,.app-shell.theme-white .workspace-profile-prefs{box-shadow:0 5px 20px rgba(15,23,42,.045)}
+.app-shell.theme-aurora{--bg:#091724;--panel:#102735;--panel2:#173746;--border:rgba(111,245,219,.24);--muted:#b1cbd1;--text:#f0fffd;--cyan:#6ff5db;--purple:#c4a1ff;background-image:radial-gradient(ellipse at 10% 0%,rgba(77,230,194,.13),transparent 38%),radial-gradient(ellipse at 90% 0%,rgba(165,112,255,.14),transparent 42%)}
+.app-shell.theme-aurora .sidebar{background:#0b1d2b}.app-shell.theme-aurora .topbar{background:rgba(9,23,36,.96)}.app-shell.theme-aurora .nav-link.active{background:rgba(111,245,219,.12);color:#d5fff8}
+.app-shell.theme-teal{--bg:#071c22;--panel:#0c2b32;--panel2:#123a42;--border:rgba(45,212,191,.26);--muted:#a3c9cd;--text:#efffff;--cyan:#2dd4bf;--purple:#60a5fa;background-image:radial-gradient(ellipse at 88% 0%,rgba(45,212,191,.14),transparent 42%)}
+.app-shell.theme-teal .sidebar{background:#08232a}.app-shell.theme-teal .topbar{background:rgba(7,28,34,.96)}.app-shell.theme-teal .nav-link.active{background:rgba(45,212,191,.14);color:#c9fff7}
+.app-shell.theme-rose{--bg:#21121d;--panel:#301b2a;--panel2:#402437;--border:rgba(251,113,164,.25);--muted:#d6b2c2;--text:#fff4fa;--cyan:#fb7185;--purple:#d8a4ff;background-image:radial-gradient(ellipse at 88% 0%,rgba(244,114,182,.14),transparent 42%)}
+.app-shell.theme-rose .sidebar{background:#281522}.app-shell.theme-rose .topbar{background:rgba(33,18,29,.96)}.app-shell.theme-rose .nav-link.active{background:rgba(251,113,164,.13);color:#ffe0ef}
+.app-shell.accent-orange{--cyan:#fb923c}
+.app-shell.accent-rose{--cyan:#fb7185}
+.theme-preview-white{background:linear-gradient(135deg,#fff 0%,#fff 65%,#dbeafe 100%)}
+.theme-preview-aurora{background:linear-gradient(125deg,#091724,#1b766f,#9272d2)}
+.theme-preview-teal{background:linear-gradient(125deg,#071c22,#0f6972,#2dd4bf)}
+.theme-preview-rose{background:linear-gradient(125deg,#21121d,#873d67,#fb7185)}
+.theme-studio-action{border-color:rgba(0,212,255,.48)!important;background:linear-gradient(135deg,rgba(0,212,255,.14),rgba(128,95,255,.13))!important;color:var(--text)!important}
+.theme-studio-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(3,8,18,.76);backdrop-filter:blur(10px)}
+.theme-studio-modal{width:min(1080px,100%);max-height:min(92vh,920px);overflow:auto;padding:24px;border:1px solid var(--border);border-radius:20px;background:var(--panel);color:var(--text);box-shadow:0 28px 100px rgba(0,0,0,.4)}
+.theme-studio-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:22px}
+.theme-studio-heading h2{margin:5px 0 7px;font-size:25px;letter-spacing:-.6px}
+.theme-studio-heading p,.theme-studio-footer p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.theme-studio-close{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text)}
+.theme-studio-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 10px}
+.theme-studio-section-title b{font-size:13px}
+.theme-studio-section-title span{font-size:10px;color:var(--muted)}
+.theme-studio-grid{grid-template-columns:repeat(5,minmax(0,1fr));margin:0}
+.theme-studio-grid .theme-choice{min-width:0;padding:10px;gap:7px}
+.theme-studio-grid .theme-choice b{font-size:11px}
+.theme-studio-grid .theme-choice small{font-size:10px;line-height:1.4}
+.theme-studio-grid .theme-preview{height:48px}
+.theme-studio-accents{margin:10px 0 18px}
+.theme-studio-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-top:16px;border-top:1px solid var(--border)}
+.theme-studio-footer>p{max-width:390px}
+.theme-studio-footer>div{display:flex;justify-content:flex-end;align-items:center;gap:9px;flex-wrap:wrap}
+.theme-studio-footer .primary-btn,.theme-studio-footer .secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+@media(max-width:900px){.theme-studio-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.theme-studio-overlay{padding:8px;align-items:flex-start}.theme-studio-modal{max-height:96vh;padding:15px;border-radius:14px}.theme-studio-heading h2{font-size:21px}.theme-studio-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.theme-studio-footer{align-items:stretch;flex-direction:column}.theme-studio-footer>div{display:grid;grid-template-columns:1fr}.theme-studio-footer .primary-btn,.theme-studio-footer .secondary-btn{width:100%}}
