@@ -76,6 +76,57 @@ const screenDefs = [
   {id:'maximus',label:'Maximus AI Assistant',group:'AI Assistants',icon:Bot,description:'Operations assistant for troubleshooting, platform guidance, and support knowledge.'},
   {id:'optimus',label:'Optimus Command Assistant',group:'AI Assistants',icon:Sparkles,description:'Command assistant for users, devices, security, audit, and integration workflows.'},
 ];
+
+// Reorganized around the 12 command-center navigation areas requested for the platform.
+// Existing pages remain available as nested links within the closest operational center.
+const navGroupOrder = [
+  'Command Dashboard',
+  'Identity & User Management',
+  'Device & Asset Management',
+  'Service Desk',
+  'Remote Support',
+  'Integrations Center',
+  'Automation Center',
+  'Governance & Compliance',
+  'Security Operations',
+  'Maximus AI & Optimus',
+  'Analytics & Reporting',
+  'System Administration',
+  'Communication & Collaboration',
+  'IntelliSphere Applications',
+  'Enterprise Departments',
+  'Marketplace'
+];
+const navGroupByScreen = {
+  overview: 'Command Dashboard',
+  users: 'Identity & User Management', endusers: 'Identity & User Management', intellistackid: 'Identity & User Management',
+  devices: 'Device & Asset Management', infrastructure: 'Device & Asset Management',
+  servicedesk: 'Service Desk', tickets: 'Service Desk', knowledge: 'Service Desk',
+  remote: 'Remote Support',
+  integrations: 'Integrations Center', intellilink: 'Integrations Center',
+  automation: 'Automation Center', builder: 'Automation Center',
+  governance: 'Governance & Compliance', security: 'Governance & Compliance', audit: 'Governance & Compliance',
+  soc: 'Security Operations', noc: 'Security Operations', status: 'Security Operations', warroom: 'Security Operations',
+  maximus: 'Maximus AI & Optimus', optimus: 'Maximus AI & Optimus',
+  intellivision: 'Analytics & Reporting', news: 'Analytics & Reporting',
+  calendar: 'System Administration', meetings: 'System Administration', email: 'System Administration',
+  intellichat: 'Communication & Collaboration',
+  intellispheresuite: 'IntelliSphere Applications', intellistaff: 'IntelliSphere Applications', intelliwork: 'IntelliSphere Applications',
+  intellihire: 'IntelliSphere Applications', intellipay: 'IntelliSphere Applications', intellitax: 'IntelliSphere Applications',
+  intelliword: 'IntelliSphere Applications', intellidrive: 'IntelliSphere Applications', intelliforms: 'IntelliSphere Applications',
+  intelliexcel: 'IntelliSphere Applications', intellislides: 'IntelliSphere Applications', intellistudio: 'IntelliSphere Applications',
+  marketplace: 'Marketplace'
+};
+screenDefs.forEach(item => {
+  if (navGroupByScreen[item.id]) item.group = navGroupByScreen[item.id];
+  if (item.id === 'overview') item.label = 'Command Dashboard';
+  if (item.id === 'devices') item.label = 'Device & Asset Management';
+  if (item.id === 'users') item.label = 'Identity & User Management';
+  if (item.id === 'integrations') item.label = 'Integrations Center';
+  if (item.id === 'automation') item.label = 'Automation Center';
+  if (item.id === 'governance') item.label = 'Governance & Compliance';
+  if (item.id === 'soc') item.label = 'Security Operations';
+});
 const rolePermissions = {
   'Super Admin': new Set(screenDefs.map(s=>s.id)),
   'Help Desk Agent': new Set(['overview','servicedesk','tickets','endusers','knowledge','status','calendar','meetings','email','news','intelliwork']),
@@ -812,7 +863,7 @@ function App(){
       <div className="workspace-label">WORKSPACE</div>
       <div className="role-switch"><ShieldCheck size={17}/><select value={currentRole} onChange={e=>login(e.target.value)} aria-label="Switch system role">{roles.map(r=><option key={r}>{r}</option>)}</select><ChevronDown size={14}/></div>
       <div className="nav-section-title">{currentRole.toUpperCase()}</div>
-      <nav className="side-nav grouped-side-nav"><div className="nav-section-title">WORKSPACE NAVIGATION</div>{[...new Set(screenDefs.map(item=>item.group))].map(group=>{const groupItems=screenDefs.filter(item=>item.group===group);const expanded=!!expandedNavGroups[group];const groupActive=groupItems.some(item=>item.id===activeScreen);return <section className={'nav-group '+(groupActive?'has-active':'')} key={group}><button className={'nav-group-toggle '+(groupActive?'group-active':'')} onClick={()=>setExpandedNavGroups(old=>({...old,[group]:!old[group]}))} aria-expanded={expanded}><span>{group}</span><small>{groupItems.length}</small><ChevronDown size={14} className={expanded?'expanded':''}/></button>{expanded&&<div className="nav-group-items">{groupItems.map(item=>{const Icon=item.icon;const allowed=allowedScreens.has(item.id);return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')+(!allowed?' locked':'')} onClick={()=>navigate(item.id)} aria-disabled={!allowed} title={allowed?'Open '+item.label:'Locked for '+currentRole}><Icon size={16}/><span>{item.label}</span>{!allowed&&<LockKeyhole size={12} className="nav-lock"/>}{item.id==='tickets'&&allowed&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}</div>}</section>;})}</nav>
+      <nav className="side-nav grouped-side-nav"><div className="nav-section-title">WORKSPACE NAVIGATION</div>{[...navGroupOrder.filter(group=>screenDefs.some(item=>item.group===group)), ...[...new Set(screenDefs.map(item=>item.group))].filter(group=>!navGroupOrder.includes(group))].map(group=>{const groupItems=screenDefs.filter(item=>item.group===group);const expanded=!!expandedNavGroups[group];const groupActive=groupItems.some(item=>item.id===activeScreen);return <section className={'nav-group '+(groupActive?'has-active':'')} key={group}><button className={'nav-group-toggle '+(groupActive?'group-active':'')} onClick={()=>setExpandedNavGroups(old=>({...old,[group]:!old[group]}))} aria-expanded={expanded}><span>{group}</span><small>{groupItems.length}</small><ChevronDown size={14} className={expanded?'expanded':''}/></button>{expanded&&<div className="nav-group-items">{groupItems.map(item=>{const Icon=item.icon;const allowed=allowedScreens.has(item.id);return <button key={item.id} className={'nav-link '+(activeScreen===item.id?'active':'')+(!allowed?' locked':'')} onClick={()=>navigate(item.id)} aria-disabled={!allowed} title={allowed?'Open '+item.label:'Locked for '+currentRole}><Icon size={16}/><span>{item.label}</span>{!allowed&&<LockKeyhole size={12} className="nav-lock"/>}{item.id==='tickets'&&allowed&&<small className="nav-count">{tickets.filter(t=>t.status!=='Resolved').length}</small>}</button>;})}</div>}</section>;})}</nav>
       <div className="nav-section-title assistant-nav-title">AI ASSISTANTS</div><nav className="side-nav assistant-side-nav"><button className={'nav-link '+(activeScreen==='maximus'?'active':'')} onClick={()=>navigate('maximus')}><Bot size={17}/><span>Maximus AI</span><small className="assistant-nav-status">READY</small></button><button className={'nav-link '+(activeScreen==='optimus'?'active':'')} onClick={()=>navigate('optimus')}><Sparkles size={17}/><span>Optimus</span><small className="assistant-nav-status">READY</small></button></nav>
       <div className="sidebar-spacer"/>
       <div className="ai-shortcuts"><button onClick={()=>navigate('maximus')}><span className="ai-mini blue"><Bot size={16}/></span><span><b>Maximus AI</b><small>Operations assistant · ready</small></span><ChevronDown size={14}/></button><button onClick={()=>navigate('optimus')}><span className="ai-mini purple"><Sparkles size={16}/></span><span><b>Optimus</b><small>Command assistant · ready</small></span><ChevronDown size={14}/></button></div>
