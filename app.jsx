@@ -45,6 +45,7 @@ const roleDescriptions = {
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Command Center',icon:LayoutDashboard,description:'Executive overview of people, services, security, work, and connected business applications.'},
   {id:'profile',label:'My Profile & Workspace',group:'System Administration',icon:UserCog,description:'Personal profile, appearance, favorites, quick actions, and recent pages.'},
+  {id:'secure-browser',label:'Secure Browser & Favorites',group:'Identity & Access',icon:Globe2,description:'Import browser bookmarks into personal favorites and plan secure, policy-managed browser access.'},
   {id:'servicedesk',label:'Service Desk',group:'Service Operations',icon:Headset,description:'Service catalog, request intake, triage queues, knowledge, SLAs, and support-team operations.'},
   {id:'knowledge',label:'Knowledge Base',group:'Service Operations',icon:BookOpen,description:'Searchable onboarding, system navigation, security awareness, spam filtering, phishing prevention, and administrator guidance.'},
   {id:'tickets',label:'Tickets',group:'Service Operations',icon:Ticket,description:'Create, assign, prioritize, escalate, resolve, and audit incidents and service requests.'},
@@ -285,6 +286,8 @@ const readinessDefaults = [
  {id:'security-tests',area:'Production security & reliability',title:'RLS, role boundary, and cross-tenant negative tests',status:'Not started',priority:'P0',detail:'Test denied access as well as allowed access in an isolated test environment.'},
  {id:'audit',area:'Production security & reliability',title:'Security audit events, secret management, and session controls',status:'Not started',priority:'P0',detail:'Secure server-side secrets, credential rotation, session revocation, and redacted logs.'},
  {id:'connector-framework',area:'Migration & connectors',title:'Reusable connector framework and live connection health',status:'Designed',priority:'P1',detail:'Provider catalog exists in the prototype; live OAuth/API adapters, secure credentials, health checks, and durable sync jobs are not verified.'},
+ {id:'browser-favorites',area:'Migration & connectors',title:'Import browser bookmarks and preserve user favorites',status:'In progress',priority:'P1',detail:'Local HTML/JSON bookmark parsing and preview added. Server-side profile sync, policy, and cross-device migration are not implemented.'},
+ {id:'secure-browser',area:'Production security & reliability',title:'Select and implement a secure browser strategy',status:'Designed',priority:'P1',detail:'Requirements workspace added. Managed browser policies or a supported vendor integration is recommended before considering a custom browser engine.'},
  {id:'onedrive',area:'Migration & connectors',title:'Microsoft OneDrive migration and backup capability',status:'Designed',priority:'P1',detail:'Admin runbook added. Real drive access, file/metadata/permission mapping, resumable transfer, reconciliation, and separately tested backup/restore are not verified.'},
  {id:'crowdstrike',area:'Security operations & connectors',title:'CrowdStrike Falcon security integration',status:'Designed',priority:'P1',detail:'Admin runbook added. Real Falcon API authorization, supported detections/inventory, alert deduplication, monitoring, and any response actions require implementation and tests.'},
  {id:'remote-support',area:'Remote support & operations',title:'Verify and productionize remote user/device support',status:'In progress',priority:'P1',detail:'Current navigation describes a simulated session. Verify existing code, then integrate a real provider/agent, consent, tenant authorization, session revocation, and audit logging.'},
@@ -314,6 +317,58 @@ function ReadinessTracker(){
  <div className="readiness-groups">{groups.map(group=>{const rows=items.filter(x=>x.area===group&&(filter==='All'||x.status===filter));if(!rows.length)return null;return <div className="readiness-group" key={group}><button className="readiness-group-toggle" onClick={()=>setExpanded(expanded===group?'':group)} aria-expanded={expanded===group}><span><b>{group}</b><small>{rows.length} visible items · {items.filter(x=>x.area===group&&['Tested','Connected','Verified'].includes(x.status)).length} verified</small></span><ChevronDown size={16} className={expanded===group?'expanded':''}/></button>{expanded===group&&rows.map(item=><div className="readiness-item" key={item.id}><div className="readiness-item-main"><div><span className={'readiness-priority '+item.priority.toLowerCase()}>{item.priority}</span><b>{item.title}</b><p>{item.detail}</p></div><label className="readiness-status">Status<select value={item.status} onChange={e=>update(item.id,{status:e.target.value})}>{statuses.map(st=><option key={st}>{st}</option>)}</select></label></div><div className="readiness-item-actions"><button onClick={()=>move(item.id,-1)} aria-label={'Move '+item.title+' up'}>↑ Move up</button><button onClick={()=>move(item.id,1)} aria-label={'Move '+item.title+' down'}>↓ Move down</button></div></div>)}</div>})}</div>
  <p className="readiness-footnote">Rule: “Connected” means a real connection test succeeded; “Tested” means documented tests passed; “Verified” requires operational evidence. Do not mark a feature complete based on a mock screen or a migration file alone.</p>
  </section>;
+}
+
+
+function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}){
+ const [fileName,setFileName]=useState('');
+ const [bookmarks,setBookmarks]=useState([]);
+ const [selected,setSelected]=useState({});
+ const [message,setMessage]=useState('');
+ const [error,setError]=useState('');
+ const [source,setSource]=useState('Browser bookmark export');
+ const safeDecode=(value)=>value.replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+ const parseBookmarks=(raw,name)=>{
+  const found=[];
+  try{
+   const parsed=JSON.parse(raw);
+   const walk=(node,folder='')=>{if(!node)return;if(Array.isArray(node)){node.forEach(n=>walk(n,folder));return;}const nextFolder=node.type==='folder'?(folder?folder+' / ':'')+(node.name||'Folder'):folder;if(node.type==='url'&&node.url)found.push({title:node.name||node.url,url:node.url,folder});if(node.url&&node.name&&!node.type)found.push({title:node.name,url:node.url,folder});if(node.children)walk(node.children,nextFolder);};
+   walk(parsed.roots||parsed); 
+  }catch{
+   const anchors=raw.match(/<A\\b[^>]*>.*?<\\/A>/gis)||[];
+   for(const anchor of anchors){const href=anchor.match(/HREF\\s*=\\s*["']([^"']+)["']/i)?.[1];const title=safeDecode(anchor.replace(/<[^>]+>/g,'').trim());if(href&&title)found.push({title,url:safeDecode(href),folder:''});}
+  }
+  const unique=new Map();
+  found.forEach((b)=>{try{const u=new URL(b.url);if(!['http:','https:'].includes(u.protocol))return;const key=u.href;if(!unique.has(key))unique.set(key,{...b,url:u.href,id:key});}catch{}});
+  return [...unique.values()];
+ };
+ const importFile=async(file)=>{
+  setError('');setMessage('');setBookmarks([]);setSelected({});if(!file)return;
+  if(file.size>5*1024*1024){setError('Please choose a bookmark export smaller than 5 MB.');return;}
+  try{const raw=await file.text();const parsed=parseBookmarks(raw,file.name);if(!parsed.length){setError('No valid HTTP/HTTPS bookmarks were found. Export bookmarks as HTML or a supported browser bookmarks JSON file, then try again.');return;}setFileName(file.name);setBookmarks(parsed);setSelected(Object.fromEntries(parsed.map(b=>[b.id,true])));setMessage('Parsed locally. Nothing has been imported yet. Review the selection below.');}
+  catch{setError('The file could not be read. Please export bookmarks again and retry.');}
+ };
+ const chosen=bookmarks.filter(b=>selected[b.id]);
+ const importSelected=()=>{
+  const target=new Set(favorites);
+  chosen.forEach(b=>{const found=screenDefs.find(s=>s.label.toLowerCase()===b.title.toLowerCase()||s.id===b.title.toLowerCase());if(found)target.add(found.id);});
+  setFavorites([...target]);
+  const unmatched=chosen.filter(b=>!screenDefs.some(s=>s.label.toLowerCase()===b.title.toLowerCase()||s.id===b.title.toLowerCase()));
+  setMessage(chosen.length+' bookmarks reviewed. '+(chosen.length-unmatched.length)+' matched existing IntelliStack pages and were added to Favorites; '+unmatched.length+' external bookmarks remain available to export or map in a future browser-bookmark workspace.');
+ };
+ const exportSelected=()=>{const html='<!DOCTYPE NETSCAPE-Bookmark-file-1><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"><TITLE>IntelliStack Browser Bookmarks</TITLE><H1>Bookmarks</H1><DL><p>'+chosen.map(b=>'<DT><A HREF="'+b.url.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+b.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</A>').join('')+'</DL><p>';const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const anchor=document.createElement('a');anchor.href=url;anchor.download='intellistack-bookmarks.html';anchor.click();URL.revokeObjectURL(url);setMessage('Exported '+chosen.length+' selected bookmarks as an HTML bookmark file.');};
+ return <div className="workspace-stack"><Panel title="Secure Browser & Favorites" subtitle="Bring users’ browser bookmarks into IntelliStack and plan a governed browser experience.">
+  <div className="browser-security-banner"><div className="browser-security-icon"><Globe2 size={24}/></div><div><h3>One governed workspace for browser access</h3><p>Import bookmarks from common browser exports, organize IntelliStack favorites, and define the security controls required for managed browsing. This screen does not itself create an isolated browser or enforce endpoint browser policies.</p></div></div>
+  <div className="browser-feature-grid"><article><ShieldCheck size={20}/><b>Secure browsing</b><p>Plan identity, phishing protection, managed extensions, downloads, data-loss controls, and audit policies.</p></article><article><Bookmark size={20}/><b>Bookmark portability</b><p>Parse exported bookmarks locally, preview HTTP/HTTPS entries, and select what to keep.</p></article><article><LockKeyhole size={20}/><b>Policy-managed access</b><p>Connect a supported enterprise browser or endpoint policy system rather than relying on a web-page toggle.</p></article></div>
+  <div className="browser-import-section"><h3>Import browser favorites</h3><p>Export bookmarks from Chrome, Edge, Firefox, or Safari, then select the exported HTML file. JSON bookmark files are also accepted where the structure is supported.</p><label className="browser-file-picker"> <Upload size={17}/> Choose bookmark export <input type="file" accept=".html,.htm,.json,text/html,application/json" onChange={e=>importFile(e.target.files?.[0])}/></label>{fileName&&<p className="privacy-note">Selected file: {fileName}</p>}
+   {error&&<div className="browser-message error">{error}</div>}{message&&<div className="browser-message">{message}</div>}
+   {bookmarks.length>0&&<><div className="browser-import-toolbar"><b>{chosen.length} of {bookmarks.length} selected</b><button className="secondary-btn" onClick={()=>setSelected(Object.fromEntries(bookmarks.map(b=>[b.id,true])))}>Select all</button><button className="secondary-btn" onClick={()=>setSelected({})}>Clear selection</button></div><div className="browser-bookmark-list">{bookmarks.map(b=><label key={b.id} className="browser-bookmark"><input type="checkbox" checked={!!selected[b.id]} onChange={e=>setSelected(old=>({...old,[b.id]:e.target.checked}))}/><span><b>{b.title}</b><small>{b.url}</small></span></label>)}</div><div className="browser-import-actions"><button className="primary-btn" onClick={importSelected} disabled={!chosen.length}>Add matching IntelliStack pages to Favorites</button><button className="secondary-btn" onClick={exportSelected} disabled={!chosen.length}>Export selected bookmarks</button></div><p className="privacy-note">For safety, this prototype imports bookmark URLs only. It does not import passwords, cookies, browsing history, extensions, or active browser sessions. External URLs are not automatically opened.</p></>}
+  </div>
+ </Panel>
+ <Panel title="Secure browser implementation checklist" subtitle="Requirements before this becomes a production secure-browser capability">
+  <div className="secure-browser-requirements"><div><b>Identity and access</b><span>SSO/MFA, conditional access, session controls, managed-device policy.</span></div><div><b>Threat protection</b><span>Phishing/malware reputation, safe download controls, isolation strategy, extension allowlist.</span></div><div><b>Data protection</b><span>Clipboard/download/upload restrictions, DLP integration, encryption, retention, and privacy disclosures.</span></div><div><b>Administration</b><span>Policy assignment by organization/group/device, version rollout, rollback, health monitoring, and audit trail.</span></div><div><b>Integration decision</b><span>Choose whether to manage an existing enterprise browser, integrate a supported secure-browser vendor, or build a separately maintained browser product. A secure browser engine is not safely implemented as a normal React page.</span></div></div>
+  <p className="privacy-note">Recommended starting point: managed browser policies or a supported enterprise secure-browser integration. A custom browser based on a maintained Chromium distribution is a separate engineering and security program.</p>
+ </Panel></div>;
 }
 
 function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
@@ -950,6 +1005,7 @@ function App(){
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
+    if(activeScreen==='secure-browser') return <BrowserSecurityWorkspace favorites={favorites} setFavorites={setFavorites} screenDefs={screenDefs} onNavigate={navigate}/>;
     if(activeScreen==='profile') return <ProfileWorkspace theme={theme} setTheme={setTheme} favorites={favorites} setFavorites={setFavorites} quickActions={quickActions} setQuickActions={setQuickActions} recentScreens={recentScreens} setRecentScreens={setRecentScreens} screenDefs={screenDefs} onNavigate={navigate} displayName={displayName} setDisplayName={setDisplayName} accent={accent} setAccent={setAccent}/>;
     if(!allowedScreens.has(activeScreen)){
       const locked=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
