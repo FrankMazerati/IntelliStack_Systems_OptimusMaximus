@@ -276,7 +276,44 @@ function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const conte
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
-function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs}){
+
+const readinessDefaults = [
+ {id:'architecture',area:'Product design & architecture',title:'Architecture, module inventory, and data/API contracts',status:'In progress',priority:'P0',detail:'Source-of-truth architecture, module ownership, tenant boundaries, data classification, and decision records.'},
+ {id:'build-ci',area:'Implementation maturity',title:'Automated build and pull-request CI',status:'Designed',priority:'P0',detail:'CI workflow has been added; run it and verify a successful build before marking complete.'},
+ {id:'auth',area:'Production security & reliability',title:'Real authentication and server-enforced authorization',status:'Not started',priority:'P0',detail:'Remove reliance on client-selected role for real authorization. Enforce tenant and permission checks in API/database.'},
+ {id:'database',area:'Implementation maturity',title:'Durable multi-tenant backend persistence',status:'In progress',priority:'P0',detail:'Schema foundation exists; database deployment, API wiring, tenant isolation, and integration tests still require proof.'},
+ {id:'security-tests',area:'Production security & reliability',title:'RLS, role boundary, and cross-tenant negative tests',status:'Not started',priority:'P0',detail:'Test denied access as well as allowed access in an isolated test environment.'},
+ {id:'audit',area:'Production security & reliability',title:'Security audit events, secret management, and session controls',status:'Not started',priority:'P0',detail:'Secure server-side secrets, credential rotation, session revocation, and redacted logs.'},
+ {id:'connector-framework',area:'Migration & connectors',title:'Reusable connector framework and live connection health',status:'Designed',priority:'P1',detail:'Provider catalog exists in the prototype; live OAuth/API adapters, secure credentials, health checks, and durable sync jobs are not verified.'},
+ {id:'sharepoint',area:'Migration & connectors',title:'Microsoft SharePoint connector',status:'Designed',priority:'P1',detail:'Admin documentation added. Real tenant authorization, site/library scopes, ACL policy, file sync, and reconciliation still need implementation and tests.'},
+ {id:'migration',area:'Migration & connectors',title:'Migration Center with dry run, mapping, and reconciliation',status:'Designed',priority:'P1',detail:'Runbook and engineering specification added; durable job execution and a supported source adapter remain to be implemented.'},
+ {id:'csv-import',area:'Migration & connectors',title:'Safe CSV users/departments/assets import',status:'Not started',priority:'P1',detail:'Start with validation, duplicate detection, dry run, approval, staged batches, and record-level results.'},
+ {id:'knowledge',area:'Product design & architecture',title:'Admin and customer migration knowledge base',status:'Implemented',priority:'P1',detail:'Starter articles added for migration, connector operations, SharePoint, and recovery. Review, versioning, and organization-specific publication controls remain.'},
+ {id:'e2e',area:'Implementation maturity',title:'End-to-end tests for core workflows',status:'Not started',priority:'P1',detail:'Test tickets, user/access administration, connectors, migration, and critical error paths.'},
+ {id:'observability',area:'Production security & reliability',title:'Monitoring, SLOs, alerts, backups, and restore drills',status:'Not started',priority:'P1',detail:'Add operational telemetry, runbooks, backup/restore proof, incident ownership, and disaster recovery tests.'},
+ {id:'pilot',area:'Production security & reliability',title:'Customer pilot and independent security review',status:'Not started',priority:'P2',detail:'Use explicit acceptance criteria, load/recovery testing, penetration testing, and a real customer-approved pilot.'}
+];
+function ReadinessTracker(){
+ const [items,setItems]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.readinessTracker')||'null');return Array.isArray(saved)?[...readinessDefaults.map(d=>({...d,...saved.find(x=>x.id===d.id)})),...saved.filter(x=>!readinessDefaults.some(d=>d.id===x.id))]:readinessDefaults}catch{return readinessDefaults}});
+ const [filter,setFilter]=useState('All');
+ const [expanded,setExpanded]=useState('Migration & connectors');
+ useEffect(()=>{try{localStorage.setItem('intellistack.readinessTracker',JSON.stringify(items))}catch{}},[items]);
+ const statuses=['Not started','Designed','In progress','Implemented','Tested','Connected','Verified'];
+ const groups=[...new Set(items.map(x=>x.area))];
+ const done=items.filter(x=>['Tested','Connected','Verified'].includes(x.status)).length;
+ const move=(id,direction)=>setItems(old=>{const index=old.findIndex(x=>x.id===id);const next=index+direction;if(index<0||next<0||next>=old.length)return old;const copy=[...old];[copy[index],copy[next]]=[copy[next],copy[index]];return copy});
+ const update=(id,patch)=>setItems(old=>old.map(x=>x.id===id?{...x,...patch}:x));
+ const reset=()=>{setItems(readinessDefaults);try{localStorage.removeItem('intellistack.readinessTracker')}catch{}};
+ return <section className="panel readiness-tracker"><div className="panel-head"><div><h3>Enterprise Readiness Tracker</h3><p>Your ordered checklist for what is designed, in progress, implemented, tested, and connected.</p></div><span className="readiness-count">{done}/{items.length} verified states</span></div>
+ <div className="readiness-warning"><ShieldCheck size={16}/><span><b>Super Admin workspace · prototype storage.</b> Checklist edits save in this browser only. The current demo login is not real identity security, so this is not yet a secure private record or shared team tracker.</span></div>
+ <div className="readiness-summary"><div><b>{items.filter(x=>x.status==='Not started').length}</b><span>Not started</span></div><div><b>{items.filter(x=>x.status==='Designed').length}</b><span>Designed</span></div><div><b>{items.filter(x=>x.status==='In progress').length}</b><span>In progress</span></div><div><b>{items.filter(x=>['Implemented','Tested','Connected','Verified'].includes(x.status)).length}</b><span>Built or verified</span></div></div>
+ <div className="readiness-controls"><label>Show <select value={filter} onChange={e=>setFilter(e.target.value)}><option>All</option>{statuses.map(st=><option key={st}>{st}</option>)}</select></label><button className="secondary-btn" onClick={reset}>Reset checklist</button></div>
+ <div className="readiness-groups">{groups.map(group=>{const rows=items.filter(x=>x.area===group&&(filter==='All'||x.status===filter));if(!rows.length)return null;return <div className="readiness-group" key={group}><button className="readiness-group-toggle" onClick={()=>setExpanded(expanded===group?'':group)} aria-expanded={expanded===group}><span><b>{group}</b><small>{rows.length} visible items · {items.filter(x=>x.area===group&&['Tested','Connected','Verified'].includes(x.status)).length} verified</small></span><ChevronDown size={16} className={expanded===group?'expanded':''}/></button>{expanded===group&&rows.map(item=><div className="readiness-item" key={item.id}><div className="readiness-item-main"><div><span className={'readiness-priority '+item.priority.toLowerCase()}>{item.priority}</span><b>{item.title}</b><p>{item.detail}</p></div><label className="readiness-status">Status<select value={item.status} onChange={e=>update(item.id,{status:e.target.value})}>{statuses.map(st=><option key={st}>{st}</option>)}</select></label></div><div className="readiness-item-actions"><button onClick={()=>move(item.id,-1)} aria-label={'Move '+item.title+' up'}>↑ Move up</button><button onClick={()=>move(item.id,1)} aria-label={'Move '+item.title+' down'}>↓ Move down</button></div></div>)}</div>})}</div>
+ <p className="readiness-footnote">Rule: “Connected” means a real connection test succeeded; “Tested” means documented tests passed; “Verified” requires operational evidence. Do not mark a feature complete based on a mock screen or a migration file alone.</p>
+ </section>;
+}
+
+function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
@@ -312,6 +349,7 @@ function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,sc
    ].map(([label,id,description])=><button className="launchpad-tile" key={id} onClick={()=>onNavigate(id)}><b>{label}</b><small>{description}</small></button>)}
   </div></section>
   {quickActions.length>0&&<section className="panel dashboard-quick-actions"><div className="panel-head"><div><h3>My Quick Actions</h3><p>Your personal shortcuts.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Edit actions</button></div><div className="quick-actions-row">{quickActions.map(id=>{const item=screenDefs.find(x=>x.id===id);return item?<button key={id} onClick={()=>onNavigate(id)}>{item.label} →</button>:null})}</div></section>}
+  {currentRole==='Super Admin'&&<ReadinessTracker/>}
   <div className="metrics-grid">
    <Metric icon={Users} label="Active lab users" value={labUsers.length} trend="Manage users and roles" onClick={()=>onNavigate('users')}/>
    <Metric icon={Ticket} label="Open tickets" value={openTickets} trend="Review and update tickets" onClick={()=>onNavigate('tickets')}/>
@@ -923,7 +961,7 @@ function App(){
     if(activeScreen==='noc') return <OperationsCenterPage type="noc" onNavigate={navigate} tickets={tickets}/>;
     if(activeScreen==='soc') return <OperationsCenterPage type="soc" onNavigate={navigate} tickets={tickets}/>;
     if(suiteModules[activeScreen]) return <WorkspaceModulePage moduleInfo={suiteModules[activeScreen]} onNavigate={navigate}/>;
-    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs}/>;
+    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs} currentRole={currentRole}/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
