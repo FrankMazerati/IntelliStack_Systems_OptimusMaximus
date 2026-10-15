@@ -985,7 +985,7 @@ function ProfileWorkspace({theme,setTheme,favorites,setFavorites,quickActions,se
 }
 function App(){
   const [session,setSession]=useState(null);
-  const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('intellistack.theme')||'dark'}catch{return 'dark'}});
+  const [theme,setTheme]=useState(()=>{try{return localStorage.getItem('intellistack.theme')||'light'}catch{return 'light'}});
   const [accent,setAccent]=useState(()=>{try{return localStorage.getItem('intellistack.accent')||'cyan'}catch{return 'cyan'}});
   const [displayName,setDisplayName]=useState(()=>{try{return localStorage.getItem('intellistack.displayName')||'Master Admin'}catch{return 'Master Admin'}});
   const [favorites,setFavorites]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.favorites')||'["tickets","intellichat","email","knowledge","intellistudio"]')}catch{return ['tickets','intellichat','email','knowledge','intellistudio']}});
