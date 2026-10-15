@@ -336,7 +336,7 @@ function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}
    walk(parsed.roots||parsed); 
   }catch{
    const anchors=raw.match(/<A\b[^>]*>.*?<\/A>/gis)||[];
-   for(const anchor of anchors){const href=anchor.match(/HREF\\s*=\\s*["']([^"']+)["']/i)?.[1];const title=safeDecode(anchor.replace(/<[^>]+>/g,'').trim());if(href&&title)found.push({title,url:safeDecode(href),folder:''});}
+   for(const anchor of anchors){const href=anchor.match(/HREF\s*=\s*["']([^"']+)["']/i)?.[1];const title=safeDecode(anchor.replace(/<[^>]+>/g,'').trim());if(href&&title)found.push({title,url:safeDecode(href),folder:''});}
   }
   const unique=new Map();
   found.forEach((b)=>{try{const u=new URL(b.url);if(!['http:','https:'].includes(u.protocol))return;const key=u.href;if(!unique.has(key))unique.set(key,{...b,url:u.href,id:key});}catch{}});
