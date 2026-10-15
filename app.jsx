@@ -234,12 +234,12 @@ function UsersPage(){
 }
 const connectorCatalog = [
  {category:'Core platform & cloud',providers:['Supabase','Vercel','GitHub','GitLab','Bitbucket','Cloudflare','AWS','Microsoft Azure','Google Cloud Platform','DigitalOcean','Netlify','Render','Railway','Fly.io','Docker Hub','Kubernetes','Terraform Cloud']},
- {category:'Identity & access',providers:['Microsoft Entra ID','Microsoft 365','Google Workspace','Okta','Auth0','Ping Identity','OneLogin','Keycloak','Duo Security','JumpCloud','CyberArk','1Password','Bitwarden','LastPass','Keeper Security']},
+ {category:'Identity & access',providers:['Microsoft Entra ID (Azure Active Directory)','On-premises Active Directory (AD DS)','Microsoft Entra Connect Sync','Microsoft Entra Cloud Sync','Microsoft 365','Google Workspace','Okta','Auth0','Ping Identity','OneLogin','Keycloak','Duo Security','JumpCloud','CyberArk','1Password','Bitwarden','LastPass','Keeper Security']},
  {category:'IT service management',providers:['ServiceNow','Jira Service Management','Jira Software','Confluence','Freshservice','Freshdesk','Zendesk','ManageEngine ServiceDesk Plus','BMC Helix','Ivanti Neurons','TOPdesk','HaloITSM','Linear','ClickUp','Asana','Monday.com']},
  {category:'Security & threat intelligence',providers:['CrowdStrike Falcon','Microsoft Defender','Microsoft Sentinel','Splunk','Elastic Security','Palo Alto Networks Cortex XDR','Wiz','Snyk','Tenable','Qualys','Rapid7 InsightVM','Recorded Future','VirusTotal','AbuseIPDB','Shodan','GreyNoise','Cloudflare Zero Trust','Proofpoint','Mimecast','KnowBe4']},
  {category:'Monitoring & infrastructure',providers:['Datadog','New Relic','Dynatrace','Grafana Cloud','Prometheus','PagerDuty','Opsgenie','Better Stack','Sentry','Honeycomb','SolarWinds','Zabbix','PRTG Network Monitor','Nagios','UptimeRobot','Statuspage','Auvik','LogicMonitor']},
  {category:'Endpoint & device management',providers:['Microsoft Intune','Microsoft Configuration Manager','Jamf Pro','Kandji','Mosyle','NinjaOne','N-able','ConnectWise Automate','Atera','Action1','Tanium','Lansweeper','FleetDM','ManageEngine Endpoint Central','Google Admin Console']},
- {category:'Communication & collaboration',providers:['Slack','Microsoft Teams','Zoom','Google Meet','Discord','Webex','Twilio','SendGrid','Mailchimp','Intercom','Pendo','Miro','Figma','Notion','Airtable']},
+ {category:'Communication & collaboration',providers:['Microsoft Teams','Microsoft Outlook (Exchange Online)','Slack','Zoom','Google Meet','Discord','Webex','Twilio','SendGrid','Mailchimp','Intercom','Pendo','Miro','Figma','Notion','Airtable']},
  {category:'Data, analytics & storage',providers:['PostgreSQL','MySQL','MongoDB Atlas','Redis Cloud','Snowflake','Databricks','BigQuery','Amazon Redshift','Power BI','Tableau','Looker','Metabase','Supabase Storage','Amazon S3','Azure Blob Storage','Google Cloud Storage','OneDrive','SharePoint','Google Drive','Dropbox','Box']},
  {category:'CRM, HR & finance',providers:['Salesforce','HubSpot','Dynamics 365','Zoho CRM','Pipedrive','Workday','BambooHR','Rippling','Gusto','ADP','Paychex','QuickBooks Online','Xero','Stripe','Chargebee','SAP','Oracle NetSuite','Sage Intacct']},
  {category:'Automation & developer tools',providers:['Zapier','Make','n8n','Workato','Power Automate','GitHub Actions','Jenkins','CircleCI','Buildkite','LaunchDarkly','PostHog','Segment','Algolia','Elastic Cloud','OpenAI API','Anthropic API','Hugging Face','Replicate']}
@@ -248,7 +248,12 @@ const connectorDescriptions = {
  'Supabase':'Database, authentication, storage, and edge functions for IntelliStack.',
  'Vercel':'Deployments, projects, domains, and runtime visibility.',
  'GitHub':'Repositories, pull requests, issues, and build workflows.',
- 'Microsoft Entra ID':'Enterprise identity, SSO, and directory integration.',
+ 'Microsoft Entra ID (Azure Active Directory)':'Microsoft Entra ID, formerly Azure Active Directory: cloud identity, SSO, and directory integration.',
+ 'On-premises Active Directory (AD DS)':'On-premises Windows domain directory, users, groups, computers, and Group Policy; requires a secure network-side connector or agent.',
+ 'Microsoft Entra Connect Sync':'Hybrid identity synchronization between on-premises Active Directory and Microsoft Entra ID; requires tenant-side setup.',
+ 'Microsoft Entra Cloud Sync':'Cloud-managed hybrid identity synchronization for supported on-premises Active Directory scenarios.',
+ 'Microsoft Teams':'Team chat, channels, meetings, and collaboration using Microsoft Graph / organizational authorization.',
+ 'Microsoft Outlook (Exchange Online)':'Microsoft 365 email and calendar integration through Exchange Online and Microsoft Graph authorization.',
  'Microsoft 365':'Microsoft collaboration and productivity services.',
  'Google Workspace':'Google identity, directory, mail, and collaboration.',
  'ServiceNow':'IT service management and incident/ticket workflows.',
