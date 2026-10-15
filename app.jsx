@@ -2,7 +2,7 @@ import SuperAdminImage from './SuperAdmin.png';
 import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { IntelliChatPage, IntelliStackIdentityPage, DepartmentWorkspacePage } from './enterprise-experience.jsx';
 import { KnowledgeBasePage } from './knowledge-base.jsx';
 import { Video, Mail, Send, Inbox, Archive, Star, Reply, Paperclip, UserPlus, ListChecks, Activity, Building2, MessagesSquare, Link2, Eye, KeyRound, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, Headset, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
@@ -851,11 +851,12 @@ function App(){
   const login=(role)=>{setSession(role);setActiveScreen(role==='Help Desk Agent'?'tickets':role==='IT Administrator'?'infrastructure':role==='Governance & Compliance'?'governance':'overview');};
   const logout=()=>{setSession(null);setMobileNav(false);};
   const renderPage=()=>{
+    if(activeScreen==='profile') return <ProfileWorkspace theme={theme} setTheme={setTheme} favorites={favorites} setFavorites={setFavorites} quickActions={quickActions} setQuickActions={setQuickActions} recentScreens={recentScreens} setRecentScreens={setRecentScreens} screenDefs={screenDefs} onNavigate={navigate} displayName={displayName} setDisplayName={setDisplayName} accent={accent} setAccent={setAccent}/>;
     if(!allowedScreens.has(activeScreen)){
       const locked=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
       return <Panel title={locked.label} subtitle={locked.description}><div className="empty-state role-locked-state"><div className="service-icon"><LockKeyhole size={24}/></div><h3>Access restricted</h3><p><b>{locked.label}</b> is not included in the <b>{currentRole}</b> role.</p><p className="privacy-note">This screen remains visible for command-center inspection, but its controls are locked for this role.</p><button className="primary-btn" onClick={()=>navigate('overview')}>Return to allowed workspace →</button></div></Panel>;
     }
-    if(activeScreen==='profile') return <ProfileWorkspace theme={theme} setTheme={setTheme} favorites={favorites} setFavorites={setFavorites} quickActions={quickActions} setQuickActions={setQuickActions} recentScreens={recentScreens} setRecentScreens={setRecentScreens} screenDefs={screenDefs} onNavigate={navigate} displayName={displayName} setDisplayName={setDisplayName} accent={accent} setAccent={setAccent}/>;
+
     if(activeScreen==='knowledge') return <KnowledgeBasePage onNavigate={navigate}/>;
     if(activeScreen==='intellichat') return <IntelliChatPage onNavigate={navigate}/>;
     if(activeScreen==='intellistackid') return <IntelliStackIdentityPage endUsers={endUsers} onNavigate={navigate}/>;
