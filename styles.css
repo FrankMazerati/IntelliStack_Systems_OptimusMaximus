@@ -498,3 +498,16 @@
 .connector-priority-list button svg{transform:rotate(-90deg);color:#7188a4}
 @media(max-width:1050px){.connector-hub-layout{grid-template-columns:1fr}}
 @media(max-width:620px){.connector-profile{padding:13px}.connector-profile-detail{flex-direction:column;gap:5px}.connector-profile-detail b{max-width:100%;text-align:left}.connector-selected-row{flex-wrap:wrap}.connector-selected-main{min-width:calc(100% - 60px)}.connector-selected-row .text-btn{margin-left:45px}.connector-catalog-count{font-size:11px}}
+
+
+/* Connector Hub provider selector and category filter */
+.connector-select-wrap{display:grid;gap:9px}
+.connector-select-wrap>label{font-size:9px;letter-spacing:1.15px;font-weight:800;color:#8da7ca}
+.connector-select-wrap .connector-provider-label{margin-top:7px}
+.connector-select-control{display:flex;align-items:center;gap:10px;min-width:0;min-height:46px;padding:0 12px;border:1px solid rgba(0,212,255,.25);border-radius:10px;background:linear-gradient(115deg,rgba(4,26,47,.9),rgba(10,22,42,.94));color:var(--cyan)}
+.connector-select-control:focus-within{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,212,255,.09)}
+.connector-select-control select{appearance:none;flex:1;min-width:0;min-height:44px;padding:9px 2px;background:transparent;border:0;outline:none;color:#edf6ff;font-size:11px;font-weight:600;cursor:pointer}
+.connector-select-control select option,.connector-select-control select optgroup{background:#101a2e;color:#e8efff}
+.connector-select-control>svg:last-child{flex-shrink:0;pointer-events:none;color:#8ea6c9}
+.connector-select-help{margin:2px 0 0;color:#8297b6;font-size:10px;line-height:1.65}
+@media(max-width:520px){.connector-select-control{min-height:44px;padding:0 9px;gap:7px}.connector-select-control select{font-size:10px}}
