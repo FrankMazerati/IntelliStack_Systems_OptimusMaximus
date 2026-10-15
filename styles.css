@@ -853,3 +853,14 @@
 .page-content.section-theme-active .secondary-btn{border-color:color-mix(in srgb,var(--section-button-bg) 45%,var(--border));color:var(--section-button-bg)}
 .page-content.section-theme-active .secondary-btn:hover{background:color-mix(in srgb,var(--section-button-bg) 13%,transparent);color:var(--section-button-bg)}
 @media(max-width:760px){.section-color-fields{grid-template-columns:1fr}.section-theme-preview{align-items:flex-start;flex-direction:column}.theme-studio-modal{padding:16px}}
+
+/* Signed-in identity belongs in the global header, not a separate dark profile strip. */
+.topbar-actions .header-profile-action{gap:9px;min-width:0;max-width:235px;padding:4px 10px;text-align:left;border-color:rgba(0,212,255,.28);background:linear-gradient(135deg,rgba(0,212,255,.09),rgba(78,140,255,.08))}
+.header-profile-avatar{width:29px;height:29px;flex:0 0 29px;display:grid;place-items:center;border-radius:50%;font-size:10px;font-weight:800;color:#071322;background:linear-gradient(135deg,#68e5ff,#8bb8ff);box-shadow:0 0 0 2px rgba(0,212,255,.12)}
+.header-profile-copy{display:grid;gap:3px;min-width:0}
+.header-profile-copy b{max-width:140px;overflow:hidden;text-overflow:ellipsis;font-size:11px;color:#f0f6ff}
+.header-profile-copy small{max-width:165px;overflow:hidden;text-overflow:ellipsis;font-size:9px;font-weight:500;color:#8fa6c8}
+.topbar-actions .header-profile-action>svg{flex:0 0 auto;color:#8fa6c8}
+@media(max-width:1200px){.topbar-actions .header-profile-action{max-width:190px}.header-profile-copy small{display:none}.header-profile-copy b{max-width:115px}}
+@media(max-width:740px){.topbar-actions .header-profile-action{max-width:145px;padding:3px 7px;gap:6px}.header-profile-avatar{width:26px;height:26px;flex-basis:26px}.header-profile-copy b{max-width:82px;font-size:10px}.topbar-actions .header-profile-action>svg{display:none}}
+@media(max-width:420px){.topbar-actions .header-profile-action{max-width:42px;min-width:42px;justify-content:center;padding:3px}.header-profile-copy{display:none}.header-profile-avatar{width:27px;height:27px;flex-basis:27px}}
