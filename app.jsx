@@ -3,7 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
-import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
 
@@ -13,6 +13,7 @@ const screenDefs = [
   {id:'users',label:'User & Role Management',group:'Super Admin',icon:Users,description:'Manage users, roles, and permissions across the platform.'},
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
+  {id:'calendar',label:'Global Calendar',group:'All roles',icon:CalendarDays,description:'Shared schedule for meetings, service deadlines, maintenance, and response coverage.'},
   {id:'security',label:'Security & Compliance',group:'Super Admin',icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
   {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
   {id:'tickets',label:'Service Desk',group:'Help Desk Agent',icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
@@ -29,11 +30,11 @@ const screenDefs = [
 ];
 const rolePermissions = {
   'Super Admin': new Set(screenDefs.map(s=>s.id)),
-  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status']),
-  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations']),
-  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status']),
-  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit']),
-  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status'])
+  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status','calendar']),
+  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations','calendar']),
+  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status','calendar']),
+  'Security Agent': new Set(['overview','security','warroom','integrations','status','audit','calendar']),
+  'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status','calendar'])
 };
 const initialTickets = [
   {id:'INC-7842',title:'VPN connection fails after password reset',requester:'Jordan Kim',team:'Network Ops',priority:'High',status:'In progress',age:'18m'},
@@ -268,6 +269,66 @@ function connectorAuth(provider){
  if(/Microsoft|Google Workspace|Google Cloud|GitHub|GitLab|Bitbucket|Slack|Zoom|Salesforce|HubSpot|Notion|Figma|Dropbox|Box|OneDrive|SharePoint|Asana|ClickUp|Monday|Linear|Airtable|Vercel|Supabase|Cloudflare|Okta|Auth0|Atlassian|ServiceNow/.test(provider)) return 'OAuth 2.0 / provider authorization';
  return 'Provider-specific secure authorization';
 }
+
+const calendarSeedEvents=()=>{
+ const now=new Date();
+ const dayOffset=(n,h=10)=>{const d=new Date(now);d.setDate(d.getDate()+n);d.setHours(h,0,0,0);return d.toISOString();};
+ return [
+  {id:'CAL-001',title:'Service desk SLA review',start:dayOffset(0,11),end:dayOffset(0,12),category:'Service Desk',source:'IntelliStack',notes:'Review open incidents and approaching response targets.'},
+  {id:'CAL-002',title:'Operations stand-up',start:dayOffset(1,9),end:dayOffset(1,9),category:'Meeting',source:'IntelliStack',notes:'Daily cross-functional operations check-in.'},
+  {id:'CAL-003',title:'Security controls review',start:dayOffset(2,14),end:dayOffset(2,15),category:'Security',source:'IntelliStack',notes:'Review access, policy status, and audit follow-ups.'},
+  {id:'CAL-004',title:'Infrastructure maintenance window',start:dayOffset(4,20),end:dayOffset(4,22),category:'Maintenance',source:'IntelliStack',notes:'Sample schedule only; confirm approvals before operational use.'}
+ ];
+};
+function CalendarPage(){
+ const [events,setEvents]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.globalCalendar')||'null');return Array.isArray(saved)?saved:calendarSeedEvents()}catch{return calendarSeedEvents()}});
+ const [view,setView]=useState('Month');
+ const [cursor,setCursor]=useState(()=>{const d=new Date();d.setDate(1);d.setHours(0,0,0,0);return d;});
+ const [selectedDay,setSelectedDay]=useState(()=>{const d=new Date();d.setHours(0,0,0,0);return d;});
+ const [showForm,setShowForm]=useState(false);
+ const [notice,setNotice]=useState('');
+ const [draft,setDraft]=useState(()=>{const start=new Date();start.setMinutes(0,0,0);start.setHours(start.getHours()+1);const end=new Date(start);end.setHours(end.getHours()+1);return {title:'',date:start.toISOString().slice(0,10),time:start.toTimeString().slice(0,5),endTime:end.toTimeString().slice(0,5),category:'Meeting',source:'IntelliStack',notes:''};});
+ const persist=(next)=>{setEvents(next);try{localStorage.setItem('intellistack.globalCalendar',JSON.stringify(next));}catch{}};
+ const sameDay=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+ const fmt=(value,opts={month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})=>new Date(value).toLocaleString(undefined,opts);
+ const sorted=[...events].sort((a,b)=>new Date(a.start)-new Date(b.start));
+ const selectedEvents=sorted.filter(e=>sameDay(new Date(e.start),selectedDay));
+ const monthStart=new Date(cursor.getFullYear(),cursor.getMonth(),1);
+ const gridStart=new Date(monthStart);gridStart.setDate(1-monthStart.getDay());
+ const days=Array.from({length:42},(_,i)=>{const d=new Date(gridStart);d.setDate(gridStart.getDate()+i);return d;});
+ const move=(step)=>{const next=new Date(cursor);if(view==='Month')next.setMonth(next.getMonth()+step);else next.setDate(next.getDate()+step*(view==='Week'?7:1));setCursor(next);setSelectedDay(new Date(next.getFullYear(),next.getMonth(),next.getDate()));};
+ const submit=(e)=>{e.preventDefault();if(!draft.title.trim())return;const start=new Date(draft.date+'T'+draft.time);const end=new Date(draft.date+'T'+draft.endTime);if(Number.isNaN(start.getTime())||Number.isNaN(end.getTime())||end<start){setNotice('Check the event date and time range.');return;}const item={id:'CAL-'+Date.now(),title:draft.title.trim(),start:start.toISOString(),end:end.toISOString(),category:draft.category,source:draft.source,notes:draft.notes.trim()};persist([...events,item]);setSelectedDay(new Date(start.getFullYear(),start.getMonth(),start.getDate()));setCursor(new Date(start.getFullYear(),start.getMonth(),1));setShowForm(false);setNotice('Event added to the shared calendar on this device.');};
+ const remove=(id)=>{persist(events.filter(e=>e.id!==id));setNotice('Event removed from this browser calendar.');};
+ const openNew=()=>{const d=new Date(selectedDay);d.setHours(10,0,0,0);const end=new Date(d);end.setHours(11);setDraft({title:'',date:d.toISOString().slice(0,10),time:'10:00',endTime:'11:00',category:'Meeting',source:'IntelliStack',notes:''});setShowForm(true);};
+ return <div className="calendar-page">
+  <div className="calendar-intro"><div><div className="calendar-eyebrow"><CalendarDays size={15}/> SHARED SCHEDULING</div><h2>Global Calendar</h2><p>One calendar experience for meetings, tickets, maintenance, security reviews, and War Room coverage.</p></div><button className="primary-btn" onClick={openNew}><Plus size={16}/> New event</button></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="calendar-connection-strip"><div className="calendar-connection-icon"><CalendarDays size={19}/></div><div><b>Outlook & Teams ready for planned integration</b><small>Events you create here are local to this browser for now. Microsoft calendar sync and Teams meeting links are not connected yet.</small></div><span className="calendar-local-badge">LOCAL PREVIEW</span></div>
+  {showForm&&<Panel title="Create calendar event" subtitle="Add a shared IntelliStack schedule item"><form className="calendar-event-form" onSubmit={submit}>
+   <label>Event title<input required maxLength={120} value={draft.title} onChange={e=>setDraft({...draft,title:e.target.value})} placeholder="e.g. Teams operations meeting"/></label>
+   <label>Date<input required type="date" value={draft.date} onChange={e=>setDraft({...draft,date:e.target.value})}/></label>
+   <label>Start time<input required type="time" value={draft.time} onChange={e=>setDraft({...draft,time:e.target.value})}/></label>
+   <label>End time<input required type="time" value={draft.endTime} onChange={e=>setDraft({...draft,endTime:e.target.value})}/></label>
+   <label>Category<select value={draft.category} onChange={e=>setDraft({...draft,category:e.target.value})}>{['Meeting','Service Desk','Maintenance','Security','War Room','Training','Personal','Other'].map(v=><option key={v}>{v}</option>)}</select></label>
+   <label>Calendar source<select value={draft.source} onChange={e=>setDraft({...draft,source:e.target.value})}>{['IntelliStack','Outlook','Microsoft Teams','Service Desk','War Room'].map(v=><option key={v}>{v}</option>)}</select></label>
+   <label className="calendar-notes-field">Notes<textarea rows={3} value={draft.notes} onChange={e=>setDraft({...draft,notes:e.target.value})} placeholder="Agenda, incident reference, location, or preparation notes"/></label>
+   <div className="calendar-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><CheckCircle2 size={15}/> Save event</button></div>
+  </form></Panel>}
+  <div className="calendar-layout">
+   <Panel title="Schedule" subtitle="Choose a date to inspect its events">
+    <div className="calendar-toolbar"><div className="calendar-month-nav"><button className="secondary-btn small" onClick={()=>move(-1)} aria-label="Previous period"><ChevronLeft size={15}/></button><b>{cursor.toLocaleString(undefined,view==='Month'?{month:'long',year:'numeric'}:view==='Week'?{month:'short',day:'numeric',year:'numeric'}:{month:'long',day:'numeric',year:'numeric'})}</b><button className="secondary-btn small" onClick={()=>move(1)} aria-label="Next period"><ChevronRight size={15}/></button></div><div className="calendar-view-switch">{['Month','Week','Day','Agenda'].map(v=><button key={v} className={view===v?'active':''} onClick={()=>setView(v)}>{v}</button>)}</div></div>
+    {view==='Month'&&<div className="calendar-month-grid"><div className="calendar-weekdays">{['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=><span key={d}>{d}</span>)}</div><div className="calendar-days">{days.map((d,i)=>{const dayEvents=sorted.filter(e=>sameDay(new Date(e.start),d));return <button type="button" key={d.toISOString()} className={'calendar-day '+(d.getMonth()!==cursor.getMonth()?'outside ':'')+(sameDay(d,selectedDay)?'selected':'')+(sameDay(d,new Date())?' today':'')} onClick={()=>{setSelectedDay(d);setCursor(new Date(d.getFullYear(),d.getMonth(),1));}}><span>{d.getDate()}</span>{dayEvents.slice(0,2).map(ev=><i key={ev.id} title={ev.title}>{ev.title}</i>)}{dayEvents.length>2&&<small>+{dayEvents.length-2} more</small>}</button>})}</div></div>}
+    {view!=='Month'&&<div className="calendar-agenda-view">{(view==='Day'?[selectedDay]:view==='Week'?Array.from({length:7},(_,i)=>{const d=new Date(selectedDay);d.setDate(d.getDate()-d.getDay()+i);return d;}):sorted.map(e=>new Date(e.start)).filter((d,i,arr)=>arr.findIndex(x=>sameDay(x,d))===i)).map(d=><button type="button" key={d.toISOString()} className={'calendar-agenda-day '+(sameDay(d,selectedDay)?'selected':'')} onClick={()=>setSelectedDay(d)}><span>{d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</span><b>{sorted.filter(e=>sameDay(new Date(e.start),d)).length} events</b></button>)}</div>}
+   </Panel>
+   <Panel title={selectedDay.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})} subtitle={selectedEvents.length+' scheduled '+(selectedEvents.length===1?'item':'items')}>
+    <div className="calendar-event-list">{selectedEvents.map(ev=><div className="calendar-event-card" key={ev.id}><div className={'calendar-event-color color-'+ev.category.toLowerCase().replace(/[^a-z]/g,'')}/><div className="calendar-event-main"><div className="calendar-event-top"><b>{ev.title}</b><span>{ev.category}</span></div><small><Clock size={13}/>{fmt(ev.start)}{ev.end&&' – '+new Date(ev.end).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}</small><small><CalendarDays size={13}/>{ev.source||'IntelliStack'} calendar</small>{ev.notes&&<p>{ev.notes}</p>}</div><button className="text-btn" onClick={()=>remove(ev.id)} aria-label={'Remove '+ev.title}>Remove</button></div>)}
+    {!selectedEvents.length&&<div className="calendar-empty"><CalendarDays size={27}/><b>No events scheduled</b><p>Select another date or add a new event to this calendar.</p><button className="secondary-btn" onClick={openNew}><Plus size={14}/> Add event</button></div>}</div>
+   </Panel>
+  </div>
+  <p className="privacy-note">Preview limitation: events are saved in this browser only and are not yet shared with other users or synchronized with Outlook / Teams. Production rollout should use authenticated shared storage, role-based access, audit history, time-zone handling, and Microsoft Graph authorization.</p>
+ </div>;
+}
+
 function IntegrationsPage(){
  const [selected,setSelected]=useState('Supabase');
  const [connections,setConnections]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.connectorSelections')||'[]')}catch{return []}});
@@ -546,6 +607,7 @@ function App(){
     if(activeScreen==='maximus') return <AssistantPage assistant="maximus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen==='optimus') return <AssistantPage assistant="optimus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen==='integrations') return <IntegrationsPage/>;
+    if(activeScreen==='calendar') return <CalendarPage/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
@@ -567,7 +629,7 @@ function App(){
     </aside>
     {mobileNav&&<button className="nav-backdrop" aria-label="Close navigation" onClick={()=>setMobileNav(false)}/>}
     <main className="main-area">
-      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
+      <header className="topbar"><div className="crumbs"><button className="top-icon mobile-menu" onClick={()=>setMobileNav(true)} aria-label="Open navigation"><Menu size={18}/></button><div className="topbar-brand-lockup"><Brand/><span className="topbar-brand-tag">MAXIMUS <i>OPTIMUS</i> COMMAND CENTER</span></div><span className="topbar-separator">/</span><b className="topbar-current-page">{currentScreen.label}</b></div><div className="topbar-actions"><label className="global-search"><Search size={15}/><input placeholder="Search workspace…" value={globalSearch} onChange={e=>setGlobalSearch(e.target.value)}/></label><button className="header-action" onClick={()=>navigate('tickets')}><Plus size={15}/> Tickets</button><button className="header-action" onClick={()=>navigate('users')}><Users size={15}/> Users & Groups</button><button className="header-action" onClick={()=>navigate('devices')}><MonitorCog size={15}/> Devices</button><button className="header-action" onClick={()=>navigate('calendar')}><CalendarDays size={15}/> Calendar</button><button className="header-action" onClick={()=>navigate('integrations')}><Network size={15}/> Connect</button><button className="header-action header-security-action" onClick={()=>navigate('security')}><ShieldCheck size={15}/> Security</button><button className="header-action header-logout" onClick={logout}><LogOut size={15}/> Log out</button></div></header>
       <div className="page-content"><div className="page-heading"><div><div className="eyebrow"><span className="pulse"/> ENTERPRISE OPERATIONS <span className="heading-dot">/</span> {currentRole.toUpperCase()}</div><h1>{currentScreen.label}</h1><p>{currentScreen.description}</p></div><div className="page-heading-actions"><span className="status-pill good"><span/> Service status is illustrative</span></div></div>{globalSearch.trim()&&<div className="inline-success"><Search size={15}/> Global search is a navigation aid; use page-specific search fields for record searches.<button onClick={()=>setGlobalSearch('')} aria-label="Clear global search"><X size={14}/></button></div>}{renderPage()}<div className="floating-ai-launchers" aria-label="AI chat partners"><button className="floating-ai-launcher maximus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="maximus"?null:"maximus")} aria-label="Open Maximus AI chat" aria-expanded={floatingAssistant==="maximus"}><Bot size={19}/><span>Maximus AI</span></button><button className="floating-ai-launcher optimus-launcher" onClick={()=>setFloatingAssistant(floatingAssistant==="optimus"?null:"optimus")} aria-label="Open Optimus AI chat" aria-expanded={floatingAssistant==="optimus"}><Sparkles size={19}/><span>Optimus AI</span></button></div>{floatingAssistant&&<FloatingAssistantChat assistant={floatingAssistant} onClose={()=>setFloatingAssistant(null)} onOpenFull={()=>navigate(floatingAssistant)}/>}<footer className="app-footer"><Brand/><span><b>One World.</b> <em>One Intelligent Network.</em></span></footer></div>
     </main>
   </div>;
