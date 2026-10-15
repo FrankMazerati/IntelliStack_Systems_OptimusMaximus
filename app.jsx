@@ -232,63 +232,89 @@ function UsersPage(){
  <p className="privacy-note">Prototype limitation: these account, group, and role changes are local to this browser. Production identity and policy administration must use authenticated backend APIs with server-enforced permissions and audit logging.</p>
  </>;
 }
+const connectorCatalog = [
+ {category:'Core platform & cloud',providers:['Supabase','Vercel','GitHub','GitLab','Bitbucket','Cloudflare','AWS','Microsoft Azure','Google Cloud Platform','DigitalOcean','Netlify','Render','Railway','Fly.io','Docker Hub','Kubernetes','Terraform Cloud']},
+ {category:'Identity & access',providers:['Microsoft Entra ID','Microsoft 365','Google Workspace','Okta','Auth0','Ping Identity','OneLogin','Keycloak','Duo Security','JumpCloud','CyberArk','1Password','Bitwarden','LastPass','Keeper Security']},
+ {category:'IT service management',providers:['ServiceNow','Jira Service Management','Jira Software','Confluence','Freshservice','Freshdesk','Zendesk','ManageEngine ServiceDesk Plus','BMC Helix','Ivanti Neurons','TOPdesk','HaloITSM','Linear','ClickUp','Asana','Monday.com']},
+ {category:'Security & threat intelligence',providers:['CrowdStrike Falcon','Microsoft Defender','Microsoft Sentinel','Splunk','Elastic Security','Palo Alto Networks Cortex XDR','Wiz','Snyk','Tenable','Qualys','Rapid7 InsightVM','Recorded Future','VirusTotal','AbuseIPDB','Shodan','GreyNoise','Cloudflare Zero Trust','Proofpoint','Mimecast','KnowBe4']},
+ {category:'Monitoring & infrastructure',providers:['Datadog','New Relic','Dynatrace','Grafana Cloud','Prometheus','PagerDuty','Opsgenie','Better Stack','Sentry','Honeycomb','SolarWinds','Zabbix','PRTG Network Monitor','Nagios','UptimeRobot','Statuspage','Auvik','LogicMonitor']},
+ {category:'Endpoint & device management',providers:['Microsoft Intune','Microsoft Configuration Manager','Jamf Pro','Kandji','Mosyle','NinjaOne','N-able','ConnectWise Automate','Atera','Action1','Tanium','Lansweeper','FleetDM','ManageEngine Endpoint Central','Google Admin Console']},
+ {category:'Communication & collaboration',providers:['Slack','Microsoft Teams','Zoom','Google Meet','Discord','Webex','Twilio','SendGrid','Mailchimp','Intercom','Pendo','Miro','Figma','Notion','Airtable']},
+ {category:'Data, analytics & storage',providers:['PostgreSQL','MySQL','MongoDB Atlas','Redis Cloud','Snowflake','Databricks','BigQuery','Amazon Redshift','Power BI','Tableau','Looker','Metabase','Supabase Storage','Amazon S3','Azure Blob Storage','Google Cloud Storage','OneDrive','SharePoint','Google Drive','Dropbox','Box']},
+ {category:'CRM, HR & finance',providers:['Salesforce','HubSpot','Dynamics 365','Zoho CRM','Pipedrive','Workday','BambooHR','Rippling','Gusto','ADP','Paychex','QuickBooks Online','Xero','Stripe','Chargebee','SAP','Oracle NetSuite','Sage Intacct']},
+ {category:'Automation & developer tools',providers:['Zapier','Make','n8n','Workato','Power Automate','GitHub Actions','Jenkins','CircleCI','Buildkite','LaunchDarkly','PostHog','Segment','Algolia','Elastic Cloud','OpenAI API','Anthropic API','Hugging Face','Replicate']}
+];
+const connectorDescriptions = {
+ 'Supabase':'Database, authentication, storage, and edge functions for IntelliStack.',
+ 'Vercel':'Deployments, projects, domains, and runtime visibility.',
+ 'GitHub':'Repositories, pull requests, issues, and build workflows.',
+ 'Microsoft Entra ID':'Enterprise identity, SSO, and directory integration.',
+ 'Microsoft 365':'Microsoft collaboration and productivity services.',
+ 'Google Workspace':'Google identity, directory, mail, and collaboration.',
+ 'ServiceNow':'IT service management and incident/ticket workflows.',
+ 'Jira Service Management':'Service requests, incidents, and service queues.',
+ 'Cloudflare':'DNS, edge security, and network configuration.',
+ 'AWS':'Cloud resources, monitoring, and deployment services.'
+};
+function connectorAuth(provider){
+ if(/OpenAI API|Anthropic API|Hugging Face|Replicate/.test(provider)) return 'API key (server-side secret required)';
+ if(/PostgreSQL|MySQL|MongoDB|Redis|Snowflake|Databricks|BigQuery|Redshift/.test(provider)) return 'Database credentials (server-side only)';
+ if(/Webhook|Twilio|SendGrid|Stripe|QuickBooks|Xero/.test(provider)) return 'OAuth 2.0 or scoped API token';
+ if(/Microsoft|Google Workspace|Google Cloud|GitHub|GitLab|Bitbucket|Slack|Zoom|Salesforce|HubSpot|Notion|Figma|Dropbox|Box|OneDrive|SharePoint|Asana|ClickUp|Monday|Linear|Airtable|Vercel|Supabase|Cloudflare|Okta|Auth0|Atlassian|ServiceNow/.test(provider)) return 'OAuth 2.0 / provider authorization';
+ return 'Provider-specific secure authorization';
+}
 function IntegrationsPage(){
- const [connectors,setConnectors]=useState([]);
- const [showForm,setShowForm]=useState(false);
- const [name,setName]=useState('');
- const [provider,setProvider]=useState('REST API');
- const [endpoint,setEndpoint]=useState('');
- const [auth,setAuth]=useState('No authentication');
- const [testing,setTesting]=useState(null);
+ const [selected,setSelected]=useState('Supabase');
+ const [connections,setConnections]=useState(()=>{try{return JSON.parse(localStorage.getItem('intellistack.connectorSelections')||'[]')}catch{return []}});
  const [notice,setNotice]=useState('');
- const [events,setEvents]=useState([]);
- function addConnector(e){
-  e.preventDefault();
-  let parsed;
-  try{parsed=new URL(endpoint.trim());if(!['https:','http:'].includes(parsed.protocol))throw new Error('protocol');}
-  catch{setNotice('Enter a valid HTTP or HTTPS endpoint. Use HTTPS for real services.');return;}
-  const item={id:Date.now(),name:name.trim(),provider,endpoint:parsed.href,auth,status:'Not tested',lastCheck:'Never'};
-  setConnectors(prev=>[item,...prev]);
-  setEvents(prev=>[{id:item.id,time:new Date().toLocaleString(),name:item.name,result:'Configuration saved',detail:'Saved in this page session only. No sync has run.'},...prev]);
-  setName('');setEndpoint('');setProvider('REST API');setAuth('No authentication');setShowForm(false);
-  setNotice('Endpoint added to this browser session. Select Test endpoint to check reachability.');
+ const [filter,setFilter]=useState('All connectors');
+ const allProviders=connectorCatalog.flatMap(group=>group.providers.map(provider=>({...group,provider})));
+ const current=allProviders.find(item=>item.provider===selected)||allProviders[0];
+ const selectedConnection=connections.find(item=>item.provider===selected);
+ const categoryCounts=connectorCatalog.map(group=>({name:group.category,count:group.providers.length}));
+ const saveConnections=(next)=>{setConnections(next);try{localStorage.setItem('intellistack.connectorSelections',JSON.stringify(next));}catch{}};
+ function beginConnect(){
+  const entry={provider:selected,category:current.category,auth:connectorAuth(selected),status:'Setup required',updatedAt:new Date().toLocaleString()};
+  const next=[entry,...connections.filter(item=>item.provider!==selected)];
+  saveConnections(next);
+  setNotice(selected+' was added to your connection list. Live authorization is not configured yet; no credentials were requested or transmitted.');
  }
- async function testConnector(item){
-  setTesting(item.id);setNotice('');
-  let status='Unreachable',detail='';
-  try{
-   const response=await fetch(item.endpoint,{method:'GET',mode:'cors',headers:{Accept:'application/json'}});
-   status=response.ok?'Reachable':'Endpoint responded';
-   detail='HTTP '+response.status+' '+response.statusText+'. Reachability only; no authenticated sync was performed.';
-  }catch(error){detail='No readable browser response. The endpoint may require authentication, be offline, or block cross-origin requests (CORS). A server-side connector is needed for protected APIs.';}
-  const time=new Date().toLocaleString();
-  setConnectors(prev=>prev.map(c=>c.id===item.id?{...c,status,lastCheck:time}:c));
-  setEvents(prev=>[{id:Date.now(),time,name:item.name,result:status,detail},...prev]);
-  setTesting(null);setNotice(item.name+': '+status+'. '+detail);
- }
- function removeConnector(id){
-  const item=connectors.find(c=>c.id===id);
-  setConnectors(prev=>prev.filter(c=>c.id!==id));
-  setEvents(prev=>[{id:Date.now(),time:new Date().toLocaleString(),name:item?.name||'Connector',result:'Removed',detail:'Removed from this browser session.'},...prev]);
- }
+ function removeConnection(provider){saveConnections(connections.filter(item=>item.provider!==provider));setNotice(provider+' was removed from this browser’s connection list.');}
  return <>
-  <div className="page-action-row"><div><h2>Your connections</h2><p>Configure endpoints you own. No sample connector records are loaded.</p></div><button className="primary-btn" onClick={()=>setShowForm(v=>!v)}><Plus size={16}/>{showForm?'Cancel':'Add connector'}</button></div>
+  <div className="page-action-row"><div><h2>Connector Hub</h2><p>Select from {allProviders.length}+ provider options. No manual connection names, API URLs, or authentication plans.</p></div><span className="connector-catalog-count"><Network size={16}/>{allProviders.length} providers</span></div>
   {notice&&<div className="inline-success"><Activity size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
-  {showForm&&<Panel title="Add an API endpoint" subtitle="Register an endpoint and test browser-level reachability."><form className="connector-form" onSubmit={addConnector}>
-   <div className="connector-fields">
-    <label>Connection name<input required minLength={2} placeholder="e.g. My test API" value={name} onChange={e=>setName(e.target.value)}/></label>
-    <label>Provider type<select value={provider} onChange={e=>setProvider(e.target.value)}><option>REST API</option><option>Microsoft Graph</option><option>ServiceNow</option><option>Jira Service Management</option><option>Custom webhook</option><option>Other API</option></select></label>
-    <label className="connector-wide">Health endpoint or API base URL<input required type="url" placeholder="https://api.example.com/health" value={endpoint} onChange={e=>setEndpoint(e.target.value)}/></label>
-    <label>Authentication plan<select value={auth} onChange={e=>setAuth(e.target.value)}><option>No authentication</option><option>OAuth 2.0 — backend required</option><option>API key — backend required</option><option>Bearer token — backend required</option></select></label>
-   </div>
-   <div className="connector-security-note"><LockKeyhole size={17}/><span><b>Protect your credentials.</b> Do not enter API keys or passwords here. This static website has no secure backend; authentication selections are planning notes only. A backend connector service must hold secrets and perform protected API calls.</span></div>
-   <div className="connector-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><Plus size={15}/> Save endpoint</button></div>
-  </form></Panel>}
-  {connectors.length===0?<Panel title="No connectors configured" subtitle="Start with a public health endpoint or an API you control."><div className="connector-empty"><span className="integration-icon"><Network size={26}/></span><h3>Connect your first service</h3><p>Enter your endpoint to save it for this session and test whether your browser can reach it. No credentials are sent or stored.</p><button className="primary-btn" onClick={()=>setShowForm(true)}><Plus size={15}/> Add connector</button></div></Panel>:<div className="integration-grid">{connectors.map(item=><Panel key={item.id} title={item.name} subtitle={item.provider}><div className="integration-top"><StatusPill kind={item.status==='Reachable'?'good':item.status==='Not tested'?'neutral':'warn'}>{item.status}</StatusPill></div><p className="connector-url">{item.endpoint}</p><p className="connector-auth">Auth plan: {item.auth}</p><div className="integration-bottom"><span>Last test: {item.lastCheck}</span><button className="text-btn" disabled={testing===item.id} onClick={()=>testConnector(item)}>{testing===item.id?'Testing…':'Test endpoint ↗'}</button></div><div className="connector-card-actions"><button className="secondary-btn small" onClick={()=>removeConnector(item.id)}>Remove</button></div></Panel>)}</div>}
-  <div className="content-grid two-col"><Panel title="Connection activity" subtitle="Results from actions you performed"><div className="activity-list">{events.length?events.map(event=><div className="activity-row" key={event.id}><span className="activity-mark"><Activity size={16}/></span><div><b>{event.name} · {event.result}</b><p>{event.detail}</p></div><time>{event.time}</time></div>):<div className="connector-empty compact"><h3>No activity yet</h3><p>When you add or test a connector, the result will appear here.</p></div>}</div></Panel><Panel title="What is needed for real sync?" subtitle="The next step beyond endpoint testing"><div className="check-item"><LockKeyhole/><div><b>Backend credential vault</b><p>Keep API keys, OAuth secrets, and tokens on the server, never in the browser.</p></div></div><div className="check-item"><ShieldCheck/><div><b>Provider-specific adapter</b><p>Implement authorized API calls, scopes, pagination, mapping, retries, and rate-limit handling.</p></div></div><div className="check-item"><Zap/><div><b>Sync jobs and audit trail</b><p>Run controlled jobs on the server and record what changed, when, and with what result.</p></div></div></Panel></div>
-  <p className="privacy-note">Connector definitions and test results are held in memory for this browser session and disappear on refresh. This page does not yet perform business-data synchronization.</p>
+  <div className="connector-hub-layout">
+   <Panel title="Choose a connector" subtitle="Select a service from the dropdown to view its connection profile.">
+    <div className="connector-select-wrap">
+     <label htmlFor="connector-provider-select">CONNECTOR PROVIDER</label>
+     <div className="connector-select-control"><Network size={18}/><select id="connector-provider-select" value={selected} onChange={e=>setSelected(e.target.value)}>{connectorCatalog.map(group=><optgroup key={group.category} label={group.category}>{group.providers.map(provider=><option key={provider} value={provider}>{provider}</option>)}</optgroup>)}</select><ChevronDown size={17}/></div>
+     <p className="connector-select-help">Choose a provider; IntelliStack fills in its category and expected authorization method automatically.</p>
+    </div>
+    <div className="connector-profile">
+     <div className="connector-profile-top"><div className="connector-profile-icon"><Cloud size={24}/></div><div><span className="connector-profile-category">{current.category}</span><h3>{selected}</h3></div><StatusPill kind={selectedConnection?'warn':'neutral'}>{selectedConnection?selectedConnection.status:'Not connected'}</StatusPill></div>
+     <p className="connector-profile-description">{connectorDescriptions[selected]||('Connect '+selected+' to the IntelliStack operations ecosystem using its supported provider authorization flow.')}</p>
+     <div className="connector-profile-detail"><span>Authentication method</span><b>{connectorAuth(selected)}</b></div>
+     <div className="connector-profile-detail"><span>Connection setup</span><b>{selectedConnection?'Selected · awaiting secure setup':'Not configured'}</b></div>
+     <div className="connector-security-note"><LockKeyhole size={17}/><span><b>Credentials stay protected.</b> This selection screen never asks you to paste passwords, API keys, REST endpoints, or tokens. Real connections require the provider’s authorization flow and secure server-side configuration.</span></div>
+     <div className="connector-profile-actions"><button className="primary-btn" onClick={beginConnect}><Plus size={16}/>{selectedConnection?'Add again / refresh selection':'Select & prepare connection'}</button>{selectedConnection&&<button className="secondary-btn" onClick={()=>removeConnection(selected)}>Remove selection</button>}</div>
+    </div>
+   </Panel>
+   <Panel title="Connection overview" subtitle="Your selected provider setup list">
+    <div className="connector-overview-stat"><span>Catalog providers</span><b>{allProviders.length}</b></div>
+    <div className="connector-overview-stat"><span>Selected for setup</span><b>{connections.length}</b></div>
+    <div className="connector-overview-stat"><span>Live connections</span><b>0</b></div>
+    <div className="connector-categories"><h4>Provider categories</h4>{categoryCounts.map(group=><div className="connector-category-row" key={group.name}><span>{group.name}</span><b>{group.count}</b></div>)}</div>
+    <p className="privacy-note">A provider appearing in the catalog does not mean its API is already authenticated. Live connections will be enabled provider by provider.</p>
+   </Panel>
+  </div>
+  <Panel title="Selected connectors" subtitle="Selections are remembered in this browser only; this is not a shared production connection vault.">
+   {connections.length===0?<div className="connector-empty compact"><h3>No connectors selected yet</h3><p>Choose Supabase, Vercel, GitHub, or another provider above and select “Prepare connection.”</p></div>:<div className="connector-selected-list">{connections.map(item=><div className="connector-selected-row" key={item.provider}><span className="connector-selected-icon"><Cloud size={17}/></span><div className="connector-selected-main"><b>{item.provider}</b><small>{item.category} · {item.auth}</small></div><StatusPill kind="warn">{item.status}</StatusPill><button className="text-btn" onClick={()=>{setSelected(item.provider);setNotice('Showing '+item.provider+' connection profile.')}}>Open</button><button className="secondary-btn small" onClick={()=>removeConnection(item.provider)}>Remove</button></div>)}</div>}
+  </Panel>
+  <div className="content-grid two-col"><Panel title="How live connection works" subtitle="No hand-entered endpoint forms"><div className="check-item"><ShieldCheck/><div><b>1. Choose the provider</b><p>Pick it from the catalog. The connector profile selects the expected authorization method automatically.</p></div></div><div className="check-item"><LockKeyhole/><div><b>2. Authorize securely</b><p>The completed integration will redirect to the provider or use an administrator-configured secure setup. Tokens must remain server-side.</p></div></div><div className="check-item"><Zap/><div><b>3. Enable permitted actions</b><p>After authorization, provider-specific scopes, sync jobs, status checks, and audit events can be enabled.</p></div></div></Panel><Panel title="Priority connectors" subtitle="First integrations to activate"><div className="connector-priority-list">{['Supabase','Vercel','GitHub','Microsoft Entra ID','Microsoft 365','Google Workspace','ServiceNow','Jira Service Management'].map((provider,index)=><button key={provider} className={selected===provider?'active':''} onClick={()=>setSelected(provider)}><span>{String(index+1).padStart(2,'0')}</span><b>{provider}</b><ChevronDown size={14}/></button>)}</div></Panel></div>
+  <p className="privacy-note">Current milestone: provider dropdown catalog and local selection management. OAuth/API execution, durable shared connection records, and data synchronization are not active until their backend adapters and provider credentials are configured.</p>
  </>;
 }
+
 function SecurityPage(){
  const [mfaRequired,setMfaRequired]=useState(true);
  const [adminsExempt,setAdminsExempt]=useState(false);
