@@ -118,3 +118,23 @@ Keep the first release narrow: CSV-based users/departments/assets import plus on
 - Performing remote device actions through inventory-only records.
 - Promising perfect rollback of irreversible third-party changes.
 - Running unreviewed migrations directly against production.
+
+
+## Additional planned connector requirements: OneDrive and CrowdStrike
+
+### Microsoft OneDrive
+- Treat OneDrive as a planned file migration/source connector, distinct from a backup product.
+- Support a documented, tested subset of Microsoft Graph/OneDrive capabilities; define tenant and drive scope, folder/file metadata, version-history behavior, permission/ACL handling, shared links, duplicate policy, large-file handling, throttling, and incremental sync.
+- Start with read-only discovery and dry run. Preserve source data until destination reconciliation and owner sign-off.
+- A separate backup feature requires retention, protected copies, recovery points, monitoring, and tested restore drills. File migration or ordinary synchronization alone does not satisfy backup requirements.
+
+### CrowdStrike Falcon
+- Support only API capabilities available under the customer's Falcon subscription, region, scopes, and the implemented adapter.
+- Begin with approved read-only endpoint inventory and detection/incident context where available. Normalize and deduplicate events before opening tickets.
+- Endpoint containment or other disruptive response actions are a separate privileged capability requiring explicit authorization, policy gates, audit records, and tested recovery.
+- Test expired credentials, insufficient scopes, rate limits, duplicate events, partial outages, and tenant isolation. Do not imply active EDR monitoring from a catalog entry.
+
+### Remote Support verification
+- Current app navigation describes Remote Support as simulated; inspect and validate the existing page before extending it.
+- Real sessions require an integrated provider/agent, authenticated technician identity, target-device and tenant authorization, user awareness/consent as required, short-lived session grants, encryption, timeout/revocation, controlled privilege/file transfer, and auditable session lifecycle events.
+- Release acceptance requires a real test session on an approved test device, proof that denied access is denied, and proof that session termination revokes access.
