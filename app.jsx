@@ -3,7 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
-import { Video, Mail, UserPlus, ListChecks, Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Video, Mail, Send, Inbox, Archive, Star, Reply, Paperclip, UserPlus, ListChecks, Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
 
@@ -15,6 +15,7 @@ const screenDefs = [
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
   {id:'calendar',label:'Global Calendar',group:'All roles',icon:CalendarDays,description:'Shared schedule for meetings, service deadlines, maintenance, and response coverage.'},
   {id:'meetings',label:'Meetings & Teams',group:'All roles',icon:Video,description:'Schedule group meetings, manage teams, invitations, agendas, and follow-up actions.'},
+  {id:'email',label:'Email Center',group:'All roles',icon:Mail,description:'Unified business inbox, drafts, shared mailboxes, and meeting-related communications.'},
   {id:'security',label:'Security & Compliance',group:'Super Admin',icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
   {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
   {id:'tickets',label:'Service Desk',group:'Help Desk Agent',icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
@@ -31,8 +32,8 @@ const screenDefs = [
 ];
 const rolePermissions = {
   'Super Admin': new Set(screenDefs.map(s=>s.id)),
-  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status','calendar','meetings']),
-  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations','calendar','meetings']),
+  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status','calendar','meetings','email']),
+  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations','calendar','meetings','email']),
   'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status','calendar','meetings']),
   'Security Agent': new Set(['overview','security','warroom','integrations','status','audit','calendar']),
   'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status','calendar'])
@@ -615,6 +616,40 @@ function MeetingsCenterPage({onNavigate}){
  </div>;
 }
 
+
+function EmailCenterPage({onNavigate}){
+ const seed=()=>[
+  {id:'MAIL-001',from:'Microsoft 365 Notifications',email:'notifications@microsoft.example',subject:'Welcome to your collaboration workspace',preview:'Sample inbox item for the IntelliStack Email Center preview.',date:new Date().toISOString(),folder:'Inbox',unread:true,starred:true,body:'This is sample content to demonstrate the planned inbox experience. No real email account is connected.'},
+  {id:'MAIL-002',from:'Operations Team',email:'operations@intellistack.example',subject:'Weekly operations meeting',preview:'Please review the agenda before the team meeting.',date:new Date(Date.now()-3600000).toISOString(),folder:'Inbox',unread:true,starred:false,body:'Agenda: review open incidents, upcoming maintenance, and team handoffs. This is a local preview message.'},
+  {id:'MAIL-003',from:'Security Desk',email:'security@intellistack.example',subject:'Access review follow-up',preview:'Three access review actions need an owner.',date:new Date(Date.now()-86400000).toISOString(),folder:'Inbox',unread:false,starred:false,body:'Assign owners for the outstanding access review actions and record due dates. Sample message only.'}
+ ];
+ const [messages,setMessages]=useState(()=>{try{const v=JSON.parse(localStorage.getItem('intellistack.emailPreview')||'null');return Array.isArray(v)?v:seed()}catch{return seed()}});
+ const [folder,setFolder]=useState('Inbox');
+ const [selected,setSelected]=useState(null);
+ const [query,setQuery]=useState('');
+ const [compose,setCompose]=useState(false);
+ const [notice,setNotice]=useState('');
+ const [draft,setDraft]=useState({to:'',subject:'',body:''});
+ const persist=next=>{setMessages(next);try{localStorage.setItem('intellistack.emailPreview',JSON.stringify(next))}catch{}};
+ const filtered=messages.filter(m=>(folder==='Starred'?m.starred:folder==='Sent'?m.folder==='Sent':folder==='Drafts'?m.folder==='Drafts':folder==='Archive'?m.folder==='Archive':m.folder==='Inbox')&&((m.from+' '+m.email+' '+m.subject+' '+m.preview).toLowerCase().includes(query.toLowerCase())));
+ const openMessage=m=>{setSelected(m);if(m.unread)persist(messages.map(x=>x.id===m.id?{...x,unread:false}:x))};
+ const saveDraft=e=>{e.preventDefault();const item={id:'MAIL-'+Date.now(),from:'You (draft)',email:'',subject:draft.subject||'(No subject)',preview:draft.body.slice(0,100),date:new Date().toISOString(),folder:'Drafts',unread:false,starred:false,body:draft.body,to:draft.to};persist([item,...messages]);setCompose(false);setDraft({to:'',subject:'',body:''});setNotice('Draft saved locally. Email sending is not connected yet.');};
+ const toggleStar=m=>persist(messages.map(x=>x.id===m.id?{...x,starred:!x.starred}:x));
+ const archive=m=>{persist(messages.map(x=>x.id===m.id?{...x,folder:'Archive'}:x));setSelected(null);setNotice('Message archived in this browser preview.');};
+ const folders=[['Inbox',Inbox],['Starred',Star],['Sent',Send],['Drafts',Paperclip],['Archive',Archive]];
+ return <div className="email-center-page">
+  <div className="email-center-hero"><div><div className="calendar-eyebrow"><Mail size={15}/> COMMUNICATIONS</div><h2>Email Center</h2><p>One workspace for business email, shared mailboxes, meeting invitations, service desk correspondence, and team communication.</p></div><button className="primary-btn" onClick={()=>{setSelected(null);setCompose(true)}}><Plus size={16}/> Compose email</button></div>
+  <div className="email-connection-strip"><span><Mail size={20}/></span><div><b>Connect Outlook or another supported mail provider</b><small>Real inbox access, sending, shared mailboxes, and cross-device sync require a secure provider authorization and backend integration.</small></div><button className="secondary-btn" onClick={()=>onNavigate('integrations')}>Open integrations</button></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="email-layout">
+   <aside className="email-folder-nav"><div className="email-folder-heading">MAILBOX</div>{folders.map(([name,Icon])=><button key={name} className={'email-folder-btn '+(folder===name?'active':'')} onClick={()=>{setFolder(name);setSelected(null)}}><Icon size={16}/><span>{name}</span>{name==='Inbox'&&<small>{messages.filter(m=>m.folder==='Inbox'&&m.unread).length}</small>}</button>}<div className="email-mailbox-note"><b>Planned shared mailboxes</b><small>support@</small><small>security@</small><small>sales@</small></div></aside>
+   <section className="email-message-list"><div className="email-list-toolbar"><b>{folder}</b><div><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search mail…" aria-label="Search mail"/></div></div>{filtered.length===0?<div className="email-empty">No messages found in this folder.</div>:filtered.map(m=><button key={m.id} className={'email-message-row '+(selected?.id===m.id?'selected ':'')+(m.unread?'unread':'')} onClick={()=>openMessage(m)}><span className="email-avatar">{(m.from||'M').slice(0,1)}</span><span className="email-row-copy"><b>{m.from}</b><strong>{m.subject}</strong><small>{m.preview}</small></span><span className="email-row-end"><small>{new Date(m.date).toLocaleDateString(undefined,{month:'short',day:'numeric'})}</small><span onClick={e=>{e.stopPropagation();toggleStar(m)}} role="button" tabIndex={0} aria-label="Toggle star" className={'email-star '+(m.starred?'on':'')}><Star size={14} fill={m.starred?'currentColor':'none'}/></span></span></button>)}</section>
+   <section className="email-reading-pane">{compose?<><div className="email-pane-heading"><b>Compose message</b><button className="top-icon" onClick={()=>setCompose(false)} aria-label="Close compose"><X size={15}/></button></div><form className="email-compose-form" onSubmit={saveDraft}><label>To<input type="text" value={draft.to} onChange={e=>setDraft({...draft,to:e.target.value})} placeholder="name@company.com" required/></label><label>Subject<input value={draft.subject} onChange={e=>setDraft({...draft,subject:e.target.value})} placeholder="Subject"/></label><label>Message<textarea rows={8} value={draft.body} onChange={e=>setDraft({...draft,body:e.target.value})} placeholder="Write your message…" required/></label><p className="email-prototype-note">Save as a local draft. No email will be sent in this preview.</p><button className="primary-btn" type="submit"><Paperclip size={15}/> Save draft</button></form></>:selected?<><div className="email-pane-heading"><b>Message</b><div><button className="top-icon" onClick={()=>toggleStar(selected)} aria-label="Star message"><Star size={15}/></button><button className="top-icon" onClick={()=>archive(selected)} aria-label="Archive message"><Archive size={15}/></button></div></div><h3 className="email-reading-subject">{selected.subject}</h3><div className="email-sender-details"><span className="email-avatar">{(selected.from||'M').slice(0,1)}</span><div><b>{selected.from}</b><small>{selected.email||'Local draft'} · {new Date(selected.date).toLocaleString()}</small></div></div><div className="email-reading-body">{selected.body||selected.preview}</div><button className="secondary-btn" onClick={()=>{setDraft({to:selected.email||selected.to||'',subject:'Re: '+selected.subject,body:''});setCompose(true)}}><Reply size={15}/> Reply</button></>:<div className="email-empty-detail"><span><Mail size={26}/></span><b>Select a message</b><p>Choose an email from the list or compose a new message.</p></div>}</section>
+  </div>
+  <p className="privacy-note">Prototype only: messages and drafts are sample/local browser data. This workspace does not access a real mailbox or send email. Production requires provider OAuth, encrypted token handling, mailbox permissions, audit logs, and authenticated shared storage.</p>
+ </div>;
+}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -649,6 +684,7 @@ function App(){
     if(activeScreen==='integrations') return <IntegrationsPage/>;
     if(activeScreen==='calendar') return <CalendarPage/>;
     if(activeScreen==='meetings') return <MeetingsCenterPage onNavigate={navigate}/>;
+    if(activeScreen==='email') return <EmailCenterPage onNavigate={navigate}/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
