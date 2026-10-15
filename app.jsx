@@ -60,7 +60,7 @@ const screenDefs = [
   {id:'intelliword',label:'IntelliWord',group:'IntelliSphere Suite',icon:FileText,description:'Document authoring, templates, collaboration, version history, and approval workflows.'},
   {id:'intellidrive',label:'IntelliDrive',group:'IntelliSphere Suite',icon:HardDrive,description:'Organize business files, folders, sharing permissions, version history, and retention.'},
   {id:'intelliforms',label:'IntelliForms',group:'IntelliSphere Suite',icon:ClipboardList,description:'Build forms, surveys, intake workflows, approvals, and structured data collection.'},
-  {id:'intelliexcel',label:'IntelliExcel',group:'IntelliSphere Suite',icon:Database,description:'Spreadsheet workspace for tables, formulas, analysis, data imports, charts, and reporting.'},
+  {id:'intelliexcel',label:'IntelliSheets',group:'IntelliSphere Suite',icon:Database,description:'Spreadsheet workspace for tables, formulas, analysis, data imports, charts, and reporting.'},
   {id:'intellislides',label:'IntelliSlides',group:'IntelliSphere Suite',icon:FileText,description:'Presentation authoring, slide libraries, themes, speaker notes, and executive briefings.'},
   {id:'intellistudio',label:'IntelliStudio',group:'IntelliSphere Suite',icon:SlidersHorizontal,description:'Visual page and workspace builder for reusable blocks, themes, layouts, and responsive previews.'},
   {id:'marketplace',label:'Contractor / Worker / Business Marketplace',group:'Marketplace',icon:Building2,description:'Marketplace for businesses, contractors, workers, job opportunities, engagements, and service offers.'},
@@ -760,7 +760,7 @@ function App(){
   const [endUsers,setEndUsers]=useState(initialEndUsers);
   const [devices,setDevices]=useState(labDevices);
   const [mobileNav,setMobileNav]=useState(false);
-  const [expandedNavGroups,setExpandedNavGroups]=useState({'Command Center':true,'Service Operations':true,'Administration':true,'Collaboration':true,'Platform & Governance':false,'Operations Centers':true,'IntelliSphere Suite':true,'Marketplace':true,'AI Assistants':false});
+  const [expandedNavGroups,setExpandedNavGroups]=useState({'Command Center':true,'Service Operations':true,'Administration':true,'Collaboration':true,'Platform & Governance':false,'Operations Centers':true,'IntelliSphere Suite':true,'Marketplace':true,'AI Assistants':false,'Communication & Collaboration':true,'Identity & Access':true,'Enterprise Departments':false});
   const [globalSearch,setGlobalSearch]=useState('');
   const [floatingAssistant,setFloatingAssistant]=useState(null);
   const currentRole=session||'Super Admin';
