@@ -1004,6 +1004,7 @@ function App(){
   useEffect(()=>{const timer=setInterval(()=>setClockNow(Date.now()),1000);return ()=>clearInterval(timer)},[]);
   useEffect(()=>{try{localStorage.setItem('intellistack.profileEmail',profileEmail);localStorage.setItem('intellistack.profileTitle',profileTitle);localStorage.setItem('intellistack.profileDepartment',profileDepartment)}catch{}},[profileEmail,profileTitle,profileDepartment]);
   useEffect(()=>{try{localStorage.setItem('intellistack.displayName',displayName);localStorage.setItem('intellistack.favorites',JSON.stringify(favorites));localStorage.setItem('intellistack.quickActions',JSON.stringify(quickActions));localStorage.setItem('intellistack.recentScreens',JSON.stringify(recentScreens))}catch{}},[displayName,favorites,quickActions,recentScreens]);
+  useEffect(()=>{if(!themeStudioOpen){try{localStorage.setItem('intellistack.theme',theme);localStorage.setItem('intellistack.accent',accent)}catch{}}},[theme,accent,themeStudioOpen]);
   useEffect(()=>{document.documentElement.dataset.theme=theme;document.documentElement.dataset.accent=accent},[theme,accent]);
   const [activeScreen,setActiveScreen]=useState('overview');
   const [tickets,setTickets]=useState(initialTickets);
