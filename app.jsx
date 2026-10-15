@@ -62,42 +62,80 @@ function Brand(){return <div className="brand"><div className="brand-mark"><Shie
 function Login({onLogin}){
  const [audience,setAudience]=useState('staff');
  const [role,setRole]=useState('Super Admin');
- const [email,setEmail]=useState('');
+ const [email,setEmail]=useState(()=>{try{return localStorage.getItem('intellistack.rememberedEmail')||'';}catch{return '';}});
  const [password,setPassword]=useState('');
  const [showPassword,setShowPassword]=useState(false);
  const [authMethod,setAuthMethod]=useState('email');
- const [module,setModule]=useState('Command Center');
  const [message,setMessage]=useState('');
+ const [rememberEmail,setRememberEmail]=useState(()=>{try{return Boolean(localStorage.getItem('intellistack.rememberedEmail'));}catch{return false;}});
  const staffRoles=['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
- const audienceRoles={staff:staffRoles,employee:['Employee','Help Desk Agent'],employer:['Employer','IT Administrator']};
- const roleEmails={'Super Admin':'','Help Desk Agent':'','IT Administrator':'','Governance & Compliance':'','Security Agent':'','Network Operations':'','Employee':'','Employer':''};
- const normalizedEmail = email.trim().toLowerCase();
- const isDemoAdmin = audience==='staff' && role==='Super Admin' && normalizedEmail==='admin@intellistack.info';
- const modules=['Command Center','IntelliStaff','IntelliWork','IntelliHire','IntelliPay','Service Desk','War Room & Emergency Response','Network Operations','Security & Compliance','Governance Center','Users & Devices','System Integrations','Microsoft 365','Google Workspace','Entra ID','Okta / SAML SSO','GitHub','Apple','Other identity provider'];
- const methods=[{id:'email',name:'Email & password',mark:'@'},{id:'microsoft',name:'Microsoft 365',mark:'▦'},{id:'entra',name:'Microsoft Entra ID',mark:'◈'},{id:'google',name:'Google Workspace',mark:'G'},{id:'okta',name:'Okta / SAML SSO',mark:'◎'},{id:'github',name:'GitHub',mark:'⌘'},{id:'apple',name:'Apple',mark:'●'},{id:'other',name:'Other provider',mark:'•••'}];
- const changeAudience=(value)=>{setAudience(value);setRole((audienceRoles[value]||staffRoles)[0]);setMessage('');};
- const submit=(event)=>{event.preventDefault();if(!email.trim()){setMessage('Enter your work or account email to continue.');return;}if(isDemoAdmin){setPassword('');setMessage('Entering Super Admin demo preview…');onLogin('Super Admin');return;}if(authMethod==='email'&&!password){setMessage('Enter your password to continue.');return;}if(authMethod!=='email'){setMessage(methods.find(x=>x.id===authMethod)?.name+' is selected. Its identity provider must be configured before it can authenticate users.');return;}setMessage('This prototype does not yet validate credentials. Connect Supabase Auth and server-side role permissions before enabling real sign-in.');};
- return <div className="login-shell login-refresh" style={{'--login-background':`url(${LoginImage})`}}>
-  <div className="login-backdrop" aria-hidden="true"/>
-  <header className="login-header login-refresh-header"><Brand/><div className="login-header-caption"><span className="pulse"/> GLOBAL IT COMMAND CENTER</div></header>
-  <main className="login-main login-refresh-main">
-   <section className="login-copy login-refresh-copy"><div className="eyebrow"><span className="pulse"/> INTELLISTACK SYSTEMS</div><h1><span>One World.</span><br/><em>One Intelligent Network.</em></h1><p className="login-refresh-lead">One secure gateway for your people, businesses, teams, and connected systems.</p><div className="login-refresh-highlights"><span><ShieldCheck size={15}/> Security-first access</span><span><Globe2 size={15}/> Global operations</span><span><Activity size={15}/> Connected workspaces</span></div></section>
-   <section className="login-card login-refresh-card"><div className="card-top"><span className="eyebrow">SECURE ACCESS PORTAL</span><h2>Welcome back</h2><p>Choose your account type and sign-in method.</p></div>
-    <div className="login-audience-tabs" role="group" aria-label="Account type"><button type="button" className={audience==='staff'?'active':''} onClick={()=>changeAudience('staff')}><ShieldCheck size={16}/><span><b>IntelliStaff</b><small>Team & operations</small></span></button><button type="button" className={audience==='employee'?'active':''} onClick={()=>changeAudience('employee')}><Users size={16}/><span><b>Employee</b><small>Staff access</small></span></button><button type="button" className={audience==='employer'?'active':''} onClick={()=>changeAudience('employer')}><Building2 size={16}/><span><b>Employer</b><small>Business access</small></span></button></div>
-    <form onSubmit={submit} noValidate className="login-refresh-form">
-     <label className="field-label" htmlFor="login-module">WORKSPACE / CONNECTED MODULE</label><div className="role-select-wrap"><Workflow size={17}/><select id="login-module" value={module} onChange={e=>setModule(e.target.value)}>{modules.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div>
-     <label className="field-label" htmlFor="login-role">{audience==='staff'?'INTELLISTAFF ROLE':audience==='employee'?'EMPLOYEE ACCESS ROLE':'EMPLOYER ACCESS ROLE'}</label><div className="role-select-wrap"><ShieldCheck size={17}/><select id="login-role" value={role} onChange={e=>{setRole(e.target.value);setMessage('');}}>{(audienceRoles[audience]||staffRoles).map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div>
-     <label className="field-label" htmlFor="login-email">WORK OR ACCOUNT EMAIL</label><div className="input-wrap"><Users size={17}/><input id="login-email" type="email" autoComplete="username" placeholder="admin@intellistack.info" value={email} onChange={e=>{setEmail(e.target.value);setMessage('');}} required/></div>
-     {authMethod==='email'&&<>{isDemoAdmin?<div className="login-demo-notice"><ShieldCheck size={15}/><span><b>Demo preview access</b><small>Password not required for demo.</small></span></div>:<><label className="field-label" htmlFor="login-password">PASSWORD</label><div className="input-wrap login-refresh-password"><LockKeyhole size={17}/><input id="login-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>setPassword(e.target.value)} required={!isDemoAdmin} aria-required={!isDemoAdmin}/><button type="button" className="login-show-password" onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div><div className="login-refresh-options"><label><input type="checkbox"/> Remember me</label><button type="button" onClick={()=>setMessage('Password reset becomes available after Supabase Auth is connected.')}>Forgot password?</button></div></>}</>}
-     <label className="field-label" htmlFor="login-method">SIGN-IN METHOD</label><div className="role-select-wrap login-method-select"><LockKeyhole size={17}/><select id="login-method" value={authMethod} onChange={e=>{setAuthMethod(e.target.value);setMessage('');}}>{methods.map(x=><option value={x.id} key={x.id}>{x.name}</option>)}</select><ChevronDown size={15}/></div>
-     <div className="login-provider-grid" aria-label="Quick sign-in method selection">{methods.filter(x=>x.id!=='email').map(x=><button type="button" key={x.id} className={authMethod===x.id?'selected':''} onClick={()=>{setAuthMethod(x.id);setMessage('');}}><span className={'login-provider-icon provider-'+x.id}>{x.mark}</span><span>{x.name}</span></button>)}</div>
-     <button className="primary-btn full login-refresh-submit" type="submit">{isDemoAdmin?'Enter Super Admin Demo':authMethod==='email'?'Continue securely':'Continue with '+(methods.find(x=>x.id===authMethod)?.name||'provider')} <span>→</span></button>
-     {message&&<div className="login-refresh-message" role="status"><ShieldCheck size={15}/><span>{message}</span></div>}
-     <div className="trust-row"><ShieldCheck size={15}/> Secure · Trusted · Compliant</div><p className="login-refresh-note">{isDemoAdmin?'Demo preview only — no password or Supabase authentication is used for this test account.':'Provider buttons are prepared for integration; they do not authenticate until the corresponding identity service is configured.'}</p>
+ const audienceRoles={staff:staffRoles,employee:['Employee'],employer:['Employer']};
+ const methods=[
+  {id:'microsoft',name:'Microsoft 365',mark:'▦'},
+  {id:'entra',name:'Microsoft Entra ID',mark:'◈'},
+  {id:'google',name:'Google Workspace',mark:'G'},
+  {id:'github',name:'GitHub',mark:'⌘'},
+  {id:'okta',name:'Okta / SAML',mark:'◎'},
+  {id:'other',name:'Other provider',mark:'•••'}
+ ];
+ const changeAudience=(value)=>{setAudience(value);setRole((audienceRoles[value]||staffRoles)[0]);setMessage('');setPassword('');};
+ const chooseProvider=(id)=>{setAuthMethod(id);setMessage((methods.find(x=>x.id===id)?.name||'Provider')+' sign-in is not connected yet. No credentials were sent.');};
+ const submit=(event)=>{event.preventDefault();setMessage('Real authentication is not connected in this preview. Use “Explore UI preview” to inspect the sample workspace. No credentials were validated or transmitted.');};
+ const enterPreview=()=>{try{if(rememberEmail&&email.trim())localStorage.setItem('intellistack.rememberedEmail',email.trim());else localStorage.removeItem('intellistack.rememberedEmail');}catch{};setPassword('');onLogin(audience==='staff'?role:audience==='employer'?'Employer':'Employee');};
+ return <div className="login-v2" style={{'--login-background':`url(${LoginImage})`}}>
+  <div className="login-v2-scrim" aria-hidden="true"/>
+  <header className="login-v2-header">
+   <Brand/>
+   <div className="login-v2-header-right"><span className="login-v2-live-dot"/><span>GLOBAL OPERATIONS COMMAND CENTER</span><span className="login-v2-header-divider"/><span className="login-v2-secure"><ShieldCheck size={14}/> SECURE ACCESS</span></div>
+  </header>
+  <main className="login-v2-main">
+   <section className="login-v2-story">
+    <div className="login-v2-eyebrow"><span/> INTELLISTACK SYSTEMS · GLOBAL OPERATIONS</div>
+    <h1>One world.<br/><em>One system.</em><br/><strong>One intelligent network.</strong></h1>
+    <p className="login-v2-lead">One connected command environment for your people, support teams, security operations, and business systems.</p>
+    <div className="login-v2-feature-list">
+     <div><span className="login-v2-feature-icon"><ShieldCheck size={17}/></span><span><b>Security by design</b><small>Role-aware access and accountable operations</small></span></div>
+     <div><span className="login-v2-feature-icon"><Globe2 size={17}/></span><span><b>One global view</b><small>People, services, and work in one ecosystem</small></span></div>
+     <div><span className="login-v2-feature-icon"><Activity size={17}/></span><span><b>Connected operations</b><small>Support, response, and visibility in one place</small></span></div>
+    </div>
+    <div className="login-v2-brand-line"><span className="login-v2-brand-line-mark"><Shield size={25}/><b>IS</b></span><span><b>INTELLISTACK SYSTEMS</b><small>MAXIMUS OPTIMUS COMMAND CENTER</small></span></div>
+   </section>
+   <section className="login-v2-card" aria-label="Sign in to IntelliStack">
+    <div className="login-v2-card-head"><div><span className="login-v2-kicker">WELCOME TO YOUR WORKSPACE</span><h2>Sign in to continue</h2><p>Choose your access path to get started.</p></div><div className="login-v2-lock"><LockKeyhole size={19}/></div></div>
+    <div className="login-v2-access-stack">
+     <button type="button" className={'login-v2-access login-v2-access-staff '+(audience==='staff'?'selected':'')} onClick={()=>changeAudience('staff')} aria-pressed={audience==='staff'}>
+      <span className="login-v2-access-icon"><ShieldCheck size={20}/></span><span className="login-v2-access-copy"><b>IntelliStack Staff</b><small>Help Desk · IT · Security · Operations</small></span><span className="login-v2-access-arrow">→</span>
+     </button>
+     <div className="login-v2-business-access">
+      <div className="login-v2-business-heading"><span className="login-v2-business-icon"><Building2 size={18}/></span><span><b>Business & employee access</b><small>Choose the right workspace</small></span></div>
+      <div className="login-v2-audience-switch" role="group" aria-label="Business account type">
+       <button type="button" className={audience==='employer'?'active':''} onClick={()=>changeAudience('employer')} aria-pressed={audience==='employer'}><Building2 size={15}/> Employer</button>
+       <button type="button" className={audience==='employee'?'active':''} onClick={()=>changeAudience('employee')} aria-pressed={audience==='employee'}><Users size={15}/> Employee</button>
+      </div>
+     </div>
+    </div>
+    <form className="login-v2-form" onSubmit={submit} noValidate>
+     <div className="login-v2-form-context"><span className="login-v2-context-mark">{audience==='staff'?<ShieldCheck size={15}/>:audience==='employer'?<Building2 size={15}/>:<Users size={15}/>}</span><span><b>{audience==='staff'?'Staff sign-in':audience==='employer'?'Employer sign-in':'Employee sign-in'}</b><small>{audience==='staff'?'Authorized IntelliStack team members':audience==='employer'?'Organization and employer workspace':'Employee and end-user workspace'}</small></span></div>
+     {audience==='staff'&&<><label className="login-v2-label" htmlFor="login-v2-role">TEAM ROLE</label><div className="login-v2-input"><ShieldCheck size={16}/><select id="login-v2-role" value={role} onChange={e=>{setRole(e.target.value);setMessage('');}}>{staffRoles.map(x=><option key={x}>{x}</option>)}</select><ChevronDown size={15}/></div></>}
+     <label className="login-v2-label" htmlFor="login-v2-email">EMAIL ADDRESS</label>
+     <div className="login-v2-input"><Users size={16}/><input id="login-v2-email" type="email" autoComplete="username" placeholder="you@company.com" value={email} onChange={e=>{setEmail(e.target.value);setMessage('');}}/></div>
+     <label className="login-v2-label" htmlFor="login-v2-password">PASSWORD</label>
+     <div className="login-v2-input"><LockKeyhole size={16}/><input id="login-v2-password" type={showPassword?'text':'password'} autoComplete="current-password" placeholder="Enter your password" value={password} onChange={e=>{setPassword(e.target.value);setMessage('');}}/><button type="button" className="login-v2-show" onClick={()=>setShowPassword(v=>!v)}>{showPassword?'Hide':'Show'}</button></div>
+     <div className="login-v2-form-options"><label><input type="checkbox" checked={rememberEmail} onChange={e=>setRememberEmail(e.target.checked)}/> Remember email on this device</label><button type="button" onClick={()=>setMessage('Password recovery will be enabled after a real identity provider is connected.')}>Forgot password?</button></div>
+     <button type="submit" className="login-v2-submit">Continue securely <span>→</span></button>
+     {message&&<div className="login-v2-message" role="status"><CircleHelp size={16}/><span>{message}</span></div>}
     </form>
+    <div className="login-v2-connect">
+     <div className="login-v2-connect-heading"><span>CONNECT WITH YOUR BUSINESS TOOLS</span><i/></div>
+     <p>Use your organization’s identity provider when configured.</p>
+     <div className="login-v2-providers">{methods.slice(0,4).map(x=><button type="button" key={x.id} onClick={()=>chooseProvider(x.id)} className={authMethod===x.id?'chosen':''}><span className={'login-v2-provider-mark login-v2-provider-'+x.id}>{x.mark}</span><span>{x.name}</span></button>)}</div>
+     <div className="login-v2-provider-more"><label htmlFor="login-v2-more">More sign-in providers</label><div className="login-v2-input"><Network size={15}/><select id="login-v2-more" value={authMethod} onChange={e=>chooseProvider(e.target.value)}><option value="email">Choose a provider…</option>{methods.slice(4).map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select><ChevronDown size={15}/></div></div>
+    </div>
+    <div className="login-v2-demo"><div><span className="login-v2-demo-dot"/><span><b>Interactive preview</b><small>Sample workspace · no production systems connected</small></span></div><button type="button" onClick={enterPreview}>Explore UI preview <span>↗</span></button></div>
+    <div className="login-v2-trust"><ShieldCheck size={14}/> Secure · Trusted · Compliant <span>•</span> Preview environment</div>
    </section>
   </main>
-  <footer className="login-footer login-refresh-footer"><span>© 2026 IntelliStack Systems</span><span><b>ONE WORLD.</b> ONE INTELLIGENT NETWORK.</span><span>Privacy · Support · Secure access</span></footer>
+  <footer className="login-v2-footer"><div>© 2026 IntelliStack Systems</div><div className="login-v2-footer-slogan">ONE WORLD. <span>ONE SYSTEM.</span> ONE INTELLIGENT NETWORK.</div><nav aria-label="Footer"><a href="#home" onClick={e=>e.preventDefault()}>Home</a><a href="#about" onClick={e=>e.preventDefault()}>About</a><a href="#privacy" onClick={e=>e.preventDefault()}>Privacy</a><a href="#support" onClick={e=>e.preventDefault()}>Support</a></nav></footer>
  </div>;
 }
 function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const content=<><div className="metric-top"><span>{label}</span><span className="metric-icon"><Icon size={18}/></span></div><div className="metric-value">{value}</div><div className={'metric-trend '+(positive?'good':'warn')}>{positive?<ArrowDownRight size={14}/>:<ArrowUpRight size={14}/>} {trend}</div>{onClick&&<span className="metric-drill">Explore details <span>↗</span></span>}</>;return onClick?<button type="button" className="metric-card metric-clickable" onClick={onClick} aria-label={label+': '+value+'. Explore details'}>{content}</button>:<div className="metric-card">{content}</div>}
