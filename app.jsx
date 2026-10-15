@@ -4,6 +4,7 @@ import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
 import { IntelliChatPage, IntelliStackIdentityPage, DepartmentWorkspacePage } from './enterprise-experience.jsx';
+import { KnowledgeBasePage } from './knowledge-base.jsx';
 import { Video, Mail, Send, Inbox, Archive, Star, Reply, Paperclip, UserPlus, ListChecks, Activity, Building2, MessagesSquare, Link2, Eye, KeyRound, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, Headset, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
@@ -11,6 +12,7 @@ const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & 
 const screenDefs = [
   {id:'overview',label:'Dashboard',group:'Command Center',icon:LayoutDashboard,description:'Executive overview of people, services, security, work, and connected business applications.'},
   {id:'servicedesk',label:'Service Desk',group:'Service Operations',icon:Headset,description:'Service catalog, request intake, triage queues, knowledge, SLAs, and support-team operations.'},
+  {id:'knowledge',label:'Knowledge Base',group:'Service Operations',icon:BookOpen,description:'Searchable onboarding, system navigation, security awareness, spam filtering, phishing prevention, and administrator guidance.'},
   {id:'tickets',label:'Tickets',group:'Service Operations',icon:Ticket,description:'Create, assign, prioritize, escalate, resolve, and audit incidents and service requests.'},
   {id:'users',label:'Users & Role Management',group:'Administration',icon:Users,description:'Manage identities, teams, role assignments, permissions, and access reviews.'},
   {id:'devices',label:'Users & Devices',group:'Administration',icon:MonitorCog,description:'Manage users, endpoints, peripherals, ownership, inventory, and device health.'},
@@ -779,6 +781,7 @@ function App(){
       const locked=screenDefs.find(item=>item.id===activeScreen)||screenDefs[0];
       return <Panel title={locked.label} subtitle={locked.description}><div className="empty-state role-locked-state"><div className="service-icon"><LockKeyhole size={24}/></div><h3>Access restricted</h3><p><b>{locked.label}</b> is not included in the <b>{currentRole}</b> role.</p><p className="privacy-note">This screen remains visible for command-center inspection, but its controls are locked for this role.</p><button className="primary-btn" onClick={()=>navigate('overview')}>Return to allowed workspace →</button></div></Panel>;
     }
+    if(activeScreen==='knowledge') return <KnowledgeBasePage onNavigate={navigate}/>;
     if(activeScreen==='intellichat') return <IntelliChatPage onNavigate={navigate}/>;
     if(activeScreen==='intellistackid') return <IntelliStackIdentityPage endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen.startsWith('dept-')) return <DepartmentWorkspacePage screen={currentScreen} onNavigate={navigate}/>;
