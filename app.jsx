@@ -3,7 +3,7 @@ import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
 import React, { useMemo, useState } from 'react';
-import { Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
+import { Video, Mail, UserPlus, ListChecks, Activity, Building2, AlertTriangle, ArrowDownRight, ArrowUpRight, Bell, BookOpen, Bot, CheckCircle2, ChevronDown, CircleHelp, ClipboardList, CalendarDays, ChevronLeft, ChevronRight, Clock, Cloud, Cpu, Database, FileCheck2, FileText, Filter, Globe2, HardDrive, LayoutDashboard, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog, Network, Plus, Search, Settings, Shield, ShieldCheck, SlidersHorizontal, Sparkles, Ticket, UserCog, Users, Workflow, X, Zap, Smartphone, Laptop, Printer, Router, Server, Battery, Wifi, RefreshCw, Power, Wrench, PlusCircle } from 'lucide-react';
 
 const roles = ['Super Admin','Help Desk Agent','IT Administrator','Governance & Compliance','Security Agent','Network Operations'];
 
@@ -14,6 +14,7 @@ const screenDefs = [
   {id:'devices',label:'Users & Devices',group:'Super Admin',icon:MonitorCog,description:'Manage 100 local lab users and their PCs, phones, workstations, and peripherals.'},
   {id:'integrations',label:'System Integrations',group:'Super Admin',icon:Network,description:'Monitor connected systems and integration health.'},
   {id:'calendar',label:'Global Calendar',group:'All roles',icon:CalendarDays,description:'Shared schedule for meetings, service deadlines, maintenance, and response coverage.'},
+  {id:'meetings',label:'Meetings & Teams',group:'All roles',icon:Video,description:'Schedule group meetings, manage teams, invitations, agendas, and follow-up actions.'},
   {id:'security',label:'Security & Compliance',group:'Super Admin',icon:ShieldCheck,description:'Identity posture, policy status, and audit visibility.'},
   {id:'warroom',label:'War Room & Breakout Rooms',group:'Super Admin',icon:Activity,description:'Coordinate incidents, breakout rooms, segue rooms, owners, and response notes.'},
   {id:'tickets',label:'Service Desk',group:'Help Desk Agent',icon:Ticket,description:'Create, triage, resolve, and reopen support tickets.'},
@@ -30,9 +31,9 @@ const screenDefs = [
 ];
 const rolePermissions = {
   'Super Admin': new Set(screenDefs.map(s=>s.id)),
-  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status','calendar']),
-  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations','calendar']),
-  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status','calendar']),
+  'Help Desk Agent': new Set(['overview','tickets','endusers','knowledge','status','calendar','meetings']),
+  'IT Administrator': new Set(['overview','infrastructure','remote','automation','status','devices','integrations','calendar','meetings']),
+  'Governance & Compliance': new Set(['overview','governance','audit','security','integrations','status','calendar','meetings']),
   'Security Agent': new Set(['overview','security','warroom','integrations','status','audit','calendar']),
   'Network Operations': new Set(['overview','infrastructure','remote','integrations','warroom','status','calendar'])
 };
@@ -575,6 +576,45 @@ function WarRoomPage(){
  <p className="privacy-note">Prototype only: room roster, chat, and text drafts are saved in this browser, not transmitted. Video is a placeholder until a conferencing provider is integrated. Production needs authenticated shared storage, role-based oversight, audit logs, tested on-call rotations, and approved messaging/video connectors.</p></>;
 }
 
+
+function MeetingsCenterPage({onNavigate}){
+ const seed=()=>[
+  {id:'MTG-001',title:'Operations stand-up',date:new Date(Date.now()+86400000).toLocaleDateString('en-CA'),time:'09:00',duration:'30',team:'Operations',host:'IT Administrator',provider:'Teams',agenda:'Review priorities, incidents, and handoffs.',attendees:'ops-team@intellistack.example',status:'Scheduled',createdAt:new Date().toISOString()},
+  {id:'MTG-002',title:'Security controls review',date:new Date(Date.now()+172800000).toLocaleDateString('en-CA'),time:'13:30',duration:'45',team:'Security & Compliance',host:'Security Lead',provider:'IntelliStack',agenda:'Review open control actions and evidence owners.',attendees:'security-team@intellistack.example',status:'Invitation draft',createdAt:new Date().toISOString()}
+ ];
+ const [meetings,setMeetings]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.meetings')||'null');return Array.isArray(saved)?saved:seed()}catch{return seed()}});
+ const [showForm,setShowForm]=useState(false);
+ const [notice,setNotice]=useState('');
+ const [filter,setFilter]=useState('All');
+ const makeDraft=()=>({title:'',date:new Date(Date.now()+86400000).toLocaleDateString('en-CA'),time:'10:00',duration:'30',team:'Operations',host:'Meeting organizer',provider:'Teams',agenda:'',attendees:'',status:'Invitation draft'});
+ const [draft,setDraft]=useState(makeDraft);
+ const persist=next=>{setMeetings(next);try{localStorage.setItem('intellistack.meetings',JSON.stringify(next))}catch{}};
+ const update=(key,value)=>setDraft(old=>({...old,[key]:value}));
+ const create=e=>{e.preventDefault();if(!draft.title.trim()||!draft.date||!draft.time){setNotice('Add a meeting title, date, and start time.');return;}const item={...draft,id:'MTG-'+Date.now(),createdAt:new Date().toISOString()};persist([item,...meetings]);setShowForm(false);setDraft(makeDraft());setNotice('Meeting saved in this browser. Invitations are drafts only; no emails or calendar events have been sent.');};
+ const remove=id=>{persist(meetings.filter(m=>m.id!==id));setNotice('Meeting removed from this browser preview.');};
+ const changeStatus=(id,status)=>{persist(meetings.map(m=>m.id===id?{...m,status}:m));setNotice('Meeting status updated in this browser preview.');};
+ const filtered=meetings.filter(m=>filter==='All'||m.status===filter);
+ return <div className="meetings-page">
+  <div className="meetings-hero"><div><div className="calendar-eyebrow"><Video size={15}/> COLLABORATION CENTER</div><h2>Meetings & Teams</h2><p>Schedule group meetings, coordinate teams, manage invitations, and keep follow-up actions connected to the Global Calendar.</p></div><div className="meetings-hero-actions"><button className="secondary-btn" onClick={()=>onNavigate('calendar')}><CalendarDays size={16}/> Open calendar</button><button className="primary-btn" onClick={()=>{setDraft(makeDraft());setShowForm(true)}}><Plus size={16}/> Schedule meeting</button></div></div>
+  <div className="meetings-metrics"><div><span className="meetings-metric-icon"><CalendarDays size={18}/></span><b>{meetings.length}</b><small>Meetings in this preview</small></div><div><span className="meetings-metric-icon"><Mail size={18}/></span><b>{meetings.filter(m=>m.status==='Invitation draft').length}</b><small>Invitation drafts</small></div><div><span className="meetings-metric-icon"><Users size={18}/></span><b>{new Set(meetings.map(m=>m.team)).size}</b><small>Teams represented</small></div><div><span className="meetings-metric-icon"><ListChecks size={18}/></span><b>{meetings.filter(m=>m.status==='Scheduled').length}</b><small>Scheduled items</small></div></div>
+  {notice&&<div className="inline-success"><CheckCircle2 size={15}/><span>{notice}</span><button onClick={()=>setNotice('')} aria-label="Dismiss notice"><X size={14}/></button></div>}
+  <div className="meetings-provider-strip"><div className="meetings-provider-icon"><Video size={20}/></div><div><b>Choose the meeting provider that fits your organization</b><small>Teams is the planned first live integration. Native IntelliStack video, email invitations, and shared team storage are not connected in this preview.</small></div><span className="calendar-local-badge">PREVIEW</span></div>
+  {showForm&&<Panel title="Schedule a group meeting" subtitle="Build the meeting details and invitation list"><form className="meeting-form" onSubmit={create}>
+   <label>Meeting title<input value={draft.title} onChange={e=>update('title',e.target.value)} placeholder="e.g. Weekly Operations Review" required/></label>
+   <div className="meeting-form-grid"><label>Date<input type="date" value={draft.date} onChange={e=>update('date',e.target.value)} required/></label><label>Start time<input type="time" value={draft.time} onChange={e=>update('time',e.target.value)} required/></label><label>Duration<select value={draft.duration} onChange={e=>update('duration',e.target.value)}><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">90 minutes</option><option value="120">2 hours</option></select></label><label>Meeting provider<select value={draft.provider} onChange={e=>update('provider',e.target.value)}><option>Teams</option><option>IntelliStack</option><option>Outlook conference</option><option>In person</option></select></label></div>
+   <div className="meeting-form-grid"><label>Team / department<input value={draft.team} onChange={e=>update('team',e.target.value)} placeholder="Operations, Help Desk, Security…"/></label><label>Organizer / host<input value={draft.host} onChange={e=>update('host',e.target.value)} placeholder="Meeting owner"/></label></div>
+   <label>Invite attendees<input value={draft.attendees} onChange={e=>update('attendees',e.target.value)} placeholder="Emails separated by commas"/></label><small className="meeting-help">Internal users and external guests can be listed. In this prototype, this field creates an invitation draft; it does not send email.</small>
+   <label>Agenda and preparation notes<textarea value={draft.agenda} onChange={e=>update('agenda',e.target.value)} placeholder="Topics, pre-reading, decisions needed, or links…" rows={3}/></label>
+   <div className="meeting-form-actions"><button type="button" className="secondary-btn" onClick={()=>setShowForm(false)}>Cancel</button><button type="submit" className="primary-btn"><Mail size={15}/> Save meeting & invitation draft</button></div>
+  </form></Panel>}
+  <Panel title="Meeting schedule" subtitle="Manage meeting details, invitation status, and team coordination" action={<select className="meeting-filter" value={filter} onChange={e=>setFilter(e.target.value)} aria-label="Filter meetings"><option>All</option><option>Scheduled</option><option>Invitation draft</option><option>Completed</option><option>Cancelled</option></select>}>
+   {filtered.length===0?<div className="empty-state"><div className="service-icon"><CalendarDays size={24}/></div><h3>No meetings in this view</h3><p>Schedule a meeting to start building the team calendar.</p></div>:<div className="meeting-list">{filtered.map(m=><article className="meeting-card" key={m.id}><div className="meeting-date-tile"><b>{new Date(m.date+'T12:00:00').toLocaleDateString(undefined,{day:'2-digit'})}</b><small>{new Date(m.date+'T12:00:00').toLocaleDateString(undefined,{month:'short'})}</small></div><div className="meeting-card-main"><div className="meeting-title-line"><h4>{m.title}</h4><span className={'meeting-status '+(m.status==='Scheduled'?'scheduled':m.status==='Completed'?'completed':'draft')}>{m.status}</span></div><div className="meeting-meta"><span><Clock size={13}/>{m.time} · {m.duration} min</span><span><Users size={13}/>{m.team||'General team'}</span><span><Video size={13}/>{m.provider}</span></div><p>{m.agenda||'No agenda added yet.'}</p><div className="meeting-attendees"><Mail size={13}/><span>{m.attendees||'No invitees listed'}</span></div><small className="meeting-host">Host: {m.host||'Not assigned'}</small></div><div className="meeting-card-actions"><button className="secondary-btn" onClick={()=>changeStatus(m.id,m.status==='Scheduled'?'Completed':'Scheduled')}>{m.status==='Scheduled'?'Mark complete':'Mark scheduled'}</button><button className="top-icon" title="Remove meeting" aria-label={'Remove '+m.title} onClick={()=>remove(m.id)}><X size={15}/></button></div></article>)}</div>}
+  </Panel>
+  <Panel title="Team meeting workflow" subtitle="Designed to grow into a connected collaboration service"><div className="meeting-workflow-grid"><div><span>01</span><b>Schedule</b><p>Set time, duration, time zone, agenda, and recurrence.</p></div><div><span>02</span><b>Invite</b><p>Invite staff and guests, track responses, and send reminders.</p></div><div><span>03</span><b>Host</b><p>Launch a Teams or approved conferencing link with controlled access.</p></div><div><span>04</span><b>Follow up</b><p>Capture decisions, action owners, due dates, and meeting notes.</p></div></div></Panel>
+  <p className="privacy-note">Prototype limitation: meeting records are stored in this browser only. Invitations, email delivery, shared teams, conferencing, and cross-device sync require authenticated backend storage and connected provider APIs.</p>
+ </div>;
+}
+
 function App(){
   const [session,setSession]=useState(null);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -608,6 +648,7 @@ function App(){
     if(activeScreen==='optimus') return <AssistantPage assistant="optimus" tickets={tickets} devices={devices} endUsers={endUsers} onNavigate={navigate}/>;
     if(activeScreen==='integrations') return <IntegrationsPage/>;
     if(activeScreen==='calendar') return <CalendarPage/>;
+    if(activeScreen==='meetings') return <MeetingsCenterPage onNavigate={navigate}/>;
     if(activeScreen==='security') return <SecurityPage/>;
     if(activeScreen==='warroom') return <WarRoomPage/>;
     if(activeScreen==='tickets') return <TicketsPage tickets={tickets} setTickets={setTickets} endUsers={endUsers}/>;
