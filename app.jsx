@@ -243,7 +243,7 @@ function Metric({icon:Icon,label,value,trend,positive=true,onClick}){const conte
 function Panel({title,subtitle,children,action}){return <section className="panel"><div className="panel-head"><div><h3>{title}</h3>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>}
 function Table({headers,rows}){return <div className="table-scroll"><table><thead><tr>{headers.map(h=><th key={h}>{h}</th>)}</tr></thead><tbody>{rows}</tbody></table></div>}
 function StatusPill({children,kind='good'}){return <span className={'status-pill '+kind}><span/> {children}</span>}
-function Overview({onNavigate,tickets,endUsers,devices}){
+function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
@@ -254,6 +254,31 @@ function Overview({onNavigate,tickets,endUsers,devices}){
    <button className="secondary-btn" onClick={()=>onNavigate('integrations')}><Network size={16}/> Add integration</button>
    <button className="secondary-btn" onClick={()=>onNavigate('security')}><ShieldCheck size={16}/> Security settings</button>
   </div></div>
+  <section className="panel dashboard-launchpad"><div className="panel-head"><div><h3>IntelliSphere Stack & Communications</h3><p>Your business applications, chat, email, and everyday workspaces in one place.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Customize</button></div><div className="launchpad-grid">
+   {[
+    ['IntelliStaff','intellistaff','Workforce'],
+    ['IntelliWork','intelliwork','Tasks & projects'],
+    ['IntelliHire','intellihire','Recruiting'],
+    ['IntelliPay','intellipay','Payroll & payments'],
+    ['IntelliTax','intellitax','Tax workspace'],
+    ['IntelliWord','intelliword','Documents'],
+    ['IntelliDrive','intellidrive','Files & sharing'],
+    ['IntelliForms','intelliforms','Forms'],
+    ['IntelliSheets','intelliexcel','Spreadsheets'],
+    ['IntelliSlides','intellislides','Presentations'],
+    ['IntelliStudio','intellistudio','App & workspace studio'],
+    ['IntelliChat','intellichat','Enterprise messaging'],
+    ['Email Center','email','Inbox & correspondence'],
+    ['Global Calendar','calendar','Schedules'],
+    ['Meetings & Teams','meetings','Meetings & teams'],
+    ['Knowledge Base','knowledge','Help & runbooks'],
+    ['IntelliStack ID','intellistackid','Identity & access'],
+    ['IntelliLink','intellilink','Integrations'],
+    ['IntelliVision','intellivision','Enterprise visibility'],
+    ['Service Desk','servicedesk','Support center']
+   ].map(([label,id,description])=><button className="launchpad-tile" key={id} onClick={()=>onNavigate(id)}><b>{label}</b><small>{description}</small></button>)}
+  </div></section>
+  {quickActions.length>0&&<section className="panel dashboard-quick-actions"><div className="panel-head"><div><h3>My Quick Actions</h3><p>Your personal shortcuts.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Edit actions</button></div><div className="quick-actions-row">{quickActions.map(id=>{const item=screenDefs.find(x=>x.id===id);return item?<button key={id} onClick={()=>onNavigate(id)}>{item.label} →</button>:null})}</div></section>}
   <div className="metrics-grid">
    <Metric icon={Users} label="Active lab users" value={labUsers.length} trend="Manage users and roles" onClick={()=>onNavigate('users')}/>
    <Metric icon={Ticket} label="Open tickets" value={openTickets} trend="Review and update tickets" onClick={()=>onNavigate('tickets')}/>
@@ -865,7 +890,7 @@ function App(){
     if(activeScreen==='noc') return <OperationsCenterPage type="noc" onNavigate={navigate} tickets={tickets}/>;
     if(activeScreen==='soc') return <OperationsCenterPage type="soc" onNavigate={navigate} tickets={tickets}/>;
     if(suiteModules[activeScreen]) return <WorkspaceModulePage moduleInfo={suiteModules[activeScreen]} onNavigate={navigate}/>;
-    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices}/>;
+    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs}/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
