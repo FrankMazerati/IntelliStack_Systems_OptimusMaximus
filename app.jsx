@@ -324,7 +324,7 @@ function ReadinessTracker(){
 function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}){
  const [address,setAddress]=useState('https://www.google.com');
  const [launchMessage,setLaunchMessage]=useState('');
- const launchWebsite=()=>{let target;try{target=new URL(address.trim());}catch{setLaunchMessage('Enter a complete website address, such as https://www.example.com.');return;}if(!['http:','https:'].includes(target.protocol)){setLaunchMessage('For safety, only HTTP and HTTPS website addresses are supported.');return;}const opened=window.open(target.href,'_blank','noopener,noreferrer');setLaunchMessage(opened===null?'The browser blocked the new tab. Allow pop-ups for IntelliStack and try again.':'Requested '+target.href+' in a new browser tab. The browser used is controlled by your device and browser settings.');};
+ const launchWebsite=()=>{let target;try{target=new URL(address.trim());}catch{setLaunchMessage('Enter a complete website address, such as https://www.example.com.');return;}if(!['http:','https:'].includes(target.protocol)){setLaunchMessage('For safety, only HTTP and HTTPS website addresses are supported.');return;}try{window.open(target.href,'_blank','noopener,noreferrer');setLaunchMessage('Requested '+target.href+' in a new browser tab. Your browser may block pop-ups; if nothing opens, allow pop-ups for IntelliStack. The browser used is controlled by your device and browser settings.');}catch{setLaunchMessage('The browser could not open this link. Try opening the website directly in your browser.');}};
  const [fileName,setFileName]=useState('');
  const [bookmarks,setBookmarks]=useState([]);
  const [selected,setSelected]=useState({});
