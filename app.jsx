@@ -335,7 +335,7 @@ function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}
    const walk=(node,folder='')=>{if(!node)return;if(Array.isArray(node)){node.forEach(n=>walk(n,folder));return;}const nextFolder=node.type==='folder'?(folder?folder+' / ':'')+(node.name||'Folder'):folder;if(node.type==='url'&&node.url)found.push({title:node.name||node.url,url:node.url,folder});if(node.url&&node.name&&!node.type)found.push({title:node.name,url:node.url,folder});if(node.children)walk(node.children,nextFolder);};
    walk(parsed.roots||parsed); 
   }catch{
-   const anchors=raw.match(/<A\\b[^>]*>.*?<\\/A>/gis)||[];
+   const anchors=raw.match(/<A\b[^>]*>.*?<\/A>/gis)||[];
    for(const anchor of anchors){const href=anchor.match(/HREF\\s*=\\s*["']([^"']+)["']/i)?.[1];const title=safeDecode(anchor.replace(/<[^>]+>/g,'').trim());if(href&&title)found.push({title,url:safeDecode(href),folder:''});}
   }
   const unique=new Map();
