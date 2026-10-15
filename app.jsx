@@ -286,9 +286,11 @@ function IntegrationsPage(){
   <div className="connector-hub-layout">
    <Panel title="Choose a connector" subtitle="Select a service from the dropdown to view its connection profile.">
     <div className="connector-select-wrap">
-     <label htmlFor="connector-provider-select">CONNECTOR PROVIDER</label>
-     <div className="connector-select-control"><Network size={18}/><select id="connector-provider-select" value={selected} onChange={e=>setSelected(e.target.value)}>{connectorCatalog.map(group=><optgroup key={group.category} label={group.category}>{group.providers.map(provider=><option key={provider} value={provider}>{provider}</option>)}</optgroup>)}</select><ChevronDown size={17}/></div>
-     <p className="connector-select-help">Choose a provider; IntelliStack fills in its category and expected authorization method automatically.</p>
+     <label htmlFor="connector-category-select">1. CHOOSE A CATEGORY</label>
+     <div className="connector-select-control"><Network size={18}/><select id="connector-category-select" value={filter} onChange={e=>{const nextCategory=e.target.value;setFilter(nextCategory);if(nextCategory!=='All connectors'){const first=connectorCatalog.find(group=>group.category===nextCategory)?.providers[0];if(first)setSelected(first);}}}><option value="All connectors">All connector categories ({allProviders.length})</option>{categoryCounts.map(group=><option key={group.name} value={group.name}>{group.name} ({group.count})</option>)}</select><ChevronDown size={17}/></div>
+     <label htmlFor="connector-provider-select" className="connector-provider-label">2. SELECT A PROVIDER</label>
+     <div className="connector-select-control"><Cloud size={18}/><select id="connector-provider-select" value={selected} onChange={e=>setSelected(e.target.value)}>{(filter==='All connectors'?connectorCatalog:connectorCatalog.filter(group=>group.category===filter)).map(group=><optgroup key={group.category} label={group.category}>{group.providers.map(provider=><option key={provider} value={provider}>{provider}</option>)}</optgroup>)}</select><ChevronDown size={17}/></div>
+     <p className="connector-select-help">No connection name, REST URL, or authentication plan to type. Selecting a provider fills in its profile automatically. Actual authorization still depends on the provider integration being enabled.</p>
     </div>
     <div className="connector-profile">
      <div className="connector-profile-top"><div className="connector-profile-icon"><Cloud size={24}/></div><div><span className="connector-profile-category">{current.category}</span><h3>{selected}</h3></div><StatusPill kind={selectedConnection?'warn':'neutral'}>{selectedConnection?selectedConnection.status:'Not connected'}</StatusPill></div>
