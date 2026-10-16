@@ -1241,8 +1241,15 @@ function App(){
   const [activeNews,setActiveNews]=useState(null);
   const [newsFeedVisible,setNewsFeedVisible]=useState(()=>{try{return localStorage.getItem('intellistack.newsFeedVisible')!=='false'}catch{return true}});
   const [stickyNotesOpen,setStickyNotesOpen]=useState(()=>{try{return localStorage.getItem('intellistack.stickyNotesOpen')==='true'}catch{return false}});
-  const [stickyNoteText,setStickyNoteText]=useState(()=>{try{return localStorage.getItem('intellistack.stickyNoteText')||''}catch{return ''}});
-  useEffect(()=>{try{localStorage.setItem('intellistack.newsFeedVisible',String(newsFeedVisible));localStorage.setItem('intellistack.stickyNotesOpen',String(stickyNotesOpen));localStorage.setItem('intellistack.stickyNoteText',stickyNoteText)}catch{}},[newsFeedVisible,stickyNotesOpen,stickyNoteText]);
+  const [stickyNotes,setStickyNotes]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.stickyNotes')||'null');return Array.isArray(saved)&&saved.length?saved:[{id:'note-'+Date.now(),title:'Quick note 1',text:localStorage.getItem('intellistack.stickyNoteText')||'',updatedAt:Date.now()}]}catch{return [{id:'note-default',title:'Quick note 1',text:'',updatedAt:Date.now()}]}});
+  const [activeStickyNoteId,setActiveStickyNoteId]=useState(()=>{try{return localStorage.getItem('intellistack.activeStickyNoteId')||''}catch{return ''}});
+  const [stickyNotesMenuOpen,setStickyNotesMenuOpen]=useState(false);
+  const activeStickyNote=stickyNotes.find(note=>note.id===activeStickyNoteId)||stickyNotes[0];
+  useEffect(()=>{if(activeStickyNote&&activeStickyNote.id!==activeStickyNoteId)setActiveStickyNoteId(activeStickyNote.id)},[activeStickyNote,activeStickyNoteId]);
+  useEffect(()=>{try{localStorage.setItem('intellistack.newsFeedVisible',String(newsFeedVisible));localStorage.setItem('intellistack.stickyNotesOpen',String(stickyNotesOpen));localStorage.setItem('intellistack.stickyNotes',JSON.stringify(stickyNotes));localStorage.setItem('intellistack.activeStickyNoteId',activeStickyNoteId)}catch{}},[newsFeedVisible,stickyNotesOpen,stickyNotes,activeStickyNoteId]);
+  const updateActiveStickyNote=(field,value)=>{if(!activeStickyNote)return;setStickyNotes(current=>current.map(note=>note.id===activeStickyNote.id?{...note,[field]:value,updatedAt:Date.now()}:note))};
+  const createStickyNote=()=>{const note={id:'note-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),title:'Quick note '+(stickyNotes.length+1),text:'',updatedAt:Date.now()};setStickyNotes(current=>[...current,note]);setActiveStickyNoteId(note.id);setStickyNotesOpen(true);setStickyNotesMenuOpen(false)};
+  const deleteActiveStickyNote=()=>{if(!activeStickyNote)return;setStickyNotes(current=>{const remaining=current.filter(note=>note.id!==activeStickyNote.id);return remaining.length?remaining:[{id:'note-'+Date.now(),title:'Quick note 1',text:'',updatedAt:Date.now()}]});setActiveStickyNoteId('')};
   const [notificationsOpen,setNotificationsOpen]=useState(false);
   const [worldClockVisible,setWorldClockVisible]=useState(()=>{try{return localStorage.getItem('intellistack.worldClockVisible')!=='false'}catch{return true}});
   const [presence,setPresence]=useState(()=>{try{return localStorage.getItem('intellistack.presence')||'Available'}catch{return 'Available'}});
