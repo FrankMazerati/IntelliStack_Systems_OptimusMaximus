@@ -1464,3 +1464,23 @@
 /* Keep the workspace scrollable while the menu is open, without allowing
    the drawer to cover the dashboard or clipping the menu's lower actions. */
 .app-shell:has(.sidebar.mobile-open){overflow-x:clip}
+
+
+/* Super Admin dashboard hierarchy: align the menu with the brand and keep navigation in a clear reading order. */
+.topbar-redesigned .topbar-main-row{display:flex;align-items:center;gap:14px;min-width:0}
+.topbar-redesigned .topbar-main-row .crumbs{display:flex;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
+.topbar-redesigned .topbar-menu-button{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;margin:0;border:1px solid rgba(65,151,255,.24);border-radius:9px;background:rgba(18,37,64,.55);color:#d9ecff}
+.topbar-redesigned .topbar-brand-lockup{display:flex;align-items:center;gap:10px;min-width:0}
+.topbar-redesigned .topbar-brand-lockup .brand{flex:0 0 auto}
+.topbar-redesigned .topbar-brand-tag{min-width:0}
+.command-dashboard-heading{margin:4px 0 18px;padding:2px 0 14px;border-bottom:1px solid rgba(65,151,255,.18)}
+.command-dashboard-heading h1{font-size:clamp(23px,2.4vw,31px);margin:8px 0 6px}
+.dashboard-access-stack{margin:18px 0 22px;padding:12px 14px;border:1px solid rgba(65,151,255,.17);border-radius:13px;background:rgba(10,22,41,.42)}
+.dashboard-access-stack .topbar-favorites-row{margin:0 0 8px;padding:4px 0 9px;border-top:0;border-bottom:1px solid rgba(65,151,255,.15)}
+.dashboard-quick-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.dashboard-quick-links-label{margin-right:4px;color:#7890b4;font-size:9px;font-weight:800;letter-spacing:1px}
+.dashboard-quick-links .primary-nav-item{min-height:34px;border:1px solid rgba(75,133,200,.24);background:rgba(18,37,64,.42);color:#d5e5fb}
+.dashboard-quick-links .primary-nav-item svg{color:var(--cyan)}
+.dashboard-quick-links-spacer{flex:1}
+.dashboard-workspace-label{display:inline-flex;align-items:center;gap:6px;margin-left:auto;color:#7f95b9;font-size:10px;font-weight:700;letter-spacing:.4px}
+@media(max-width:740px){.topbar-redesigned{padding:10px 12px}.topbar-redesigned .topbar-main-row{align-items:flex-start;gap:9px}.topbar-redesigned .topbar-main-row .crumbs{align-items:center;gap:8px;flex:1}.topbar-redesigned .topbar-brand-lockup{gap:7px}.topbar-redesigned .topbar-brand-lockup .brand-mark,.topbar-redesigned .topbar-brand-lockup .brand-mark svg{width:30px;height:34px}.topbar-redesigned .topbar-brand-tag{font-size:9px!important;letter-spacing:.35px}.topbar-redesigned .topbar-brand-tag i{font-size:7px!important;letter-spacing:.35px}.topbar-welcome{display:none}.command-dashboard-heading{align-items:flex-start;flex-direction:column}.dashboard-access-stack{padding:9px}.dashboard-access-stack .topbar-favorites-row{margin:0 0 8px}.dashboard-quick-links{gap:5px}.dashboard-quick-links-label{width:100%;margin-bottom:2px}.dashboard-workspace-label{margin-left:0}}
