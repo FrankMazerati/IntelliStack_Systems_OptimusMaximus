@@ -479,7 +479,7 @@ function Overview({onNavigate,onToggleStickyNotes,tickets,endUsers,devices,favor
     <button className="home-social-tab is-active" onClick={()=>onNavigate('overview')}><LayoutDashboard size={16}/> Home</button>
     <button className="home-social-tab" onClick={()=>onNavigate('intellichat')}><MessagesSquare size={16}/> Messages</button>
     <button className="home-social-tab" onClick={()=>onNavigate('tickets')}><Ticket size={16}/> My Work</button>
-    <button className="home-social-tab" onClick={()=>onNavigate('notifications')}><Bell size={16}/> Activity</button>
+    <button className="home-social-tab" onClick={()=>onNavigate('audit')}><Bell size={16}/> Activity</button>
    </nav>
    <div className="home-quick-composer"><span className="home-composer-icon"><Sparkles size={18}/></span><div className="home-composer-copy"><b>What needs your attention?</b><small>Start a conversation, record a request, or find the right workroom.</small></div><div className="home-composer-actions"><button onClick={()=>onNavigate('intellichat')}><MessagesSquare size={15}/> Message</button><button onClick={()=>onNavigate('tickets')}><Plus size={15}/> Create ticket</button><button onClick={()=>onToggleStickyNotes()}><StickyNote size={15}/> Quick note</button></div></div>
   </section>
