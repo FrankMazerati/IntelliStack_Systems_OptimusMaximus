@@ -1084,3 +1084,41 @@
  .topbar-redesigned .quick-access-button,.topbar-redesigned .primary-nav-item{transition:none}
  .topbar-redesigned .world-clock-strip-label small::before{animation:none}
 }
+
+/* Theme Studio: independently configurable workspace header palette */
+.topbar-redesigned{
+  background:var(--workspace-header-bg,#050505)!important;
+  border-bottom-color:color-mix(in srgb,var(--workspace-header-icon,#53d6ff) 16%,#20252d);
+}
+.topbar-redesigned .quick-access-button{
+  background:var(--workspace-header-button-bg,#0e1013);
+  color:var(--workspace-header-button-text,#d4dce7);
+}
+.topbar-redesigned .quick-access-button svg,
+.topbar-redesigned .primary-nav-item svg,
+.topbar-redesigned .global-search-visible>button,
+.topbar-redesigned .world-clock-strip-label>svg{
+  color:var(--workspace-header-icon,#53d6ff)!important;
+}
+.topbar-redesigned .primary-nav-item{
+  color:var(--workspace-header-button-text,#d4dce7);
+}
+.topbar-redesigned .primary-nav-item:hover,
+.topbar-redesigned .primary-nav-item[aria-expanded="true"],
+.topbar-redesigned .quick-access-button:hover{
+  background:color-mix(in srgb,var(--workspace-header-button-bg,#0e1013) 78%,var(--workspace-header-icon,#53d6ff) 22%);
+  border-color:color-mix(in srgb,var(--workspace-header-icon,#53d6ff) 55%,transparent);
+}
+.topbar-redesigned .global-search-visible{
+  background:var(--workspace-header-button-bg,#0e1013);
+}
+.topbar-redesigned .global-search-visible input{
+  color:var(--workspace-header-button-text,#d4dce7);
+}
+.topbar-redesigned .header-theme-preview{min-height:56px}
+.header-theme-editor{margin-bottom:18px}
+.header-theme-preview{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;padding:13px;border:1px solid var(--border);border-radius:10px}
+.header-theme-preview>span{font-size:10px;font-weight:800;letter-spacing:.8px}
+.header-theme-preview>button{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid;border-radius:8px;font-size:11px;font-weight:700}
+.header-theme-editor .section-color-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:560px){.header-theme-editor .section-color-fields{grid-template-columns:1fr}}
