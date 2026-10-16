@@ -1,5 +1,4 @@
 import SuperAdminImage from './SuperAdmin.png';
-import IntelliStackShield from './intellistack-shield.jpg';
 import ServiceDeskImage from './ServiceDesk.png';
 import ServiceDesk2Image from './ServiceDesk2.png';
 import LoginImage from './intellistack-login-background.png';
@@ -198,7 +197,7 @@ const labUsers = Array.from({length:100},(_,i)=>{const first=['Jordan','Morgan',
 const labDevices = Array.from({length:174},(_,i)=>{const owner=labUsers[i%labUsers.length];const types=['Laptop','Desktop PC','Workstation','Mobile Phone','Tablet','Monitor','Printer','Docking Station','Headset','Network Device'];const type=types[i%types.length];const prefix={'Laptop':'LTP','Desktop PC':'PC','Workstation':'WS','Mobile Phone':'PHN','Tablet':'TAB','Monitor':'MON','Printer':'PRN','Docking Station':'DOC','Headset':'AUD','Network Device':'NET'}[type];return {id:prefix+'-'+String(1001+i),name:owner.name.split(' ')[0]+'-'+prefix+'-'+String(1001+i),type,ownerId:owner.id,owner:owner.name,department:owner.department,os:type==='Laptop'||type==='Desktop PC'||type==='Workstation'?(i%3===0?'Windows 11':i%3===1?'macOS 15':'Ubuntu 24.04'):type==='Mobile Phone'?(i%2?'Android 16':'iOS 26'):type==='Network Device'?'Firmware-managed':'Peripheral firmware',status:i%13===0?'Needs attention':i%9===0?'Offline':'Online',lastSeen:i%13===0?'Needs review':i%9===0?'Not reporting':'Just now',serial:'IS-'+String(800000+i),ip:type==='Laptop'||type==='Desktop PC'||type==='Workstation'?'10.24.'+(1+(i%8))+'.'+(10+(i%230)):'—',managed:true};});
 const services = [['Network','Operational'],['Applications','Operational'],['Database','Operational'],['Identity provider','Operational'],['Storage','Operational'],['Automation engine','Operational']];
 const activity = [['10:18 AM','Ticket INC-7842 updated','VPN connection issue'],['09:47 AM','User onboarding recorded','techcorp.example'],['09:12 AM','Backup status recorded','All configured systems'],['08:33 AM','Security scan simulated','No critical findings']];
-function Brand(){return <div className="brand"><div className="brand-mark"><img src={IntelliStackShield} alt="IntelliStack Systems shield"/></div><div><div className="brand-name">INTELLISTACK <span>SYSTEMS</span></div></div></div>}
+function Brand(){return <div className="brand"><div className="brand-mark"><Shield size={22} aria-hidden="true"/><b>IS</b></div><div><div className="brand-name">INTELLISTACK <span>SYSTEMS</span></div></div></div>}
 function Login({onLogin}){
  const [audience,setAudience]=useState('staff');
  const [role,setRole]=useState('Super Admin');
