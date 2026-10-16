@@ -1369,14 +1369,14 @@ function App(){
       <section className="workspace-profile-banner" aria-label="Your workspace profile">
         <div className="workspace-profile-photo-wrap">
           <button className="workspace-profile-photo-button" onClick={()=>document.getElementById('workspace-profile-photo-input')?.click()} aria-label="Upload profile photo" title="Choose a profile photo">
-            {profilePhoto?<img src={profilePhoto} alt="Your profile"/>:<span>{(profileFullName||displayName||'User').trim().split(/\s+/).map(part=>part[0]).join('').slice(0,2).toUpperCase()}</span>}
+            {profilePhoto?<img src={profilePhoto} alt="Your profile"/>:<span>{(displayName||'User').trim().split(/\s+/).map(part=>part[0]).join('').slice(0,2).toUpperCase()}</span>}
             <small><UserCog size={12}/></small>
           </button>
           <input id="workspace-profile-photo-input" className="workspace-profile-photo-input" type="file" accept="image/*" onChange={e=>{const selected=e.target.files?.[0];if(!selected)return;if(selected.size>2*1024*1024){window.alert('Please choose an image smaller than 2 MB.');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>setProfilePhoto(String(reader.result||''));reader.readAsDataURL(selected);e.target.value='';}}/>
         </div>
         <div className="workspace-profile-copy">
           <span className="workspace-profile-eyebrow">YOUR WORKSPACE · {profileDepartment}</span>
-          <h2>{greetingText}, {profileFullName||firstName}!</h2>
+          <h2>{greetingText}, {firstName}!</h2>
           <p><b>{profileTitle}</b><span className="workspace-profile-separator">·</span>{dailySlogan}</p>
           <small>{profileEmail||'Add your company email in My Profile'} · You’re ready to make progress today.</small>
         </div>
