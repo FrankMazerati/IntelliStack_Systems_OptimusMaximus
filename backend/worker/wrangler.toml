@@ -6,7 +6,7 @@ workers_dev = true
 [[d1_databases]]
 binding = "DB"
 database_name = "intellistack-command-center"
-database_id = "REPLACE_WITH_CREATED_D1_DATABASE_ID"
+database_id = "fe1ee282-1a14-4124-8ba2-bd5dedf26e75"
 migrations_dir = "../d1"
 
 [vars]
