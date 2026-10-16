@@ -1487,3 +1487,29 @@
 
 .command-context-section{margin-top:17px}.command-context-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 8px}.command-context-section-heading h3{margin:0;color:#dceaff;font-size:12px;font-weight:750;letter-spacing:.2px}.command-context-section-heading>span{color:var(--muted);font-size:9px}.command-context-illustrative{margin:8px 0 0;color:#8397b7;font-size:9px;letter-spacing:.65px;font-weight:700}
 @media(max-width:560px){.command-context-section-heading{align-items:flex-start;flex-direction:column;gap:3px}}
+
+/* Executive Overview: strategic goals, corporate leadership, and problem solving. */
+.executive-strategy-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0 22px;padding:20px;border:1px solid rgba(69,160,255,.28);border-radius:15px;background:linear-gradient(110deg,rgba(22,53,91,.72),rgba(12,26,46,.8))}
+.executive-kicker{font-size:9px;font-weight:850;letter-spacing:1.4px;color:#75cfff}
+.executive-strategy-banner h3{margin:7px 0 5px;font-size:clamp(17px,2vw,23px);color:#f1f7ff}
+.executive-strategy-banner p{margin:0;color:#9fb3d1;font-size:11px;line-height:1.55}
+.executive-strategy-banner>button,.executive-section-title>button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;border:1px solid rgba(82,169,255,.3);border-radius:8px;background:rgba(24,69,112,.4);padding:9px 11px;color:#dceeff;font-size:10px;font-weight:750;cursor:pointer}
+.executive-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}
+.executive-section-title h3{margin:0;color:#e5efff;font-size:13px;font-weight:800}
+.executive-section-title p{margin:4px 0 0;color:#8ca1c0;font-size:10px;line-height:1.45}
+.executive-strategy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.executive-strategy-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;min-height:170px;padding:14px;text-align:left;border:1px solid rgba(91,143,206,.2);border-radius:12px;background:rgba(12,27,48,.68);color:#e3efff;cursor:pointer}
+.executive-card-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(51,141,230,.14);color:#73caff}
+.executive-strategy-card small{font-size:8px;font-weight:850;letter-spacing:1px;color:#83a1c9}
+.executive-strategy-card b{font-size:13px}
+.executive-strategy-card p{margin:0;color:#9aafcc;font-size:10px;line-height:1.55}
+.executive-strategy-card em{margin-top:auto;color:#80d8ff;font-size:10px;font-style:normal;font-weight:750}
+.executive-problem-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.executive-problem-flow>div{position:relative;min-width:0;padding:13px 10px;border:1px solid rgba(86,137,198,.18);border-radius:10px;background:rgba(10,24,43,.58)}
+.executive-problem-flow span{display:block;margin-bottom:11px;color:#71caff;font-size:9px;font-weight:850;letter-spacing:.7px}
+.executive-problem-flow b{font-size:11px;color:#e0edff}
+.executive-problem-flow p{margin:6px 0 0;color:#92a7c5;font-size:9px;line-height:1.55}
+.executive-illustrative-label{flex-shrink:0;color:#90a5c3;font-size:8px;font-weight:850;letter-spacing:1px}
+.executive-operational-metrics{margin-top:10px}
+@media(max-width:850px){.executive-problem-flow{grid-template-columns:repeat(3,minmax(0,1fr))}.executive-strategy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.executive-strategy-banner{align-items:flex-start;flex-direction:column;padding:15px}.executive-strategy-banner>button{width:100%}.executive-section-title{align-items:flex-start;flex-direction:column}.executive-strategy-grid,.executive-problem-flow{grid-template-columns:1fr}.executive-strategy-card{min-height:140px}.executive-problem-flow>div{padding:11px}.executive-problem-flow span{margin-bottom:6px}}
