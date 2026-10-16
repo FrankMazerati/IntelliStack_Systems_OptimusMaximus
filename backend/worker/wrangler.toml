@@ -1,0 +1,17 @@
+name = "intellistack-business-api"
+main = "src/index.js"
+compatibility_date = "2026-10-16"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "intellistack-command-center"
+database_id = "fe1ee282-1a14-4124-8ba2-bd5dedf26e75"
+migrations_dir = "../d1"
+
+[vars]
+# Configure these in the Worker dashboard or with Wrangler secrets/vars.
+# JWT_ISSUER = "https://your-identity-provider/"
+# JWT_AUDIENCE = "your-api-audience"
+# JWT_JWKS_URL = "https://your-identity-provider/.well-known/jwks.json"
+# ALLOWED_ORIGINS = "https://maximusoptimus.netlify.app,https://main--maximusoptimus.netlify.app"
