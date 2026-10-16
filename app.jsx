@@ -468,11 +468,24 @@ function CommandContextOverview({activeScreen,currentScreen,currentRole,tickets,
  <div className="command-context-actions">{selected.map(([label,id])=><button key={label+id} onClick={()=>onNavigate(id)}><span>{label}</span><ChevronRight size={14}/></button>)}</div></section>;
 }
 
+function DashboardLayout({children,storageKey='intellistack-dashboard-panel-order'}) {
+ const items=React.Children.toArray(children);
+ const [order,setOrder]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(saved)?saved.filter(n=>Number.isInteger(n)&&n>=0&&n<items.length):[]}catch{return []}});
+ const [dragging,setDragging]=useState(null);
+ const normalized=useMemo(()=>{const valid=order.filter((n,i,a)=>n<items.length&&a.indexOf(n)===i);for(let i=0;i<items.length;i++)if(!valid.includes(i))valid.push(i);return valid},[order,items.length]);
+ const saveOrder=(next)=>{setOrder(next);try{localStorage.setItem(storageKey,JSON.stringify(next))}catch{}};
+ const move=(from,to)=>{if(from===to||from==null||to==null||from<0||to<0||from>=normalized.length||to>=normalized.length)return;const next=[...normalized];const [picked]=next.splice(from,1);next.splice(to,0,picked);saveOrder(next)};
+ const startDrag=(e,position)=>{setDragging(position);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(position))};
+ const dropOn=(e,position)=>{e.preventDefault();const from=Number(e.dataTransfer.getData('text/plain'));move(from,position);setDragging(null)};
+ const finishTouchDrag=(e,from)=>{if(e.pointerType==='mouse')return;const point=document.elementFromPoint(e.clientX,e.clientY);const targetPanel=point?.closest?.('.dashboard-movable-panel');const to=targetPanel?Number(targetPanel.dataset.position):from;if(Number.isInteger(to))move(from,to);setDragging(null);try{e.currentTarget.releasePointerCapture(e.pointerId)}catch{}};
+ return <div className="dashboard-movable-layout"><div className="dashboard-layout-tools"><span><Menu size={15}/> PERSONALIZE DASHBOARD <small>Use the grip to drag panels; on phones, touch and drag the grip</small></span><button type="button" className="secondary-btn" onClick={()=>{saveOrder(items.map((_,i)=>i));try{localStorage.removeItem(storageKey)}catch{}}}>Reset layout</button></div><div className="dashboard-movable-panels">{normalized.map((itemIndex,position)=><div className={'dashboard-movable-panel '+(dragging===position?'is-dragging':'')} data-position={position} key={itemIndex} onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect='move'}} onDrop={e=>dropOn(e,position)}><div className="dashboard-panel-grip" title="Drag to rearrange" aria-label="Drag panel to rearrange" draggable onDragStart={e=>startDrag(e,position)} onDragEnd={()=>setDragging(null)} onPointerDown={e=>{if(e.pointerType==='mouse')return;e.preventDefault();setDragging(position);try{e.currentTarget.setPointerCapture(e.pointerId)}catch{}}} onPointerUp={e=>finishTouchDrag(e,position)} onPointerCancel={()=>setDragging(null)}><Menu size={15}/><span>Move panel</span></div>{items[itemIndex]}</div>)}</div></div>;
+}
+
 function Overview({onNavigate,onToggleStickyNotes,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole,newsFeedVisible,setNewsFeedVisible,onOpenNews}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
- return <>
+ return <DashboardLayout storageKey="intellistack-overview-panel-order">
   <div className="dashboard-action-strip"><div><span className="eyebrow"><span className="pulse"/> COMMUNICATION-FIRST WORKSPACE</span><h2>Keep the conversation connected to the work.</h2><p>Reach the right person, coordinate the next action, and keep ticket handoffs and decisions easy to find.</p></div><div className="dashboard-actions">
    <button className="primary-btn" onClick={()=>onNavigate('intellichat')}><MessagesSquare size={16}/> Open IntelliChat</button>
    <button className="secondary-btn" onClick={()=>onNavigate('email')}><Mail size={16}/> Open Email</button>
@@ -564,7 +577,7 @@ function Overview({onNavigate,onToggleStickyNotes,tickets,endUsers,devices,favor
   <section className="workspace-news-feed workspace-news-feed-collapsible home-news-lower" aria-label="News and updates">
    <div className="workspace-news-title"><Newspaper size={16}/><b>News feed</b><span className="news-feed-subtitle">Optional updates for your workday</span><button onClick={()=>setNewsFeedVisible(false)} aria-label="Hide news feed"><X size={13}/> Hide</button></div>
    {newsFeedVisible&&<div className="workspace-news-items">{newsFeedStories.map(story=><button type="button" className="workspace-news-story" key={story.id} onClick={()=>onOpenNews(story)}><small>{story.category}</small><b>{story.title}</b><span>{story.summary}</span><em>Read article & video briefing <ChevronRight size={12}/></em></button>)}</div>}
-  </section> </>;
+  </section> </DashboardLayout>;
 }
 function UsersPage(){
  const [query,setQuery]=useState('');
