@@ -1617,29 +1617,10 @@
 @media(max-width:580px){.communication-first-panel>.panel-head{display:grid}.communication-first-badge{justify-self:start}.communication-hub-grid{grid-template-columns:minmax(0,1fr);gap:7px}.communication-hub-card{min-height:80px;padding:11px}.communication-hub-copy b{font-size:12px}.communication-hub-copy small{font-size:10px}}
 
 
-/* Familiar, social-platform-style Super Admin home layout */
-.home-social-shell{display:flex;flex-direction:column;gap:0;margin:0 0 18px;border:1px solid var(--border);border-radius:18px;background:var(--panel);overflow:hidden}
-.home-social-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px 14px}
-.home-social-heading h2{font-size:27px;letter-spacing:-.7px;margin:5px 0 4px;color:var(--text)}
-.home-social-heading p{margin:0;color:var(--muted);font-size:13px}
-.home-online-status{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:11px;white-space:nowrap}
-.home-online-status span{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(66,230,173,.1)}
-.home-social-tabs{display:flex;align-items:center;gap:4px;padding:0 16px;border-bottom:1px solid var(--border);overflow-x:auto}
-.home-social-tab{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 0 auto;padding:13px 15px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-weight:700;font-size:12px}
-.home-social-tab:hover{background:rgba(139,171,224,.06);color:var(--text)}
-.home-social-tab.is-active{border-bottom-color:var(--blue);color:var(--text)}
-.home-quick-composer{display:flex;align-items:center;gap:13px;padding:16px 20px;flex-wrap:wrap}
-.home-composer-icon{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:13px;background:rgba(78,140,255,.13);color:var(--cyan)}
-.home-composer-copy{display:flex;flex:1 1 180px;min-width:150px;flex-direction:column;gap:4px}
-.home-composer-copy b{font-size:13px;color:var(--text)}
-.home-composer-copy small{font-size:11px;color:var(--muted);line-height:1.5}
-.home-composer-actions{display:flex;gap:7px;flex-wrap:wrap}
-.home-composer-actions button{display:inline-flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid var(--border);border-radius:10px;background:var(--panel2);color:var(--text);font-size:11px;font-weight:700}
-.home-composer-actions button:hover{border-color:rgba(78,140,255,.6);background:rgba(78,140,255,.1)}
-.home-news-secondary{margin:22px 0 6px;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--panel)}
-.home-news-secondary-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.home-news-secondary-heading h3{display:flex;align-items:center;gap:8px;font-size:15px;margin:5px 0;color:var(--text)}
-.home-news-secondary-heading p{font-size:11px;color:var(--muted);margin:0;line-height:1.5}
-.home-news-secondary .workspace-news-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.home-news-secondary .workspace-news-story{min-width:0}
-@media(max-width:800px){.home-social-heading{padding:16px 15px}.home-social-heading h2{font-size:23px}.home-quick-composer{padding:14px}.home-composer-actions{width:100%}.home-composer-actions button{flex:1}.home-news-secondary .workspace-news-items{grid-template-columns:1fr}.home-news-secondary-heading{align-items:flex-start}.home-online-status{font-size:10px}}
+
+
+/* Keep the existing news feed available, but below the main home workspace */
+.home-news-lower{margin-top:24px}
+.home-news-lower .workspace-news-title{display:flex;align-items:center;gap:9px}
+.home-news-lower .workspace-news-title .news-feed-subtitle{margin-left:auto}
+.home-news-lower .workspace-news-items{margin-top:12px}
