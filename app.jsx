@@ -238,7 +238,7 @@ function Login({onLogin}){
      <div><span className="login-v2-feature-icon"><Globe2 size={17}/></span><span><b>One global view</b><small>People, services, and work in one ecosystem</small></span></div>
      <div><span className="login-v2-feature-icon"><Activity size={17}/></span><span><b>Connected operations</b><small>Support, response, and visibility in one place</small></span></div>
     </div>
-    <div className="login-v2-brand-line"><span className="login-v2-brand-line-mark"><img src={IntelliStackShield} alt="IntelliStack Systems shield"/></span><span><b>INTELLISTACK SYSTEMS</b><small>MAXIMUS OPTIMUS COMMAND CENTER</small></span></div>
+    <div className="login-v2-brand-line"><span className="login-v2-brand-line-mark"><Shield size={23} aria-hidden="true"/><b>IS</b></span><span><b>INTELLISTACK SYSTEMS</b><small>MAXIMUS OPTIMUS COMMAND CENTER</small></span></div>
    </section>
    <section className="login-v2-card" aria-label="Sign in to IntelliStack">
     <div className="login-v2-card-head"><div><span className="login-v2-kicker">WELCOME TO YOUR WORKSPACE</span><h2>Sign in to continue</h2><p>Choose your access path to get started.</p></div><div className="login-v2-lock"><LockKeyhole size={19}/></div></div>
