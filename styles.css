@@ -1159,3 +1159,34 @@
 .live-watchlist-links button{display:inline-flex;align-items:center;gap:3px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--text);font-size:11px;cursor:pointer}
 .live-watchlist-links button:hover{border-color:var(--accent,#53d6ff);color:var(--accent,#53d6ff)}
 @media(max-width:760px){.live-watchlist-grid{grid-template-columns:1fr}.live-watchlist-card>p{min-height:0}.live-connection-watchlist .panel-head{align-items:flex-start;gap:10px}.live-connection-watchlist .prototype-tag{flex-shrink:0}}
+
+
+/* Compact toolbar correction: keep primary actions visible and utilities out of the quick row */
+.topbar-redesigned .topbar-quick-row{flex-wrap:nowrap;overflow-x:auto;max-width:100%;min-width:0}
+.topbar-redesigned .workspace-tools-wrap{position:relative;flex:0 0 auto}
+.topbar-redesigned .workspace-tools-trigger{display:inline-flex;align-items:center;gap:6px}
+.topbar-redesigned .workspace-tools-dropdown{right:0;left:auto;top:calc(100% + 8px);width:min(300px,calc(100vw - 24px));max-height:min(65vh,460px);overflow-y:auto;z-index:60}
+.topbar-redesigned .workspace-tools-dropdown>button{display:flex;align-items:center;gap:10px;width:100%;text-align:left}
+.topbar-redesigned .workspace-tools-dropdown>button>span{display:grid;gap:3px;min-width:0}
+.topbar-redesigned .workspace-tools-dropdown>button>span b{font-size:11px}
+.topbar-redesigned .workspace-tools-dropdown>button>span small{font-size:9px;color:var(--muted);white-space:normal}
+.topbar-redesigned .workspace-tools-dropdown>button>svg{flex:0 0 auto;color:var(--workspace-header-icon,#53d6ff)}
+.topbar-redesigned .mobile-profile-action{min-width:0}
+@media(max-width:980px){
+ .topbar-redesigned .topbar-main-row .crumbs{min-width:0;max-width:100%}
+ .topbar-redesigned .mobile-profile-action{max-width:88px;min-width:0}
+ .topbar-redesigned .mobile-profile-action .header-profile-copy b{max-width:44px}
+ .topbar-redesigned .topbar-user-tools{min-width:0;flex-wrap:nowrap}
+ .topbar-redesigned .topbar-quick-row{scrollbar-width:thin}
+}
+@media(max-width:620px){
+ .topbar-redesigned .topbar-main-row .crumbs{display:flex;min-width:0;overflow:hidden}
+ .topbar-redesigned .mobile-profile-action{width:31px;max-width:31px;min-width:31px;padding:3px;justify-content:center}
+ .topbar-redesigned .mobile-profile-action .header-profile-copy,
+ .topbar-redesigned .mobile-profile-action>svg:last-child{display:none}
+ .topbar-redesigned .mobile-profile-action .header-profile-avatar{width:23px;height:23px;flex-basis:23px}
+ .topbar-redesigned .topbar-current-page{min-width:0;max-width:88px}
+ .topbar-redesigned .topbar-quick-row{overflow-x:auto;flex-wrap:nowrap}
+ .topbar-redesigned .quick-row-label{display:none}
+ .topbar-redesigned .workspace-tools-trigger{padding:0 8px}
+}
