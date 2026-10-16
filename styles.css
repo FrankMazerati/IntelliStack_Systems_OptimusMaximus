@@ -1513,3 +1513,30 @@
 .executive-operational-metrics{margin-top:10px}
 @media(max-width:850px){.executive-problem-flow{grid-template-columns:repeat(3,minmax(0,1fr))}.executive-strategy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.executive-strategy-banner{align-items:flex-start;flex-direction:column;padding:15px}.executive-strategy-banner>button{width:100%}.executive-section-title{align-items:flex-start;flex-direction:column}.executive-strategy-grid,.executive-problem-flow{grid-template-columns:1fr}.executive-strategy-card{min-height:140px}.executive-problem-flow>div{padding:11px}.executive-problem-flow span{margin-bottom:6px}}
+
+/* Customer-facing mission and future-of-business message for Executive Overview. */
+.executive-mission-banner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 210px;align-items:center;gap:20px;overflow:hidden;margin:18px 0 22px;padding:23px 24px;border:1px solid rgba(69,160,255,.28);border-radius:16px;background:linear-gradient(112deg,rgba(19,51,89,.86),rgba(10,23,42,.94) 68%,rgba(16,42,69,.88))}
+.executive-mission-copy{position:relative;z-index:1}
+.executive-mission-copy h3{max-width:680px;margin:9px 0 10px;color:#f3f8ff;font-size:clamp(21px,2.5vw,31px);line-height:1.17;letter-spacing:-.45px}
+.executive-mission-copy>p{max-width:760px;margin:0;color:#b1c5e0;font-size:12px;line-height:1.8}
+.executive-mission-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.executive-mission-tags span{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid rgba(112,183,255,.19);border-radius:7px;background:rgba(13,33,57,.56);color:#d7e9ff;font-size:9px;font-weight:700}
+.executive-mission-tags svg{color:#7bd4ff}
+.executive-mission-mark{position:relative;display:grid;place-items:center;min-height:175px}
+.mission-orbit{position:absolute;width:148px;height:148px;border:1px solid rgba(88,180,255,.22);border-radius:50%;transform:rotate(-25deg) scaleY(.6)}
+.mission-orbit-two{width:190px;height:190px;transform:rotate(55deg) scaleY(.47);border-color:rgba(111,145,255,.23)}
+.mission-core{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:76px;height:76px;border:1px solid rgba(100,202,255,.52);border-radius:23px;background:linear-gradient(145deg,rgba(35,100,163,.9),rgba(12,36,66,.96));box-shadow:0 0 42px rgba(28,132,230,.2);color:#a4e7ff}
+.mission-core span{font-size:10px;font-weight:900;letter-spacing:2px}
+.mission-node{position:absolute;width:8px;height:8px;border:1px solid #8adfff;border-radius:50%;background:#4e9de7;box-shadow:0 0 12px rgba(82,184,255,.65)}
+.mission-node-one{top:17px;left:50%}.mission-node-two{right:14px;top:50%}.mission-node-three{bottom:17px;left:50%}.mission-node-four{left:14px;top:50%}
+.executive-future-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.executive-future-grid article{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;align-content:start;padding:14px;border:1px solid rgba(91,143,206,.18);border-radius:12px;background:rgba(12,27,48,.58)}
+.executive-future-grid article>span{grid-row:span 2;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:rgba(51,141,230,.14);color:#77d3ff}
+.executive-future-grid article>b{align-self:center;color:#e1edff;font-size:12px;line-height:1.4}
+.executive-future-grid article>p{margin:7px 0 0;color:#9aafcc;font-size:10px;line-height:1.65}
+.executive-vision-note{display:flex;align-items:flex-start;gap:10px;margin:17px 0 8px;padding:13px 15px;border:1px solid rgba(88,180,255,.17);border-radius:10px;background:rgba(18,46,77,.45);color:#8bdcff}
+.executive-vision-note>svg{flex-shrink:0;margin-top:1px}
+.executive-vision-note p{margin:0;color:#b8cce6;font-size:11px;line-height:1.7}
+.executive-vision-note b{color:#e9f5ff}
+@media(max-width:740px){.executive-mission-banner{grid-template-columns:minmax(0,1fr);padding:18px}.executive-mission-mark{min-height:112px;order:-1}.executive-mission-mark .mission-orbit{width:105px;height:105px}.executive-mission-mark .mission-orbit-two{width:137px;height:137px}.mission-core{width:60px;height:60px;border-radius:18px}.mission-core svg{width:24px;height:24px}.mission-node-one{top:4px}.mission-node-three{bottom:4px}.mission-node-two{right:calc(50% - 68px)}.mission-node-four{left:calc(50% - 68px)}}
+@media(max-width:560px){.executive-mission-copy h3{font-size:23px}.executive-mission-copy>p{font-size:11px;line-height:1.7}.executive-future-grid{grid-template-columns:1fr}.executive-mission-tags{gap:6px}.executive-mission-tags span{font-size:8px}}
