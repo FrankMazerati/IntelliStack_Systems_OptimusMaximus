@@ -1139,3 +1139,23 @@
  .topbar-redesigned .mobile-profile-action{max-width:105px;padding:3px 5px}
  .topbar-redesigned .mobile-profile-action .header-profile-copy b{max-width:42px}
 }
+
+
+/* Super Admin backend and live-connection watchlist */
+.live-connection-watchlist{margin:18px 0}
+.live-connection-watchlist .panel-head h3{display:flex;align-items:center;gap:8px}
+.live-connection-watchlist .panel-head h3 svg{color:var(--accent,#53d6ff)}
+.live-watchlist-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;margin:12px 0 16px;border:1px solid rgba(245,158,11,.35);border-radius:10px;background:rgba(245,158,11,.07);color:var(--text)}
+.live-watchlist-notice>svg{flex:0 0 auto;color:#f59e0b;margin-top:2px}
+.live-watchlist-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.live-watchlist-card{min-width:0;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--panel-bg,rgba(127,127,127,.035))}
+.live-watchlist-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.live-watchlist-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(83,214,255,.09);color:var(--accent,#53d6ff)}
+.live-watchlist-status{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:5px 8px;border-radius:999px;background:rgba(245,158,11,.09);color:var(--text-muted,#a7b0bf);font-size:10px;font-weight:800}
+.live-watchlist-status>span{width:6px;height:6px;border-radius:50%;background:#f59e0b}
+.live-watchlist-card h4{margin:0 0 7px;font-size:14px;line-height:1.35}
+.live-watchlist-card>p{min-height:48px;margin:0;color:var(--text-muted,#a7b0bf);font-size:12px;line-height:1.5}
+.live-watchlist-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.live-watchlist-links button{display:inline-flex;align-items:center;gap:3px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--text);font-size:11px;cursor:pointer}
+.live-watchlist-links button:hover{border-color:var(--accent,#53d6ff);color:var(--accent,#53d6ff)}
+@media(max-width:760px){.live-watchlist-grid{grid-template-columns:1fr}.live-watchlist-card>p{min-height:0}.live-connection-watchlist .panel-head{align-items:flex-start;gap:10px}.live-connection-watchlist .prototype-tag{flex-shrink:0}}
