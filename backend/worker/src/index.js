@@ -22,8 +22,8 @@ function json(data, status = 200, headers = {}) {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...headers }
   });
 }
-function responseError(status, code, message, requestId) {
-  return json({ error: { code, message, requestId } }, status);
+function responseError(status, code, message, requestId, headers = {}) {
+  return json({ error: { code, message, requestId } }, status, headers);
 }
 function corsHeaders(origin, env) {
   const allowed = (env.ALLOWED_ORIGINS || "").split(",").map(x => x.trim()).filter(Boolean);
@@ -182,7 +182,7 @@ export default {
     if (url.pathname === "/health" && request.method === "GET") {
       return json({ status: "ok", service: "intellistack-business-api", persistenceConfigured: !!env.DB, authenticationConfigured: !!(env.JWT_ISSUER && env.JWT_AUDIENCE && env.JWT_JWKS_URL) }, 200, cors);
     }
-    if (!url.pathname.startsWith("/api/v1/")) return responseError(404, "NOT_FOUND", "Endpoint not found.", requestId);
+    if (!(url.pathname === "/api/v1" || url.pathname.startsWith("/api/v1/"))) return responseError(404, "NOT_FOUND", "Endpoint not found.", requestId, cors);
     if (!["GET", "POST", "PATCH", "DELETE"].includes(request.method)) return responseError(405, "METHOD_NOT_ALLOWED", "HTTP method not allowed.", requestId);
     try {
       const principal = await verifyBearer(request, env);
