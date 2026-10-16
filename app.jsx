@@ -382,6 +382,22 @@ function BrowserSecurityWorkspace({favorites,setFavorites,screenDefs,onNavigate}
  </Panel></div>;
 }
 
+function LiveConnectionWatchlist({onNavigate}){
+ const items=[
+  {title:'Authentication, accounts & company checks',detail:'Real sign-in, account provisioning, company verification, tenant boundaries, and server-enforced role permissions.',targets:[['Identity','intellistackid'],['Users','users'],['Access control','admin-center']],icon:ShieldCheck},
+  {title:'Calendar & meetings',detail:'Shared event storage, provider sync, meeting links, invitations, attendance, and calendar notifications.',targets:[['Calendar','calendar'],['Meetings','meetings']],icon:CalendarDays},
+  {title:'Email & enterprise chat',detail:'Mailbox/provider authentication, shared messages, delivery state, real-time updates, and notification delivery.',targets:[['Email','email'],['IntelliChat','intellichat']],icon:Mail},
+  {title:'Files & office applications',detail:'Durable file storage, uploads/downloads, sharing permissions, version history, and collaborative editing.',targets:[['IntelliDrive','intellidrive'],['IntelliStudio','intellistudio']],icon:HardDrive},
+  {title:'Payroll, payments & tax',detail:'Approved payment/payroll providers, secure transactions, reconciliation, tax data controls, and audit evidence.',targets:[['IntelliPay','intellipay'],['Payment Center','payment-center'],['IntelliTax','intellitax']],icon:CreditCard},
+  {title:'Integrations & API connectors',detail:'Provider credentials, OAuth/API adapters, sync jobs, retries, connection tests, and secret rotation.',targets:[['Integrations','integrations'],['IntelliLink','intellilink']],icon:Network},
+  {title:'News & external information',detail:'Live news/search sources, refresh schedules, source attribution, and provider rate-limit handling.',targets:[['News monitoring','news'],['Browser Workspace','secure-browser']],icon:Newspaper},
+  {title:'Network & security telemetry',detail:'Authenticated event feeds, live service metrics, alert rules, incident handoffs, and on-call integrations.',targets:[['NOC','noc'],['SOC','soc']],icon:Activity},
+  {title:'Service desk & ticket notifications',detail:'Shared ticket persistence, assignment rules, SLA timers, email/push notifications, and escalation jobs.',targets:[['Tickets','tickets'],['Service Desk','servicedesk']],icon:Ticket},
+  {title:'Security events & audit logs',detail:'Server-side audit events, immutable/retained records, session controls, permission checks, and exportable evidence.',targets:[['Security','security'],['Access & System Control','admin-center']],icon:ClipboardList}
+ ];
+ return <section className="panel live-connection-watchlist"><div className="panel-head"><div><h3><Activity size={18}/> Backend & Live-Connection Watchlist</h3><p>Visible at a glance so you can test the current prototype without mistaking it for a live-connected service.</p></div><span className="prototype-tag">BACKEND PENDING</span></div><div className="live-watchlist-notice"><AlertTriangle size={16}/><span><b>Important:</b> These are tracked connection requirements, not live health checks. The current frontend has no verified production connections for the areas listed here. Local demo actions do not create shared company records.</span></div><div className="live-watchlist-grid">{items.map(item=>{const Icon=item.icon;return <article className="live-watchlist-card" key={item.title}><div className="live-watchlist-card-top"><span className="live-watchlist-icon"><Icon size={17}/></span><span className="live-watchlist-status"><span/> Backend pending</span></div><h4>{item.title}</h4><p>{item.detail}</p><div className="live-watchlist-links">{item.targets.map(([label,id])=><button key={id} onClick={()=>onNavigate(id)}>{label} <ChevronRight size={12}/></button>)}</div></article>})}</div><p className="privacy-note">We will update this tracker as real APIs, provider credentials, successful connection tests, and end-to-end validation are implemented. A screen or button existing is not proof of a live integration.</p></section>;
+}
+
 function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
@@ -421,6 +437,7 @@ function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,sc
   </div></section>
   {quickActions.length>0&&<section className="panel dashboard-quick-actions"><div className="panel-head"><div><h3>My Quick Actions</h3><p>Your personal shortcuts.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Edit actions</button></div><div className="quick-actions-row">{quickActions.map(id=>{const item=screenDefs.find(x=>x.id===id);return item?<button key={id} onClick={()=>onNavigate(id)}>{item.label} →</button>:null})}</div></section>}
   {currentRole==='Super Admin'&&<BusinessPortfolioPanel/>}
+  {currentRole==='Super Admin'&&<LiveConnectionWatchlist onNavigate={onNavigate}/>}
   {currentRole==='Super Admin'&&<ReadinessTracker/>}
   <div className="metrics-grid">
    <Metric icon={Users} label="Active lab users" value={labUsers.length} trend="Manage users and roles" onClick={()=>onNavigate('users')}/>
