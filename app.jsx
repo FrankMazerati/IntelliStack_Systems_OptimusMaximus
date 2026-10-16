@@ -37,7 +37,7 @@ class AppErrorBoundary extends React.Component {
       this.state.error?.name || 'RenderError',
       this.state.error?.message || String(this.state.error),
       this.state.errorInfo?.componentStack || ''
-    ].filter(Boolean).join('\\n\\n');
+    ].filter(Boolean).join('\n\n');
     return <main style={{minHeight:'100vh',padding:24,background:'#f5f7fb',color:'#182033',fontFamily:'system-ui,sans-serif'}}>
       <section style={{maxWidth:900,margin:'8vh auto',padding:24,border:'1px solid #d9e0eb',borderRadius:16,background:'#fff',boxShadow:'0 12px 40px rgba(20,35,60,.08)'}}>
         <p style={{fontSize:12,fontWeight:800,letterSpacing:1.2,color:'#b42318'}}>INTELLISTACK SYSTEMS · PREVIEW DIAGNOSTIC</p>
