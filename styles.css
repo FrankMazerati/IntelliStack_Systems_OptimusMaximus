@@ -1592,3 +1592,26 @@
  .topbar-redesigned .workspace-mission-line{font-size:11px}
  .topbar-redesigned .workspace-profile-copy>small{white-space:normal}
 }
+
+
+/* Communication-first Command Center: clear operational paths for every role. */
+.communication-first-panel{margin-top:15px;border-color:rgba(76,157,225,.2);background:linear-gradient(140deg,rgba(12,24,43,.96),rgba(12,21,37,.97))}
+.communication-first-panel>.panel-head{align-items:flex-start;gap:14px}
+.communication-first-panel>.panel-head h3{margin:5px 0 4px;font-size:clamp(17px,2vw,21px);letter-spacing:-.025em}
+.communication-first-panel>.panel-head p{margin:0;max-width:680px;color:var(--muted);font-size:12px;line-height:1.55}
+.communication-first-badge{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;padding:7px 10px;border:1px solid rgba(83,214,255,.2);border-radius:999px;color:#9fe5d0;background:rgba(20,97,82,.13);font-size:10px;font-weight:700;white-space:nowrap}
+.communication-hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:17px}
+.communication-hub-card{position:relative;display:grid;grid-template-columns:39px minmax(0,1fr) 16px;grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:5px;min-width:0;min-height:94px;padding:13px;border:1px solid rgba(113,157,209,.17);border-radius:12px;background:linear-gradient(140deg,rgba(25,43,67,.76),rgba(13,25,44,.76));color:var(--text);text-align:left;transition:transform .16s,border-color .16s,background .16s}
+.communication-hub-card:hover{transform:translateY(-1px);border-color:rgba(83,214,255,.48);background:linear-gradient(140deg,rgba(27,62,91,.76),rgba(17,35,59,.9))}
+.communication-hub-icon{grid-row:1 / span 2;display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(83,214,255,.17);border-radius:10px;background:rgba(29,106,150,.15);color:#85dfff}
+.communication-hub-copy{display:grid;gap:4px;min-width:0;align-self:end}
+.communication-hub-copy b{font-size:12px;font-weight:750;line-height:1.3;color:#e7f1ff}
+.communication-hub-copy small{font-size:10px;line-height:1.45;color:#9fb2cc}
+.communication-hub-tag{grid-column:2;grid-row:2;justify-self:start;color:#82d6f8;font-size:9px;font-weight:750;letter-spacing:.06em;text-transform:uppercase}
+.communication-hub-arrow{grid-column:3;grid-row:1 / span 2;justify-self:end;color:#6f91b8}
+.communication-hub-note{background:linear-gradient(140deg,rgba(54,49,95,.25),rgba(17,29,51,.8))}
+.communication-hub-note .communication-hub-icon{color:#c8b4ff;border-color:rgba(178,151,255,.2);background:rgba(111,76,174,.15)}
+.communication-hub-footnote{display:flex;align-items:flex-start;gap:7px;margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+.communication-hub-footnote svg{flex:0 0 auto;margin-top:1px;color:#8bd9ff}
+@media(max-width:1050px){.communication-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.communication-first-panel>.panel-head{display:grid}.communication-first-badge{justify-self:start}.communication-hub-grid{grid-template-columns:minmax(0,1fr);gap:7px}.communication-hub-card{min-height:80px;padding:11px}.communication-hub-copy b{font-size:12px}.communication-hub-copy small{font-size:10px}}
