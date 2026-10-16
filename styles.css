@@ -1379,3 +1379,19 @@
 .remote-support-workspace .content-grid>.panel{margin:0}
 .remote-support-workspace ul{padding-left:20px;color:var(--muted);font-size:12px;line-height:1.8}
 @media(max-width:740px){.topbar-secondary-nav{flex-wrap:nowrap;overflow-x:auto}.remote-support-workspace .content-grid{grid-template-columns:1fr}.preview-backend-notice{font-size:10px}}
+
+/* Daily follow-through reminder bar: sample preview until a shared task backend is connected. */
+.follow-through-bar{border:1px solid rgba(90,164,232,.24);border-radius:12px;padding:11px 13px;background:linear-gradient(100deg,rgba(15,49,79,.55),rgba(11,21,39,.88));display:flex;flex-direction:column;gap:9px}
+.follow-through-head,.follow-through-title,.follow-through-footer{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.follow-through-head{justify-content:space-between}.follow-through-title{min-width:0;flex:1}
+.follow-through-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(65,180,245,.12);color:#75d6ff;flex-shrink:0}
+.follow-through-title>div{display:grid;gap:3px;min-width:0}.follow-through-title b{font-size:11px;color:#e5f2ff}
+.follow-through-title small,.follow-through-notice,.follow-through-task small,.follow-through-footer>span{font-size:9px;line-height:1.5;color:#91a9c6}
+.follow-through-count{font-size:9px;font-weight:700;border:1px solid rgba(65,180,245,.25);color:#91dcff;border-radius:20px;padding:4px 8px}
+.follow-through-notice{display:flex;align-items:flex-start;gap:7px;border-radius:7px;background:rgba(255,190,83,.055);padding:7px 9px;color:#c7b58e}.follow-through-notice svg{flex-shrink:0;margin-top:1px}
+.follow-through-list{display:grid;gap:5px}.follow-through-item{display:flex;align-items:center;gap:9px;min-width:0;border:1px solid rgba(121,160,207,.12);background:rgba(3,12,26,.32);border-radius:8px;padding:8px 9px}
+.follow-through-source{font-size:8px;font-weight:700;color:#95dfff;border:1px solid rgba(79,178,225,.18);border-radius:5px;padding:4px 6px;white-space:nowrap}.follow-through-source.carry-over{color:#ffc77a;border-color:rgba(255,190,83,.22)}
+.follow-through-task{display:grid;gap:3px;flex:1;min-width:0}.follow-through-task b{font-size:10px;line-height:1.45;overflow-wrap:anywhere;color:#dce9fb}.follow-through-task small{color:#8197b4}
+.follow-through-complete,.follow-through-dismiss{display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;border:1px solid rgba(90,175,210,.2);border-radius:7px;padding:6px 8px;background:rgba(41,143,164,.08);color:#9bdedc;font-size:9px}.follow-through-dismiss{padding:6px;background:transparent;color:#9bacc4;border-color:transparent}
+.follow-through-empty{display:flex;align-items:center;gap:8px;padding:10px;color:#9de6cb;font-size:10px}.follow-through-footer{border-top:1px solid rgba(121,160,207,.12);padding-top:8px}.follow-through-footer>span{flex:1;min-width:180px}.follow-through-footer .secondary-btn{font-size:9px;padding:7px 9px;display:inline-flex;align-items:center;gap:5px}
+@media(max-width:640px){.follow-through-item{flex-wrap:wrap}.follow-through-task{flex-basis:calc(100% - 100px)}.follow-through-complete{margin-left:auto}.follow-through-footer{align-items:flex-start}.follow-through-footer>span{flex-basis:100%}}
