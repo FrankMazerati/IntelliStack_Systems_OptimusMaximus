@@ -468,17 +468,30 @@ function CommandContextOverview({activeScreen,currentScreen,currentRole,tickets,
  <div className="command-context-actions">{selected.map(([label,id])=><button key={label+id} onClick={()=>onNavigate(id)}><span>{label}</span><ChevronRight size={14}/></button>)}</div></section>;
 }
 
-function Overview({onNavigate,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
+function Overview({onNavigate,onToggleStickyNotes,tickets,endUsers,devices,favorites,quickActions,screenDefs,currentRole}){
  const [showMoreFeatures,setShowMoreFeatures]=useState(false);
  const openTickets=tickets.filter(t=>t.status!=='Resolved').length;
  const highPriority=tickets.filter(t=>t.priority==='High'&&t.status!=='Resolved').length;
  return <>
-  <div className="dashboard-action-strip"><div><span className="eyebrow"><span className="pulse"/> WORKSPACE OVERVIEW</span><h2>What would you like to do?</h2><p>Shortcuts to the main administrative workflows.</p></div><div className="dashboard-actions">
-   <button className="primary-btn" onClick={()=>onNavigate('tickets')}><Plus size={16}/> Create / manage tickets</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('users')}><Users size={16}/> User management</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('integrations')}><Network size={16}/> Add integration</button>
-   <button className="secondary-btn" onClick={()=>onNavigate('security')}><ShieldCheck size={16}/> Security settings</button>
+  <div className="dashboard-action-strip"><div><span className="eyebrow"><span className="pulse"/> COMMUNICATION-FIRST WORKSPACE</span><h2>Keep the conversation connected to the work.</h2><p>Reach the right person, coordinate the next action, and keep ticket handoffs and decisions easy to find.</p></div><div className="dashboard-actions">
+   <button className="primary-btn" onClick={()=>onNavigate('intellichat')}><MessagesSquare size={16}/> Open IntelliChat</button>
+   <button className="secondary-btn" onClick={()=>onNavigate('email')}><Mail size={16}/> Open Email</button>
+   <button className="secondary-btn" onClick={()=>onNavigate('tickets')}><Plus size={16}/> Create / manage tickets</button>
+   <button className="secondary-btn" onClick={()=>onNavigate('knowledge')}><BookOpen size={16}/> Knowledge Base</button>
   </div></div>
+  <section className="panel communication-first-panel" aria-labelledby="communication-first-title"><div className="panel-head"><div><span className="eyebrow">THE OPERATING LAYER</span><h3 id="communication-first-title">Communication & Coordination</h3><p>Start with the conversation. Keep the owner, context, handoff, and next step visible.</p></div><span className="communication-first-badge"><ShieldCheck size={13}/> Accountable workflows</span></div><div className="communication-hub-grid">
+   {[
+    {id:'intellichat',title:'IntelliChat',detail:'Direct messages, team channels, and incident conversations.',icon:MessagesSquare,tag:'Talk'},
+    {id:'email',title:'Email Center',detail:'Open correspondence and follow the communication trail.',icon:Mail,tag:'Correspond'},
+    {id:'tickets',title:'Tickets & Escalations',detail:'Track ownership, priority, transfers, and troubleshooting history.',icon:Ticket,tag:'Coordinate'},
+    {id:'knowledge',title:'Knowledge Base',detail:'Find runbooks, procedures, and guidance without losing context.',icon:BookOpen,tag:'Learn'},
+    {id:'warroom',title:'War & Breakout Rooms',detail:'Bring the right people together for incidents and focused problem solving.',icon:Activity,tag:'Collaborate'},
+    {id:'noc',title:'Network Operations',detail:'Coordinate network events, maintenance, and operations handoffs.',icon:Network,tag:'NOC'},
+    {id:'soc',title:'Security Operations',detail:'Coordinate alert triage, investigations, and evidence review.',icon:Shield,tag:'SOC'},
+    {id:'meetings',title:'Meetings & Teams',detail:'Schedule a discussion and capture follow-up actions.',icon:Video,tag:'Meet'},
+   ].map(item=>{const Icon=item.icon;return <button className="communication-hub-card" key={item.id} onClick={()=>onNavigate(item.id)}><span className="communication-hub-icon"><Icon size={19}/></span><span className="communication-hub-copy"><b>{item.title}</b><small>{item.detail}</small></span><span className="communication-hub-tag">{item.tag}</span><ChevronRight className="communication-hub-arrow" size={16}/></button>})}
+   <button className="communication-hub-card communication-hub-note" onClick={onToggleStickyNotes}><span className="communication-hub-icon"><StickyNote size={19}/></span><span className="communication-hub-copy"><b>Sticky Notes</b><small>Capture a quick thought or follow-up without leaving the workspace.</small></span><span className="communication-hub-tag">Quick capture</span><ChevronRight className="communication-hub-arrow" size={16}/></button>
+  </div><p className="communication-hub-footnote"><Info size={13}/> Keep decisions and escalations in the appropriate ticket or incident record. Cross-device synchronization and live connector behavior depend on backend services being connected.</p></section>
   <section className="panel dashboard-launchpad"><div className="panel-head"><div><h3>Browser Workspace</h3><p>One central entry point for Chrome, Edge, and website access on desktop and mobile.</p></div><button className="secondary-btn" onClick={()=>onNavigate('secure-browser')}>Open workspace ↗</button></div><div className="launchpad-grid"><button className="launchpad-tile" onClick={()=>onNavigate('secure-browser')}><b>Browser Workspace</b><small>Open sites, preview compatible pages, and manage favorites</small></button><button className="launchpad-tile" onClick={()=>window.open('https://www.google.com/','_blank','noopener,noreferrer')}><b>Launch web search ↗</b><small>Opens in the device’s current/default browser</small></button></div></section>
   <section className="panel dashboard-launchpad"><div className="panel-head"><div><h3>IntelliSphere Stack & Communications</h3><p>Your business applications, chat, email, and everyday workspaces in one place.</p></div><button className="secondary-btn" onClick={()=>onNavigate('profile')}>Customize</button></div><div className="launchpad-grid">
    {[
@@ -1405,7 +1418,7 @@ function App(){
     if(activeScreen==='noc') return <OperationsCenterPage type="noc" onNavigate={navigate} tickets={tickets}/>;
     if(activeScreen==='soc') return <OperationsCenterPage type="soc" onNavigate={navigate} tickets={tickets}/>;
     if(suiteModules[activeScreen]) return <WorkspaceModulePage moduleInfo={suiteModules[activeScreen]} onNavigate={navigate}/>;
-    if(activeScreen==='overview') return <Overview onNavigate={navigate} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs} currentRole={currentRole}/>;
+    if(activeScreen==='overview') return <Overview onNavigate={navigate} onToggleStickyNotes={()=>setStickyNotesOpen(v=>!v)} tickets={tickets} endUsers={endUsers} devices={devices} favorites={favorites} quickActions={quickActions} screenDefs={screenDefs} currentRole={currentRole}/>;
     if(activeScreen==='builder') return <PlatformBuilderPage/>;
     if(activeScreen==='users') return <UsersPage/>;
     if(activeScreen==='devices') return <DevicesPage devices={devices} setDevices={setDevices}/>;
