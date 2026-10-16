@@ -1000,3 +1000,87 @@
 .sticky-notes-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px}.sticky-notes-footer>span{font-size:9px;color:var(--muted)}.sticky-notes-footer>button{padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted);font-size:9px}
 @media(max-width:980px){.global-search-wrap{order:3;flex:1 1 100%;max-width:none}}
 @media(max-width:600px){.global-search-wrap{width:100%;min-width:0}.global-search-results{max-height:55vh}.sticky-notes-panel{right:12px;bottom:12px}}
+
+ 
+/* Compact black command workspace: calmer hierarchy, aligned controls, useful motion */
+.topbar-redesigned{
+  gap:6px;
+  padding:9px 18px 7px;
+  background:#050505;
+  border-bottom:1px solid #20252d;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  backdrop-filter:none;
+}
+.topbar-main-row{
+  display:grid;
+  grid-template-columns:minmax(170px,auto) minmax(220px,1fr) auto;
+  align-items:center;
+  gap:14px;
+}
+.topbar-main-row .crumbs{grid-column:1;min-width:0;gap:8px}
+.topbar-welcome{display:none}
+.topbar-main-row .global-search-wrap,
+.topbar-main-row .global-search-visible{grid-column:2;grid-row:1;width:100%;max-width:520px;min-width:0;justify-self:center}
+.topbar-main-row .global-search-visible{height:34px;border-color:#2b3038;background:#111214;border-radius:9px}
+.topbar-main-row .global-search-visible:focus-within{border-color:#168ec4;box-shadow:0 0 0 3px rgba(0,174,239,.12)}
+.topbar-main-row .global-search-visible input{font-size:11px;color:#f4f7fb}
+.topbar-main-row .global-search-visible>button{width:30px;height:28px;border-radius:7px;background:#101e27;color:#55d9ff}
+.topbar-user-tools{grid-column:3;grid-row:1;gap:5px;margin-left:0;justify-self:end}
+.topbar-user-tools .presence-select{height:30px;background:#101112;border-color:#292d34;color:#dce3ed}
+.topbar-user-tools .header-profile-action{min-height:32px;max-width:170px;padding:3px 7px;border-radius:8px}
+.topbar-user-tools .header-logout{width:31px;height:31px;border-radius:8px;background:#101112;border:1px solid #292d34}
+.topbar-quick-row{gap:5px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding:6px 0 2px;border-top:1px solid #1a1d22;border-bottom:1px solid #1a1d22}
+.quick-row-label{position:sticky;left:0;z-index:1;flex:0 0 auto;padding:7px 7px 7px 0;background:#050505;font-size:8px;letter-spacing:.8px}
+.quick-access-button{min-height:29px;flex:0 0 auto;padding:0 9px;border-color:#242a32;border-radius:8px;background:#0e1013;color:#d4dce7;font-size:10px;transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease}
+.quick-access-button svg{color:#53d6ff}
+.quick-access-button:hover{transform:translateY(-1px);border-color:#087fae;background:#101c24;box-shadow:0 4px 14px rgba(0,174,239,.1)}
+.world-clock-strip{min-height:29px;border-color:#22272e;border-radius:8px;background:#090a0b}
+.world-clock-strip-city{min-height:27px;padding:0 8px}
+.world-clock-strip-label{padding:0 8px}
+.world-clock-collapsed{min-height:16px}
+.world-clock-collapsed button{border-color:#242a32;background:#0b0c0e;color:#8f9baa}
+.topbar-primary-nav{gap:4px;flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;padding-top:5px;border-top:0}
+.primary-nav-item{min-height:30px;flex:0 0 auto;padding:0 9px;border:1px solid transparent;border-radius:8px;background:transparent;color:#aab5c4;font-size:10px;transition:background .16s ease,border-color .16s ease,color .16s ease}
+.primary-nav-item svg{color:#56d8ff}
+.primary-nav-item:hover,.primary-nav-item[aria-expanded="true"]{border-color:#25313a;background:#10161b;color:#fff;box-shadow:0 3px 12px rgba(0,174,239,.08)}
+.topbar-redesigned .topbar-brand-tag{font-size:9px;letter-spacing:.7px;color:#c6d0dc}
+.topbar-redesigned .topbar-current-page{max-width:150px;overflow:hidden;text-overflow:ellipsis;color:#e9edf3}
+.topbar-redesigned .topbar-separator{color:#434a54}
+.topbar-redesigned .header-profile-action:hover,.topbar-redesigned .header-logout:hover{border-color:#087fae;background:#101c24}
+.topbar-redesigned .header-profile-avatar{box-shadow:0 0 0 1px #26343e,0 0 16px rgba(0,174,239,.12)}
+.topbar-redesigned .quick-access-button[aria-pressed="true"]{border-color:#087fae;background:#10202a;color:#fff}
+.topbar-redesigned .quick-access-button[aria-pressed="true"] svg{filter:drop-shadow(0 0 4px rgba(83,214,255,.55))}
+.topbar-redesigned .world-clock-strip-label small{color:#50e2a1}
+.topbar-redesigned .world-clock-strip-label small::before{content:"";display:inline-block;width:5px;height:5px;margin-right:4px;border-radius:50%;background:#50e2a1;box-shadow:0 0 8px rgba(80,226,161,.7);vertical-align:middle;animation:workspace-live-pulse 2s ease-in-out infinite}
+@keyframes workspace-live-pulse{0%,100%{opacity:.55;transform:scale(.85)}50%{opacity:1;transform:scale(1.12)}}
+@media(max-width:1100px){
+ .topbar-redesigned{padding:8px 12px 6px}
+ .topbar-main-row{grid-template-columns:minmax(150px,1fr) auto;gap:8px}
+ .topbar-main-row .crumbs{grid-column:1;grid-row:1}
+ .topbar-user-tools{grid-column:2;grid-row:1}
+ .topbar-main-row .global-search-wrap,.topbar-main-row .global-search-visible{grid-column:1/-1;grid-row:2;max-width:none}
+ .topbar-quick-row{margin-top:1px}
+}
+@media(max-width:620px){
+ .topbar-redesigned{padding:7px 9px 5px;gap:5px}
+ .topbar-main-row{grid-template-columns:minmax(0,1fr) auto;gap:7px}
+ .topbar-main-row .crumbs{gap:6px}
+ .topbar-redesigned .topbar-brand-tag{display:none}
+ .topbar-redesigned .topbar-current-page{max-width:105px;font-size:10px}
+ .topbar-user-tools{gap:4px}
+ .topbar-user-tools .presence-select{max-width:88px;padding:0 4px;font-size:9px}
+ .topbar-user-tools .header-profile-action{max-width:38px;width:38px;overflow:hidden;padding:3px;justify-content:center}
+ .topbar-user-tools .header-profile-copy,.topbar-user-tools .header-profile-action>svg:last-child{display:none}
+ .topbar-user-tools .header-profile-avatar{margin:0}
+ .topbar-user-tools .header-logout{width:30px;height:30px}
+ .topbar-quick-row{gap:5px}
+ .quick-row-label{font-size:7px}
+ .quick-access-button{min-height:28px;padding:0 8px;font-size:9px}
+ .topbar-primary-nav{gap:3px}
+ .primary-nav-item{min-height:29px;padding:0 8px;font-size:9px}
+ .world-clock-strip{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .topbar-redesigned .quick-access-button,.topbar-redesigned .primary-nav-item{transition:none}
+ .topbar-redesigned .world-clock-strip-label small::before{animation:none}
+}
