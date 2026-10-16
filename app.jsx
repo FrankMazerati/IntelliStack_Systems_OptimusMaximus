@@ -1270,7 +1270,6 @@ function App(){
   useEffect(()=>{try{localStorage.setItem('intellistack.profileEmail',profileEmail);localStorage.setItem('intellistack.profileTitle',profileTitle);localStorage.setItem('intellistack.profileDepartment',profileDepartment)}catch{}},[profileEmail,profileTitle,profileDepartment]);
   useEffect(()=>{try{if(profilePhoto)localStorage.setItem('intellistack.profilePhoto',profilePhoto);else localStorage.removeItem('intellistack.profilePhoto')}catch{}},[profilePhoto]);
   useEffect(()=>{try{localStorage.setItem('intellistack.displayName',displayName);localStorage.setItem('intellistack.favorites',JSON.stringify(favorites));localStorage.setItem('intellistack.quickActions',JSON.stringify(quickActions));localStorage.setItem('intellistack.recentScreens',JSON.stringify(recentScreens))}catch{}},[displayName,favorites,quickActions,recentScreens]);
-  useEffect(()=>{try{localStorage.setItem('intellistack.workspaceShortcuts',JSON.stringify(workspaceShortcuts))}catch{}},[workspaceShortcuts]);
   useEffect(()=>{if(!themeStudioOpen){try{localStorage.setItem('intellistack.theme',theme);localStorage.setItem('intellistack.accent',accent)}catch{}}},[theme,accent,themeStudioOpen]);
   useEffect(()=>{document.documentElement.dataset.theme=theme;document.documentElement.dataset.accent=accent},[theme,accent]);
   const [activeScreen,setActiveScreen]=useState('overview');
@@ -1288,6 +1287,7 @@ function App(){
   const [profileMenuOpen,setProfileMenuOpen]=useState(false);
   const [workspaceShortcutEditorOpen,setWorkspaceShortcutEditorOpen]=useState(false);
   const [workspaceShortcuts,setWorkspaceShortcuts]=useState(()=>{try{const saved=JSON.parse(localStorage.getItem('intellistack.workspaceShortcuts')||'null');return Array.isArray(saved)?saved:['calendar','create-meeting','join-meeting','intellichat','email','notifications','remote','warroom']}catch{return ['calendar','create-meeting','join-meeting','intellichat','email','notifications','remote','warroom']}});
+  useEffect(()=>{try{localStorage.setItem('intellistack.workspaceShortcuts',JSON.stringify(workspaceShortcuts))}catch{}},[workspaceShortcuts]);
   const [clockMenuOpen,setClockMenuOpen]=useState(false);
   const [activeNews,setActiveNews]=useState(null);
   const [newsFeedVisible,setNewsFeedVisible]=useState(()=>{try{return localStorage.getItem('intellistack.newsFeedVisible')!=='false'}catch{return true}});
