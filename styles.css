@@ -1395,3 +1395,72 @@
 .follow-through-complete,.follow-through-dismiss{display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;border:1px solid rgba(90,175,210,.2);border-radius:7px;padding:6px 8px;background:rgba(41,143,164,.08);color:#9bdedc;font-size:9px}.follow-through-dismiss{padding:6px;background:transparent;color:#9bacc4;border-color:transparent}
 .follow-through-empty{display:flex;align-items:center;gap:8px;padding:10px;color:#9de6cb;font-size:10px}.follow-through-footer{border-top:1px solid rgba(121,160,207,.12);padding-top:8px}.follow-through-footer>span{flex:1;min-width:180px}.follow-through-footer .secondary-btn{font-size:9px;padding:7px 9px;display:inline-flex;align-items:center;gap:5px}
 @media(max-width:640px){.follow-through-item{flex-wrap:wrap}.follow-through-task{flex-basis:calc(100% - 100px)}.follow-through-complete{margin-left:auto}.follow-through-footer{align-items:flex-start}.follow-through-footer>span{flex-basis:100%}}
+
+
+/* Hamburger navigation fix: keep the complete drawer above the sticky dashboard
+   and push the workspace into its own independently scrollable column. */
+.sidebar{
+  z-index:70;
+  height:100dvh;
+  max-height:100dvh;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.sidebar .grouped-side-nav,
+.sidebar .assistant-side-nav{
+  flex:0 0 auto;
+}
+.sidebar .sidebar-spacer{
+  flex:0 0 14px;
+}
+.sidebar .sidebar-bottom{
+  flex:0 0 auto;
+  margin-top:auto;
+  padding-bottom:max(8px,env(safe-area-inset-bottom));
+}
+.nav-backdrop{z-index:60}
+.topbar-redesigned{z-index:30}
+@media(max-width:980px){
+  .sidebar{z-index:70}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .nav-backdrop{display:none!important}
+  .app-shell:has(.sidebar.mobile-open) .main-area{
+    margin-left:clamp(250px,34vw,340px);
+    width:calc(100% - clamp(250px,34vw,340px));
+    min-width:0;
+    flex:0 0 calc(100% - clamp(250px,34vw,340px));
+    transition:margin-left .22s ease,width .22s ease,flex-basis .22s ease;
+  }
+  .app-shell:not(:has(.sidebar.mobile-open)) .main-area{
+    margin-left:0;
+    width:100%;
+    flex:1 1 auto;
+    transition:margin-left .22s ease,width .22s ease,flex-basis .22s ease;
+  }
+  .sidebar .sidebar-close-button{position:sticky;top:0;z-index:2}
+  .topbar-redesigned{position:sticky;top:0;z-index:30}
+  .main-area{min-width:0;min-height:100dvh}
+  .page-content{min-width:0}
+}
+@media(max-width:760px){
+  .sidebar{width:clamp(250px,34vw,290px);max-width:none}
+  .app-shell:has(.sidebar.mobile-open) .main-area{
+    margin-left:clamp(250px,34vw,290px);
+    width:calc(100% - clamp(250px,34vw,290px));
+    flex-basis:calc(100% - clamp(250px,34vw,290px));
+  }
+  .topbar-menu-button{display:inline-flex!important}
+}
+@media(max-width:420px){
+  .sidebar{width:250px}
+  .app-shell:has(.sidebar.mobile-open) .main-area{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    flex-basis:calc(100% - 250px);
+  }
+}
+/* Keep the workspace scrollable while the menu is open, without allowing
+   the drawer to cover the dashboard or clipping the menu's lower actions. */
+.app-shell:has(.sidebar.mobile-open){overflow-x:clip}
