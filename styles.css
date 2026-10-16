@@ -1464,3 +1464,154 @@
 /* Keep the workspace scrollable while the menu is open, without allowing
    the drawer to cover the dashboard or clipping the menu's lower actions. */
 .app-shell:has(.sidebar.mobile-open){overflow-x:clip}
+
+
+/* Super Admin dashboard hierarchy: align the menu with the brand and keep navigation in a clear reading order. */
+.topbar-redesigned .topbar-main-row{display:flex;align-items:center;gap:14px;min-width:0}
+.topbar-redesigned .topbar-main-row .crumbs{display:flex;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
+.topbar-redesigned .topbar-menu-button{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;margin:0;border:1px solid rgba(65,151,255,.24);border-radius:9px;background:rgba(18,37,64,.55);color:#d9ecff}
+.topbar-redesigned .topbar-brand-lockup{display:flex;align-items:center;gap:10px;min-width:0}
+.topbar-redesigned .topbar-brand-lockup .brand{flex:0 0 auto}
+.topbar-redesigned .topbar-brand-tag{min-width:0}
+.command-dashboard-heading{margin:4px 0 18px;padding:2px 0 14px;border-bottom:1px solid rgba(65,151,255,.18)}
+.command-dashboard-heading h1{font-size:clamp(23px,2.4vw,31px);margin:8px 0 6px}
+.dashboard-access-stack{margin:18px 0 22px;padding:12px 14px;border:1px solid rgba(65,151,255,.17);border-radius:13px;background:rgba(10,22,41,.42)}
+.dashboard-access-stack .topbar-favorites-row{margin:0 0 8px;padding:4px 0 9px;border-top:0;border-bottom:1px solid rgba(65,151,255,.15)}
+.dashboard-quick-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.dashboard-quick-links-label{margin-right:4px;color:#7890b4;font-size:9px;font-weight:800;letter-spacing:1px}
+.dashboard-quick-links .primary-nav-item{min-height:34px;border:1px solid rgba(75,133,200,.24);background:rgba(18,37,64,.42);color:#d5e5fb}
+.dashboard-quick-links .primary-nav-item svg{color:var(--cyan)}
+.dashboard-quick-links-spacer{flex:1}
+.dashboard-workspace-label{display:inline-flex;align-items:center;gap:6px;margin-left:auto;color:#7f95b9;font-size:10px;font-weight:700;letter-spacing:.4px}
+@media(max-width:740px){.topbar-redesigned{padding:10px 12px}.topbar-redesigned .topbar-main-row{align-items:flex-start;gap:9px}.topbar-redesigned .topbar-main-row .crumbs{align-items:center;gap:8px;flex:1}.topbar-redesigned .topbar-brand-lockup{gap:7px}.topbar-redesigned .topbar-brand-lockup .brand-mark,.topbar-redesigned .topbar-brand-lockup .brand-mark svg{width:30px;height:34px}.topbar-redesigned .topbar-brand-tag{font-size:9px!important;letter-spacing:.35px}.topbar-redesigned .topbar-brand-tag i{font-size:7px!important;letter-spacing:.35px}.topbar-welcome{display:none}.command-dashboard-heading{align-items:flex-start;flex-direction:column}.dashboard-access-stack{padding:9px}.dashboard-access-stack .topbar-favorites-row{margin:0 0 8px}.dashboard-quick-links{gap:5px}.dashboard-quick-links-label{width:100%;margin-bottom:2px}.dashboard-workspace-label{margin-left:0}}
+
+.command-context-section{margin-top:17px}.command-context-section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 8px}.command-context-section-heading h3{margin:0;color:#dceaff;font-size:12px;font-weight:750;letter-spacing:.2px}.command-context-section-heading>span{color:var(--muted);font-size:9px}.command-context-illustrative{margin:8px 0 0;color:#8397b7;font-size:9px;letter-spacing:.65px;font-weight:700}
+@media(max-width:560px){.command-context-section-heading{align-items:flex-start;flex-direction:column;gap:3px}}
+
+/* Executive Overview: strategic goals, corporate leadership, and problem solving. */
+.executive-strategy-banner{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:18px 0 22px;padding:20px;border:1px solid rgba(69,160,255,.28);border-radius:15px;background:linear-gradient(110deg,rgba(22,53,91,.72),rgba(12,26,46,.8))}
+.executive-kicker{font-size:9px;font-weight:850;letter-spacing:1.4px;color:#75cfff}
+.executive-strategy-banner h3{margin:7px 0 5px;font-size:clamp(17px,2vw,23px);color:#f1f7ff}
+.executive-strategy-banner p{margin:0;color:#9fb3d1;font-size:11px;line-height:1.55}
+.executive-strategy-banner>button,.executive-section-title>button{display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0;border:1px solid rgba(82,169,255,.3);border-radius:8px;background:rgba(24,69,112,.4);padding:9px 11px;color:#dceeff;font-size:10px;font-weight:750;cursor:pointer}
+.executive-section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}
+.executive-section-title h3{margin:0;color:#e5efff;font-size:13px;font-weight:800}
+.executive-section-title p{margin:4px 0 0;color:#8ca1c0;font-size:10px;line-height:1.45}
+.executive-strategy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.executive-strategy-card{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;min-height:170px;padding:14px;text-align:left;border:1px solid rgba(91,143,206,.2);border-radius:12px;background:rgba(12,27,48,.68);color:#e3efff;cursor:pointer}
+.executive-card-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(51,141,230,.14);color:#73caff}
+.executive-strategy-card small{font-size:8px;font-weight:850;letter-spacing:1px;color:#83a1c9}
+.executive-strategy-card b{font-size:13px}
+.executive-strategy-card p{margin:0;color:#9aafcc;font-size:10px;line-height:1.55}
+.executive-strategy-card em{margin-top:auto;color:#80d8ff;font-size:10px;font-style:normal;font-weight:750}
+.executive-problem-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.executive-problem-flow>div{position:relative;min-width:0;padding:13px 10px;border:1px solid rgba(86,137,198,.18);border-radius:10px;background:rgba(10,24,43,.58)}
+.executive-problem-flow span{display:block;margin-bottom:11px;color:#71caff;font-size:9px;font-weight:850;letter-spacing:.7px}
+.executive-problem-flow b{font-size:11px;color:#e0edff}
+.executive-problem-flow p{margin:6px 0 0;color:#92a7c5;font-size:9px;line-height:1.55}
+.executive-illustrative-label{flex-shrink:0;color:#90a5c3;font-size:8px;font-weight:850;letter-spacing:1px}
+.executive-operational-metrics{margin-top:10px}
+@media(max-width:850px){.executive-problem-flow{grid-template-columns:repeat(3,minmax(0,1fr))}.executive-strategy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.executive-strategy-banner{align-items:flex-start;flex-direction:column;padding:15px}.executive-strategy-banner>button{width:100%}.executive-section-title{align-items:flex-start;flex-direction:column}.executive-strategy-grid,.executive-problem-flow{grid-template-columns:1fr}.executive-strategy-card{min-height:140px}.executive-problem-flow>div{padding:11px}.executive-problem-flow span{margin-bottom:6px}}
+
+/* Customer-facing mission and future-of-business message for Executive Overview. */
+.executive-mission-banner{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 210px;align-items:center;gap:20px;overflow:hidden;margin:18px 0 22px;padding:23px 24px;border:1px solid rgba(69,160,255,.28);border-radius:16px;background:linear-gradient(112deg,rgba(19,51,89,.86),rgba(10,23,42,.94) 68%,rgba(16,42,69,.88))}
+.executive-mission-copy{position:relative;z-index:1}
+.executive-mission-copy h3{max-width:680px;margin:9px 0 10px;color:#f3f8ff;font-size:clamp(21px,2.5vw,31px);line-height:1.17;letter-spacing:-.45px}
+.executive-mission-copy>p{max-width:760px;margin:0;color:#b1c5e0;font-size:12px;line-height:1.8}
+.executive-mission-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.executive-mission-tags span{display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border:1px solid rgba(112,183,255,.19);border-radius:7px;background:rgba(13,33,57,.56);color:#d7e9ff;font-size:9px;font-weight:700}
+.executive-mission-tags svg{color:#7bd4ff}
+.executive-mission-mark{position:relative;display:grid;place-items:center;min-height:175px}
+.mission-orbit{position:absolute;width:148px;height:148px;border:1px solid rgba(88,180,255,.22);border-radius:50%;transform:rotate(-25deg) scaleY(.6)}
+.mission-orbit-two{width:190px;height:190px;transform:rotate(55deg) scaleY(.47);border-color:rgba(111,145,255,.23)}
+.mission-core{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;width:76px;height:76px;border:1px solid rgba(100,202,255,.52);border-radius:23px;background:linear-gradient(145deg,rgba(35,100,163,.9),rgba(12,36,66,.96));box-shadow:0 0 42px rgba(28,132,230,.2);color:#a4e7ff}
+.mission-core span{font-size:10px;font-weight:900;letter-spacing:2px}
+.mission-node{position:absolute;width:8px;height:8px;border:1px solid #8adfff;border-radius:50%;background:#4e9de7;box-shadow:0 0 12px rgba(82,184,255,.65)}
+.mission-node-one{top:17px;left:50%}.mission-node-two{right:14px;top:50%}.mission-node-three{bottom:17px;left:50%}.mission-node-four{left:14px;top:50%}
+.executive-future-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.executive-future-grid article{display:grid;grid-template-columns:34px minmax(0,1fr);column-gap:10px;align-content:start;padding:14px;border:1px solid rgba(91,143,206,.18);border-radius:12px;background:rgba(12,27,48,.58)}
+.executive-future-grid article>span{grid-row:span 2;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:rgba(51,141,230,.14);color:#77d3ff}
+.executive-future-grid article>b{align-self:center;color:#e1edff;font-size:12px;line-height:1.4}
+.executive-future-grid article>p{margin:7px 0 0;color:#9aafcc;font-size:10px;line-height:1.65}
+.executive-vision-note{display:flex;align-items:flex-start;gap:10px;margin:17px 0 8px;padding:13px 15px;border:1px solid rgba(88,180,255,.17);border-radius:10px;background:rgba(18,46,77,.45);color:#8bdcff}
+.executive-vision-note>svg{flex-shrink:0;margin-top:1px}
+.executive-vision-note p{margin:0;color:#b8cce6;font-size:11px;line-height:1.7}
+.executive-vision-note b{color:#e9f5ff}
+@media(max-width:740px){.executive-mission-banner{grid-template-columns:minmax(0,1fr);padding:18px}.executive-mission-mark{min-height:112px;order:-1}.executive-mission-mark .mission-orbit{width:105px;height:105px}.executive-mission-mark .mission-orbit-two{width:137px;height:137px}.mission-core{width:60px;height:60px;border-radius:18px}.mission-core svg{width:24px;height:24px}.mission-node-one{top:4px}.mission-node-three{bottom:4px}.mission-node-two{right:calc(50% - 68px)}.mission-node-four{left:calc(50% - 68px)}}
+@media(max-width:560px){.executive-mission-copy h3{font-size:23px}.executive-mission-copy>p{font-size:11px;line-height:1.7}.executive-future-grid{grid-template-columns:1fr}.executive-mission-tags{gap:6px}.executive-mission-tags span{font-size:8px}}
+
+
+/* Super Admin command header: one clear identity, personal shortcuts, and welcome. */
+.topbar-redesigned .topbar-main-row{display:flex;align-items:center;gap:18px;min-width:0;flex-wrap:nowrap}
+.topbar-redesigned .crumbs{flex:0 1 auto;min-width:0}
+.topbar-redesigned .topbar-brand-lockup{min-width:0;gap:9px}
+.topbar-redesigned .topbar-brand-tag{display:block;max-width:250px;white-space:normal;line-height:1.35;font-size:10px;letter-spacing:1px}
+.topbar-redesigned .topbar-brand-tag i{font-style:normal;font-weight:800;color:#8bd9ff}
+.topbar-redesigned .topbar-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin-left:auto;min-width:0}
+.topbar-redesigned .topbar-header-action{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:0 10px;border:1px solid rgba(104,157,220,.18);border-radius:9px;background:rgba(17,35,59,.56);color:#c8d9ef;font-size:10px;font-weight:650;white-space:nowrap;transition:background .18s,border-color .18s,color .18s}
+.topbar-redesigned .topbar-header-action svg{color:#83d8ff;flex:0 0 auto}
+.topbar-redesigned .topbar-header-action:hover,.topbar-redesigned .topbar-header-action[aria-expanded="true"]{border-color:rgba(83,214,255,.55);background:rgba(22,68,100,.48);color:#fff}
+.topbar-redesigned .topbar-header-menu{position:relative;flex:0 0 auto}
+.topbar-redesigned .topbar-profile-action{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:3px 7px 3px 4px;border:1px solid rgba(83,214,255,.28);border-radius:11px;background:rgba(17,35,59,.66);color:#dcecff}
+.topbar-redesigned .topbar-profile-action>span,.topbar-redesigned .topbar-profile-action>img{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,#176ca7,#4c54b5);color:#fff;font-size:10px;font-weight:800}
+.topbar-redesigned .topbar-profile-action>svg{color:#83d8ff}
+.topbar-redesigned .header-notification-dot{position:absolute;top:5px;right:7px;width:6px;height:6px;border-radius:50%;background:#62e6b4;box-shadow:0 0 7px rgba(98,230,180,.6)}
+.topbar-redesigned .profile-shortcut-dropdown{right:0;left:auto;top:calc(100% + 9px);width:min(300px,calc(100vw - 24px));z-index:90}
+.topbar-redesigned .notifications-dropdown{right:0;left:auto;top:calc(100% + 9px);width:min(310px,calc(100vw - 24px));z-index:90}
+.topbar-redesigned .workspace-profile-banner{margin:8px 18px 9px;padding:17px 20px;gap:17px;border-color:rgba(90,160,230,.22);background:linear-gradient(115deg,rgba(14,29,51,.98),rgba(13,23,42,.97) 65%,rgba(21,38,64,.94));box-shadow:0 12px 34px rgba(0,0,0,.13)}
+.topbar-redesigned .workspace-profile-copy{display:grid;gap:5px}
+.topbar-redesigned .workspace-profile-copy h2{font-size:clamp(19px,2vw,25px);letter-spacing:-.04em}
+.topbar-redesigned .workspace-profile-copy p{margin:0}
+.topbar-redesigned .workspace-mission-line{font-size:12px;font-weight:800;letter-spacing:.015em;color:#8bd9ff!important}
+.topbar-redesigned .workspace-daily-message{display:flex;align-items:center;gap:7px;color:#e8efff!important;font-size:11px!important;line-height:1.5}
+.topbar-redesigned .workspace-daily-message svg{color:#8bd9ff;flex:0 0 auto}
+.topbar-redesigned .workspace-profile-bio{font-size:10px;line-height:1.5;white-space:normal;overflow:visible;text-overflow:clip;color:#b9cce4}
+.topbar-redesigned .workspace-profile-email{font-size:9px;color:#8fa6c6}
+.profile-field textarea{display:block;width:100%;min-height:92px;padding:11px 12px;border:1px solid var(--border);border-radius:8px;background:#091326;color:var(--text);font:inherit;line-height:1.55;resize:vertical}
+.profile-field textarea:focus{border-color:rgba(0,212,255,.5);outline:2px solid rgba(0,212,255,.14)}
+@media(max-width:1180px){
+ .topbar-redesigned .topbar-main-row{flex-wrap:wrap;gap:10px}
+ .topbar-redesigned .topbar-header-actions{flex:1 1 100%;justify-content:flex-start;overflow-x:auto;padding:2px 0 4px;scrollbar-width:thin}
+ .topbar-redesigned .topbar-header-action{flex:0 0 auto}
+ .topbar-redesigned .topbar-welcome{display:none}
+}
+@media(max-width:650px){
+ .topbar-redesigned .topbar-main-row{align-items:center}
+ .topbar-redesigned .topbar-brand-lockup .brand-name{font-size:10px}
+ .topbar-redesigned .topbar-brand-tag{font-size:8px;letter-spacing:.45px;max-width:190px}
+ .topbar-redesigned .topbar-header-actions{gap:4px}
+ .topbar-redesigned .topbar-header-action{width:38px;min-width:38px;padding:0;gap:0;font-size:0}
+ .topbar-redesigned .topbar-header-action>span{display:none}
+ .topbar-redesigned .topbar-header-action svg{width:17px;height:17px}
+ .topbar-redesigned .topbar-profile-action{min-height:36px}
+ .topbar-redesigned .workspace-profile-banner{align-items:flex-start;gap:10px;margin:8px 9px;padding:12px}
+ .topbar-redesigned .workspace-profile-photo-button{width:48px;height:48px}
+ .topbar-redesigned .workspace-profile-edit{padding:7px 8px;font-size:9px}
+ .topbar-redesigned .workspace-profile-copy h2{font-size:17px}
+ .topbar-redesigned .workspace-mission-line{font-size:11px}
+ .topbar-redesigned .workspace-profile-copy>small{white-space:normal}
+}
+
+
+/* Communication-first Command Center: clear operational paths for every role. */
+.communication-first-panel{margin-top:15px;border-color:rgba(76,157,225,.2);background:linear-gradient(140deg,rgba(12,24,43,.96),rgba(12,21,37,.97))}
+.communication-first-panel>.panel-head{align-items:flex-start;gap:14px}
+.communication-first-panel>.panel-head h3{margin:5px 0 4px;font-size:clamp(17px,2vw,21px);letter-spacing:-.025em}
+.communication-first-panel>.panel-head p{margin:0;max-width:680px;color:var(--muted);font-size:12px;line-height:1.55}
+.communication-first-badge{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;padding:7px 10px;border:1px solid rgba(83,214,255,.2);border-radius:999px;color:#9fe5d0;background:rgba(20,97,82,.13);font-size:10px;font-weight:700;white-space:nowrap}
+.communication-hub-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:17px}
+.communication-hub-card{position:relative;display:grid;grid-template-columns:39px minmax(0,1fr) 16px;grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:5px;min-width:0;min-height:94px;padding:13px;border:1px solid rgba(113,157,209,.17);border-radius:12px;background:linear-gradient(140deg,rgba(25,43,67,.76),rgba(13,25,44,.76));color:var(--text);text-align:left;transition:transform .16s,border-color .16s,background .16s}
+.communication-hub-card:hover{transform:translateY(-1px);border-color:rgba(83,214,255,.48);background:linear-gradient(140deg,rgba(27,62,91,.76),rgba(17,35,59,.9))}
+.communication-hub-icon{grid-row:1 / span 2;display:grid;place-items:center;width:38px;height:38px;border:1px solid rgba(83,214,255,.17);border-radius:10px;background:rgba(29,106,150,.15);color:#85dfff}
+.communication-hub-copy{display:grid;gap:4px;min-width:0;align-self:end}
+.communication-hub-copy b{font-size:12px;font-weight:750;line-height:1.3;color:#e7f1ff}
+.communication-hub-copy small{font-size:10px;line-height:1.45;color:#9fb2cc}
+.communication-hub-tag{grid-column:2;grid-row:2;justify-self:start;color:#82d6f8;font-size:9px;font-weight:750;letter-spacing:.06em;text-transform:uppercase}
+.communication-hub-arrow{grid-column:3;grid-row:1 / span 2;justify-self:end;color:#6f91b8}
+.communication-hub-note{background:linear-gradient(140deg,rgba(54,49,95,.25),rgba(17,29,51,.8))}
+.communication-hub-note .communication-hub-icon{color:#c8b4ff;border-color:rgba(178,151,255,.2);background:rgba(111,76,174,.15)}
+.communication-hub-footnote{display:flex;align-items:flex-start;gap:7px;margin:14px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+.communication-hub-footnote svg{flex:0 0 auto;margin-top:1px;color:#8bd9ff}
+@media(max-width:1050px){.communication-hub-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.communication-first-panel>.panel-head{display:grid}.communication-first-badge{justify-self:start}.communication-hub-grid{grid-template-columns:minmax(0,1fr);gap:7px}.communication-hub-card{min-height:80px;padding:11px}.communication-hub-copy b{font-size:12px}.communication-hub-copy small{font-size:10px}}
