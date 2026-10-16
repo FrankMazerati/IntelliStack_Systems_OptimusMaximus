@@ -1122,3 +1122,20 @@
 .header-theme-preview>button{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid;border-radius:8px;font-size:11px;font-weight:700}
 .header-theme-editor .section-color-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:560px){.header-theme-editor .section-color-fields{grid-template-columns:1fr}}
+
+
+/* Profile sits immediately beside the hamburger on compact screens */
+.topbar-redesigned .mobile-profile-action{display:none}
+@media(max-width:980px){
+ .topbar-redesigned .topbar-main-row .crumbs{flex-wrap:nowrap;align-items:center;gap:7px;overflow:visible}
+ .topbar-redesigned .mobile-profile-action{display:inline-flex;align-items:center;justify-content:center;gap:5px;flex:0 0 auto;max-width:135px;min-height:32px;padding:4px 7px;border:1px solid var(--border);border-radius:8px;background:var(--workspace-header-button-bg,#0e1013);color:var(--workspace-header-button-text,#d4dce7)}
+ .topbar-redesigned .mobile-profile-action .header-profile-avatar{width:24px;height:24px;flex:0 0 24px;font-size:9px}
+ .topbar-redesigned .mobile-profile-action .header-profile-copy{display:block;min-width:0}
+ .topbar-redesigned .mobile-profile-action .header-profile-copy b{display:block;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}
+ .topbar-redesigned .topbar-user-tools .header-profile-action{display:none}
+}
+@media(max-width:600px){
+ .topbar-redesigned .topbar-main-row .crumbs{gap:5px}
+ .topbar-redesigned .mobile-profile-action{max-width:105px;padding:3px 5px}
+ .topbar-redesigned .mobile-profile-action .header-profile-copy b{max-width:42px}
+}
