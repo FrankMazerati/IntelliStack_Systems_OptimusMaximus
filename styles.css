@@ -1270,3 +1270,45 @@
 
 /* Keep popovers above the horizontally scrolling favorite strip; prevent clipping */
 .topbar-favorites-row{overflow-x:auto;overflow-y:visible;position:relative}.favorites-editor-wrap,.sticky-notes-toolbar-wrap{position:static}.favorites-editor-dropdown,.sticky-notes-dropdown{position:fixed;top:clamp(110px,18vh,190px);right:14px;left:auto;z-index:9999;box-shadow:0 16px 45px rgba(0,0,0,.55);border:1px solid rgba(67,195,255,.35)}.favorites-editor-dropdown{width:min(340px,calc(100vw - 28px));max-height:65vh}.sticky-notes-dropdown{width:min(340px,calc(100vw - 28px));max-height:65vh}@media(max-width:760px){.favorites-editor-dropdown,.sticky-notes-dropdown{left:10px;right:10px;top:155px;width:auto}}
+
+
+/* Command Center brand pass: blue is the primary identity; reserve green for meaningful status indicators. */
+.topbar-redesigned .brand-mark,
+.topbar-redesigned .brand-mark svg,
+.topbar-redesigned .brand-mark b { color:#167fc4!important; filter:none!important; }
+.topbar-redesigned .brand-name { color:#dcecff!important; }
+.topbar-redesigned .brand-name span { color:#1769aa!important; }
+.topbar-redesigned .topbar-brand-tag { color:#a8c8ef!important; }
+.topbar-redesigned .topbar-brand-tag i,
+.topbar-redesigned .brand-tag i { color:#1769aa!important; }
+.topbar-redesigned .world-clock-strip {
+  border-color:rgba(24,105,170,.42);
+  background:linear-gradient(90deg,rgba(9,30,54,.94),rgba(7,16,30,.96));
+}
+.topbar-redesigned .world-clock-strip-label,
+.topbar-redesigned .world-clock-strip-label>svg { color:#237fca!important; }
+.topbar-redesigned .world-clock-strip-label small { color:#3b9ce8!important; }
+.topbar-redesigned .world-clock-strip-label small::before {
+  background:#3b9ce8!important;
+  box-shadow:0 0 7px rgba(59,156,232,.45)!important;
+}
+.topbar-redesigned .world-clock-strip-city b { color:#c8e2ff; }
+.topbar-redesigned .primary-nav-item svg,
+.topbar-redesigned .quick-access-button svg,
+.topbar-redesigned .global-search-visible>button,
+.topbar-redesigned .world-clock-strip-label>svg { color:#2385ce!important; }
+.topbar-redesigned .primary-nav-item:hover,
+.topbar-redesigned .primary-nav-item[aria-expanded="true"],
+.topbar-redesigned .quick-access-button:hover {
+  border-color:rgba(35,133,206,.42);
+  background:rgba(19,73,119,.24);
+}
+.topbar-redesigned .quick-access-button[aria-pressed="true"],
+.topbar-redesigned .primary-nav-item[aria-expanded="true"] { color:#dceeff; }
+.topbar-redesigned .quick-access-button[aria-pressed="true"] svg { color:#2385ce!important; }
+.topbar-redesigned .topbar-primary-nav { border-top-color:rgba(35,133,206,.2); }
+.topbar-redesigned .topbar-quick-row { border-top-color:rgba(35,133,206,.18); border-bottom-color:rgba(35,133,206,.18); }
+.topbar-redesigned .topbar-current-page { color:#a8d4ff!important; }
+.topbar-redesigned .topbar-separator { color:#23659b!important; }
+.topbar-redesigned .topbar-primary-nav .primary-nav-item,
+.topbar-redesigned .topbar-quick-row .quick-access-button { box-shadow:none; }
